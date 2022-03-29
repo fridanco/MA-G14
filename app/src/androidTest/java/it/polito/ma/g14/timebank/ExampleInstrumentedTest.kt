@@ -1,4 +1,4 @@
-package it.polito.mad.g14.timebank
+package it.polito.ma.g14.timebank
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("it.polito.mad.g14.timebank", appContext.packageName)
+        assertEquals("it.polito.ma.g14.timebank", appContext.packageName)
     }
 }

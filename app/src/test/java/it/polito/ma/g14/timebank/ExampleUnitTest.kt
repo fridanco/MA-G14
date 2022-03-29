@@ -1,4 +1,4 @@
-package it.polito.mad.g14.timebank
+package it.polito.ma.g14.timebank
 
 import org.junit.Test
 
