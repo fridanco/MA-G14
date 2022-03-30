@@ -8,10 +8,10 @@ import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
 
-    val fullName :  String = "Mario";
-    val email : String = "m@gmail.com"
-    val nickName : String = "mariodedapolito"
-    val location : String = "location"
+    val fullName :  String = "Peter Parker";
+    val email : String = "peter.parker@stark.us"
+    val nickName : String = "Underoose"
+    val location : String = "Queens, New York, NY, US"
     var skills = mutableListOf<String>();
     val description : String = "";
 
@@ -19,8 +19,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        supportActionBar?.title = "New Title Here" //supportActionBar is the keyword for the toolbar
-        actionBar?.hide()
+        supportActionBar?.title = "User" //supportActionBar is the keyword for the toolbar
+        supportActionBar
+        //actionBar?.hide()
         findViewById<TextView>(R.id.textView4).text = fullName
         findViewById<TextView>(R.id.textView5).text = nickName
         findViewById<TextView>(R.id.textView6).text = email
