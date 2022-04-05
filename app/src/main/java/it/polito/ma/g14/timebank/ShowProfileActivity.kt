@@ -1,7 +1,9 @@
 package it.polito.ma.g14.timebank
 
 import android.app.ActionBar
+import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -10,6 +12,8 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toolbar
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import org.w3c.dom.Text
 
@@ -31,6 +35,8 @@ class ShowProfileActivity : AppCompatActivity() {
     private var h_tv_email : TextView? = null
     private var h_tv_location : TextView? = null
 
+    private final val EDIT_PROFILE_ACTIVITY = 1
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_profile)
@@ -50,9 +56,16 @@ class ShowProfileActivity : AppCompatActivity() {
         // Handle item selection
         return when (item.itemId) {
             R.id.pencil -> {
+                //startActivityForResult is deprecated
+                //this is the new way how to do it
                 val i = Intent(this, EditProfileActivity::class.java)
-                intentPutExtras_showEditProfileActivity(i)
-                startActivity(i)
+                i.putExtra("fullName",fullName)
+                i.putExtra("email",email)
+                i.putExtra("nickName",nickName)
+                i.putExtra("location",location)
+                i.putExtra("skills",skills)
+                i.putExtra("description",description)
+                startForResult.launch(i)
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -83,6 +96,20 @@ class ShowProfileActivity : AppCompatActivity() {
         populateTextView()
     }
 
+    private val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+        println(result)
+        if (result.resultCode == Activity.RESULT_OK) {
+            val intent: Intent? = result.data
+            fullName = intent?.getStringExtra("fullName") ?: ""
+            email = intent?.getStringExtra("email") ?: ""
+            nickName = intent?.getStringExtra("nickName") ?: ""
+            location = intent?.getStringExtra("location") ?: ""
+            skills = intent?.getStringArrayListExtra("skills") ?: arrayListOf()
+            description = intent?.getStringExtra("description") ?: ""
+            populateTextView()
+        }
+    }
+
     fun setTextViewReferences(){
         tv_fullname = findViewById<TextView>(R.id.textView4)
         tv_nickname = findViewById<TextView>(R.id.textView5)
@@ -104,15 +131,6 @@ class ShowProfileActivity : AppCompatActivity() {
         h_tv_nickname?.text = nickName
         h_tv_email?.text = email
         h_tv_location?.text = location
-    }
-
-    fun intentPutExtras_showEditProfileActivity(i: Intent){
-        i.putExtra("fullName",fullName)
-        i.putExtra("email",email)
-        i.putExtra("nickName",nickName)
-        i.putExtra("location",location)
-        i.putExtra("skills",skills)
-        i.putExtra("description",description)
     }
 
 }

@@ -1,11 +1,13 @@
 package it.polito.ma.g14.timebank
 
-import androidx.appcompat.app.AppCompatActivity
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.widget.EditText
-import androidx.core.widget.addTextChangedListener
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doOnTextChanged
+
 
 class EditProfileActivity : AppCompatActivity() {
 
@@ -60,6 +62,22 @@ class EditProfileActivity : AppCompatActivity() {
         skills = savedInstanceState.getStringArrayList("skills") ?: arrayListOf()
         description = savedInstanceState.getString("description","")
         populateEditText()
+    }
+
+    override fun onBackPressed() {
+        //Returning result to ShowProfileActivity
+        val resultData = Intent()
+        resultData.putExtra("fullName", fullName)
+        resultData.putExtra("email", email)
+        resultData.putExtra("nickName", nickName)
+        resultData.putExtra("location", location)
+        resultData.putExtra("skills", skills)
+        resultData.putExtra("description", description)
+        setResult(Activity.RESULT_OK, resultData)
+
+        //this calls finish() so it needs to be put AFTER setResult()
+        //otherwise setResult will not be called
+        super.onBackPressed()
     }
 
     fun setEditTextReferences(){
