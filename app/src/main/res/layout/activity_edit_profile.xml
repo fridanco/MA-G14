@@ -31,7 +31,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:contentDescription="ProfilePicture"
-                app:srcCompat="@drawable/ic_launcher_foreground" />
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/user" />
         </LinearLayout>
 
         <LinearLayout
@@ -46,6 +47,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
+                android:hint="@string/profile_edit_fullname_placeholder"
                 android:inputType="textPersonName"
                 android:minHeight="48dp"
                 android:text="Full Name" />
@@ -55,6 +57,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
+                android:hint="@string/profile_edit_nickname_placeholder"
                 android:inputType="textPersonName"
                 android:minHeight="48dp"
                 android:text="Nickname" />
@@ -64,6 +67,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
+                android:hint="@string/profile_edit_email_placeholder"
                 android:inputType="textEmailAddress"
                 android:minHeight="48dp"
                 android:text="mymail@email.com" />
@@ -73,6 +77,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
+                android:hint="@string/profile_edit_location_placeholder"
                 android:inputType="textPersonName"
                 android:minHeight="48dp"
                 android:text="Location" />

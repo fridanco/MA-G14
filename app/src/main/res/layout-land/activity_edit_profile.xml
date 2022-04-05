@@ -6,8 +6,8 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:layout_width="729dp"
-        android:layout_height="409dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:baselineAligned="true"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -28,7 +28,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                app:srcCompat="@drawable/ic_launcher_foreground" />
+                app:srcCompat="@drawable/user" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -49,6 +50,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
+                    android:hint="@string/profile_edit_fullname_placeholder"
                     android:inputType="textPersonName"
                     android:minHeight="48dp"
                     android:text="Full Name" />
@@ -58,6 +60,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
+                    android:hint="@string/profile_edit_nickname_placeholder"
                     android:inputType="textPersonName"
                     android:minHeight="48dp"
                     android:text="Nickname" />
@@ -67,6 +70,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
+                    android:hint="@string/profile_edit_email_placeholder"
                     android:inputType="textEmailAddress"
                     android:minHeight="48dp"
                     android:text="mymail@email.com" />
@@ -76,6 +80,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
+                    android:hint="@string/profile_edit_location_placeholder"
                     android:inputType="textPersonName"
                     android:minHeight="48dp"
                     android:text="Location" />

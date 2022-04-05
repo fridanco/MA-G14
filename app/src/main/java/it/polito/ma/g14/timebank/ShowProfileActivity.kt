@@ -7,9 +7,11 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
+import org.w3c.dom.Text
 
 class ShowProfileActivity : AppCompatActivity() {
 
@@ -20,18 +22,21 @@ class ShowProfileActivity : AppCompatActivity() {
     var skills = arrayListOf<String>();
     var description : String = "";
 
+    private var tv_fullname : TextView? = null
+    private var tv_nickname : TextView? = null
+    private var tv_email : TextView? = null
+    private var tv_location : TextView? = null
+    private var h_tv_fullname : TextView? = null
+    private var h_tv_nickname : TextView? = null
+    private var h_tv_email : TextView? = null
+    private var h_tv_location : TextView? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_profile)
 
-        findViewById<TextView>(R.id.textView4)?.text = fullName
-        findViewById<TextView>(R.id.textView5)?.text = nickName
-        findViewById<TextView>(R.id.textView6)?.text = email
-        findViewById<TextView>(R.id.textView7)?.text = location
-        findViewById<TextView>(R.id.textView)?.text = fullName
-        findViewById<TextView>(R.id.textView2)?.text = nickName
-        findViewById<TextView>(R.id.textView3)?.text = email
-        findViewById<TextView>(R.id.textView8)?.text = location
+        setTextViewReferences()
+        populateTextView()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -46,12 +51,7 @@ class ShowProfileActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.pencil -> {
                 val i = Intent(this, EditProfileActivity::class.java)
-                i.putExtra("fullName",fullName)
-                i.putExtra("email",email)
-                i.putExtra("nickName",nickName)
-                i.putExtra("location",location)
-                i.putExtra("skills",skills)
-                i.putExtra("description",description)
+                intentPutExtras_showEditProfileActivity(i)
                 startActivity(i)
                 true
             }
@@ -61,6 +61,7 @@ class ShowProfileActivity : AppCompatActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
+
         outState.putString("fullName",fullName)
         outState.putString("email",email)
         outState.putString("nickName",nickName)
@@ -71,17 +72,47 @@ class ShowProfileActivity : AppCompatActivity() {
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
+
         fullName = savedInstanceState.getString("fullName","")
         email = savedInstanceState.getString("email","")
         nickName = savedInstanceState.getString("nickName","")
         location = savedInstanceState.getString("location","")
-        if(savedInstanceState.getStringArrayList("skills")==null) {
-            skills = arrayListOf()
-        }
-        else{
-            skills = savedInstanceState.getStringArrayList("skills")!!
-        }
+        skills = savedInstanceState.getStringArrayList("skills") ?: arrayListOf()
         description = savedInstanceState.getString("description","")
+
+        populateTextView()
+    }
+
+    fun setTextViewReferences(){
+        tv_fullname = findViewById<TextView>(R.id.textView4)
+        tv_nickname = findViewById<TextView>(R.id.textView5)
+        tv_email = findViewById<TextView>(R.id.textView6)
+        tv_location = findViewById<TextView>(R.id.textView7)
+        h_tv_fullname = findViewById<TextView>(R.id.textView)
+        h_tv_nickname = findViewById<TextView>(R.id.textView2)
+        h_tv_email  = findViewById<TextView>(R.id.textView3)
+        h_tv_location = findViewById<TextView>(R.id.textView8)
+    }
+
+    fun populateTextView(){
+        tv_fullname?.text = fullName
+        tv_nickname?.text = nickName
+        tv_email?.text = email
+        tv_location?.text = location
+
+        h_tv_fullname?.text = fullName
+        h_tv_nickname?.text = nickName
+        h_tv_email?.text = email
+        h_tv_location?.text = location
+    }
+
+    fun intentPutExtras_showEditProfileActivity(i: Intent){
+        i.putExtra("fullName",fullName)
+        i.putExtra("email",email)
+        i.putExtra("nickName",nickName)
+        i.putExtra("location",location)
+        i.putExtra("skills",skills)
+        i.putExtra("description",description)
     }
 
 }

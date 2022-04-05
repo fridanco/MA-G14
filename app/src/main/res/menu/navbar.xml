@@ -3,9 +3,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/pencil"
-        android:icon="@android:drawable/ic_menu_edit"
+        android:icon="@drawable/pencil_white"
         android:iconTint="@color/white"
         android:iconTintMode="multiply"
-        android:title="UserEdit"
+        android:title="Edit profile"
         app:showAsAction="always" />
 </menu>
