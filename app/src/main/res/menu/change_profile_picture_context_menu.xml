@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/change_profile_picture_camera"
+        android:icon="@android:drawable/ic_menu_camera"
+        android:title="@string/change_profile_picture_context_menu_camera" />
+    <item
+        android:id="@+id/change_profile_picture_gallery"
+        android:icon="@android:drawable/ic_menu_gallery"
+        android:title="@string/change_profile_picture_context_menu_gallery" />
+</menu>

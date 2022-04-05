@@ -4,8 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_gravity="center_horizontal"
+    android:background="#00FFFFFF"
+    android:backgroundTint="#00FFFFFF"
     tools:context=".EditProfileActivity">
-
 
 
     <LinearLayout
@@ -23,8 +25,18 @@
             android:layout_height="match_parent"
             android:layout_weight="2"
             android:orientation="vertical"
-            android:paddingBottom="8dp"
-            android:paddingTop="8dp">
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp">
+
+            <ImageButton
+                android:id="@+id/imageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:backgroundTint="#00FFFFFF"
+                android:contentDescription="Change profile picture"
+                app:srcCompat="@android:drawable/ic_menu_camera"
+                app:tint="#000000" />
 
             <ImageView
                 android:id="@+id/imageView3"
@@ -33,6 +45,7 @@
                 android:contentDescription="ProfilePicture"
                 android:scaleType="centerInside"
                 app:srcCompat="@drawable/user" />
+
         </LinearLayout>
 
         <LinearLayout

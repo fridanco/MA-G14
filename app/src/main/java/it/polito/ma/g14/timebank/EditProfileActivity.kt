@@ -2,10 +2,16 @@ package it.polito.ma.g14.timebank
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
+import android.media.Image
 import android.os.Bundle
 import android.text.Editable
+import android.view.*
+import android.view.ContextMenu.ContextMenuInfo
 import android.widget.EditText
+import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.view.menu.MenuBuilder
 import androidx.core.widget.doOnTextChanged
 
 
@@ -41,6 +47,9 @@ class EditProfileActivity : AppCompatActivity() {
         setEditTextReferences()
         populateEditText()
         attachTextChangedListeners()
+
+        val imgButton = findViewById<ImageButton>(R.id.imageButton)
+        registerForContextMenu(imgButton)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -62,6 +71,26 @@ class EditProfileActivity : AppCompatActivity() {
         skills = savedInstanceState.getStringArrayList("skills") ?: arrayListOf()
         description = savedInstanceState.getString("description","")
         populateEditText()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.navbar, menu)
+        supportActionBar?.title = ""
+        menu.findItem(R.id.pencil).setVisible(false)
+        return true
+    }
+
+    override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenu.ContextMenuInfo?) {
+        super.onCreateContextMenu(menu, v, menuInfo)
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.change_profile_picture_context_menu, menu)
+    }
+
+    // menu item select listener
+    override fun onContextItemSelected(item: MenuItem): Boolean {
+
+        return true
     }
 
     override fun onBackPressed() {
