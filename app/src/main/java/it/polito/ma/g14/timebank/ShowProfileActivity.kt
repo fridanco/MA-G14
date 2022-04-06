@@ -1,21 +1,18 @@
 package it.polito.ma.g14.timebank
 
-import android.app.ActionBar
 import android.app.Activity
 import android.content.Intent
-import android.net.Uri
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.widget.Button
-import android.widget.EditText
+import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toolbar
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import org.w3c.dom.Text
+
 
 class ShowProfileActivity : AppCompatActivity() {
 
@@ -25,22 +22,25 @@ class ShowProfileActivity : AppCompatActivity() {
     var location : String = "Queens, New York, NY, US"
     var skills = arrayListOf<String>();
     var description : String = "";
+    var profilePicture : ByteArray? = null
 
     private var tv_fullname : TextView? = null
     private var tv_nickname : TextView? = null
     private var tv_email : TextView? = null
     private var tv_location : TextView? = null
+    private var iv_profilePicture : ImageView? = null
     private var h_tv_fullname : TextView? = null
     private var h_tv_nickname : TextView? = null
     private var h_tv_email : TextView? = null
     private var h_tv_location : TextView? = null
+    private var h_iv_profilePicture : ImageView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_profile)
 
-        setTextViewReferences()
-        populateTextView()
+        setViewsReferences()
+        populateViews()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -91,7 +91,7 @@ class ShowProfileActivity : AppCompatActivity() {
         skills = savedInstanceState.getStringArrayList("skills") ?: arrayListOf()
         description = savedInstanceState.getString("description","")
 
-        populateTextView()
+        populateViews()
     }
 
     private val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
@@ -103,31 +103,42 @@ class ShowProfileActivity : AppCompatActivity() {
             location = intent?.getStringExtra("location") ?: ""
             skills = intent?.getStringArrayListExtra("skills") ?: arrayListOf()
             description = intent?.getStringExtra("description") ?: ""
-            populateTextView()
+            profilePicture = intent?.getByteArrayExtra("profilePicture")
+            populateViews()
         }
     }
 
-    fun setTextViewReferences(){
+    fun setViewsReferences(){
         tv_fullname = findViewById<TextView>(R.id.textView4)
         tv_nickname = findViewById<TextView>(R.id.textView5)
         tv_email = findViewById<TextView>(R.id.textView6)
         tv_location = findViewById<TextView>(R.id.textView7)
+        iv_profilePicture = findViewById<ImageView>(R.id.imageView3)
+
         h_tv_fullname = findViewById<TextView>(R.id.textView)
         h_tv_nickname = findViewById<TextView>(R.id.textView2)
         h_tv_email  = findViewById<TextView>(R.id.textView3)
         h_tv_location = findViewById<TextView>(R.id.textView8)
+        h_iv_profilePicture = findViewById<ImageView>(R.id.imageView)
     }
 
-    fun populateTextView(){
+    fun populateViews(){
+        if (profilePicture != null) {
+            val bmp = BitmapFactory.decodeByteArray(profilePicture, 0, profilePicture!!.size)
+            iv_profilePicture?.setImageBitmap(bmp)
+            h_iv_profilePicture?.setImageBitmap(bmp)
+        }
         tv_fullname?.text = fullName
         tv_nickname?.text = nickName
         tv_email?.text = email
         tv_location?.text = location
 
+
         h_tv_fullname?.text = fullName
         h_tv_nickname?.text = nickName
         h_tv_email?.text = email
         h_tv_location?.text = location
+
     }
 
 }

@@ -1,18 +1,22 @@
 package it.polito.ma.g14.timebank
 
 import android.app.Activity
+import android.content.ActivityNotFoundException
 import android.content.Intent
-import android.graphics.Color
-import android.media.Image
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.provider.MediaStore
 import android.text.Editable
 import android.view.*
-import android.view.ContextMenu.ContextMenuInfo
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.ImageView
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.view.menu.MenuBuilder
 import androidx.core.widget.doOnTextChanged
+import java.io.ByteArrayOutputStream
 
 
 class EditProfileActivity : AppCompatActivity() {
@@ -23,15 +27,18 @@ class EditProfileActivity : AppCompatActivity() {
     var location : String = ""
     var skills : ArrayList<String> = arrayListOf()
     var description : String = ""
+    var profilePicture : ByteArray? = null
 
     private var et_fullname : EditText? = null
     private var et_nickname : EditText? = null
     private var et_email : EditText? = null
     private var et_location : EditText? = null
+    private var iv_profilePicture : ImageView? = null
     private var h_et_fullname : EditText? = null
     private var h_et_nickname : EditText? = null
     private var h_et_email : EditText? = null
     private var h_et_location : EditText? = null
+    private var h_iv_profilePicture : ImageView? = null
 
     private var imgButton : ImageButton? = null
     private var imgButton2 : ImageButton? = null
@@ -46,6 +53,7 @@ class EditProfileActivity : AppCompatActivity() {
         location = intent.getStringExtra("location") ?: ""
         skills = intent.getStringArrayListExtra("skills") ?: arrayListOf()
         description = intent.getStringExtra("description") ?: ""
+        profilePicture = intent.getByteArrayExtra("profilePicture")
 
         setEditTextReferences()
         populateEditText()
@@ -69,6 +77,7 @@ class EditProfileActivity : AppCompatActivity() {
         outState.putString("location",location)
         outState.putStringArrayList("skills",skills)
         outState.putString("description",description)
+        outState.putByteArray("profilePicture",profilePicture)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
@@ -79,6 +88,7 @@ class EditProfileActivity : AppCompatActivity() {
         location = savedInstanceState.getString("location","")
         skills = savedInstanceState.getStringArrayList("skills") ?: arrayListOf()
         description = savedInstanceState.getString("description","")
+        profilePicture = savedInstanceState.getByteArray("profilePicture")
         populateEditText()
     }
 
@@ -98,6 +108,29 @@ class EditProfileActivity : AppCompatActivity() {
 
     // menu item select listener
     override fun onContextItemSelected(item: MenuItem): Boolean {
+         return when (item.itemId){
+             R.id.change_profile_picture_camera -> {
+
+                     val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                     try {
+                         startForResult.launch(takePictureIntent)
+
+
+                     } catch (e: ActivityNotFoundException) {
+                         // display error state to the user
+                     }
+                true
+             }
+             R.id.change_profile_picture_gallery -> {
+                 true
+             }
+             else -> super.onContextItemSelected(item)
+            //fotocamera
+            //galleria
+
+        }
+
+
 
         return true
     }
@@ -111,11 +144,29 @@ class EditProfileActivity : AppCompatActivity() {
         resultData.putExtra("location", location)
         resultData.putExtra("skills", skills)
         resultData.putExtra("description", description)
+        resultData.putExtra("profilePicture",profilePicture)
         setResult(Activity.RESULT_OK, resultData)
+
 
         //this calls finish() so it needs to be put AFTER setResult()
         //otherwise setResult will not be called
         super.onBackPressed()
+    }
+
+
+
+    private val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+        if (result.resultCode == Activity.RESULT_OK ) {
+
+            val data: Intent? = result.data
+            val imageBitmap = data?.extras?.get("data") as Bitmap
+            val stream = ByteArrayOutputStream()
+            imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+            profilePicture = stream.toByteArray()
+            populateEditText()
+
+
+        }
     }
 
     fun setEditTextReferences(){
@@ -123,18 +174,26 @@ class EditProfileActivity : AppCompatActivity() {
         et_nickname = findViewById<EditText>(R.id.editTextTextPersonName3)
         et_email = findViewById<EditText>(R.id.editTextTextEmailAddress)
         et_location = findViewById<EditText>(R.id.editTextTextPersonName4)
+        iv_profilePicture = findViewById<ImageView>(R.id.imageView3)
 
         h_et_fullname = findViewById<EditText>(R.id.editTextTextPersonName)
         h_et_nickname = findViewById<EditText>(R.id.editTextTextPersonName5)
         h_et_email = findViewById<EditText>(R.id.editTextTextEmailAddress2)
         h_et_location = findViewById<EditText>(R.id.editTextTextPersonName6)
+        h_iv_profilePicture = findViewById<ImageView>(R.id.imageView2)
     }
 
     fun populateEditText(){
+        if (profilePicture != null){
+            val bmp = BitmapFactory.decodeByteArray(profilePicture, 0, profilePicture!!.size)
+            iv_profilePicture?.setImageBitmap(bmp)
+            h_iv_profilePicture?.setImageBitmap(bmp)
+        }
         et_fullname?.text = fullName.toEditable()
         et_nickname?.text = nickName.toEditable()
         et_email?.text = email.toEditable()
         et_location?.text = location.toEditable()
+
 
         h_et_fullname?.text = fullName.toEditable()
         h_et_nickname?.text = nickName.toEditable()
