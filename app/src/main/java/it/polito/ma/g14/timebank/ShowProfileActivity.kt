@@ -35,8 +35,6 @@ class ShowProfileActivity : AppCompatActivity() {
     private var h_tv_email : TextView? = null
     private var h_tv_location : TextView? = null
 
-    private final val EDIT_PROFILE_ACTIVITY = 1
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_profile)
@@ -97,7 +95,6 @@ class ShowProfileActivity : AppCompatActivity() {
     }
 
     private val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-        println(result)
         if (result.resultCode == Activity.RESULT_OK) {
             val intent: Intent? = result.data
             fullName = intent?.getStringExtra("fullName") ?: ""

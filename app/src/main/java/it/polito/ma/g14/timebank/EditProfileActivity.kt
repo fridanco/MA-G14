@@ -33,6 +33,9 @@ class EditProfileActivity : AppCompatActivity() {
     private var h_et_email : EditText? = null
     private var h_et_location : EditText? = null
 
+    private var imgButton : ImageButton? = null
+    private var imgButton2 : ImageButton? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_profile)
@@ -48,8 +51,14 @@ class EditProfileActivity : AppCompatActivity() {
         populateEditText()
         attachTextChangedListeners()
 
-        val imgButton = findViewById<ImageButton>(R.id.imageButton)
-        registerForContextMenu(imgButton)
+        imgButton = findViewById<ImageButton>(R.id.imageButton)
+        imgButton2 = findViewById<ImageButton>(R.id.imageButton2)
+        imgButton?.let {
+            registerForContextMenu(imgButton)
+        }
+        imgButton2?.let {
+            registerForContextMenu(imgButton2)
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
