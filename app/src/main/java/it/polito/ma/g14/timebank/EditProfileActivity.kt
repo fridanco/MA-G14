@@ -1,10 +1,12 @@
 package it.polito.ma.g14.timebank
 
+import android.R.attr.data
 import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
@@ -17,6 +19,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doOnTextChanged
 import java.io.ByteArrayOutputStream
+import org.json.JSONException
+import org.json.JSONObject
 
 
 class EditProfileActivity : AppCompatActivity() {
@@ -110,28 +114,27 @@ class EditProfileActivity : AppCompatActivity() {
     override fun onContextItemSelected(item: MenuItem): Boolean {
          return when (item.itemId){
              R.id.change_profile_picture_camera -> {
-
+                 try {
                      val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                     try {
-                         startForResult.launch(takePictureIntent)
-
-
-                     } catch (e: ActivityNotFoundException) {
-                         // display error state to the user
-                     }
+                     startForTakeImageFromCamera.launch(takePictureIntent)
+                 } catch (e: ActivityNotFoundException) {
+                     // display error state to the user
+                 }
                 true
              }
              R.id.change_profile_picture_gallery -> {
+                 try {
+                     val pickImageintent = Intent()
+                     pickImageintent.type = "image/*"
+                     pickImageintent.action = Intent.ACTION_GET_CONTENT
+                     startForPickImageFromGallery.launch(pickImageintent)
+                 } catch (e: ActivityNotFoundException) {
+                     // display error state to the user
+                 }
                  true
              }
              else -> super.onContextItemSelected(item)
-            //fotocamera
-            //galleria
-
         }
-
-
-
         return true
     }
 
@@ -155,17 +158,27 @@ class EditProfileActivity : AppCompatActivity() {
 
 
 
-    private val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+    private val startForTakeImageFromCamera = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
         if (result.resultCode == Activity.RESULT_OK ) {
-
             val data: Intent? = result.data
             val imageBitmap = data?.extras?.get("data") as Bitmap
             val stream = ByteArrayOutputStream()
             imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
             profilePicture = stream.toByteArray()
             populateEditText()
+        }
+    }
 
-
+    private val startForPickImageFromGallery = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+        if (result.resultCode == RESULT_OK ) {
+            // compare the resultCode with the
+            // SELECT_PICTURE constant
+            val data: Intent? = result.data
+            val selectedImageUri: Uri? = data?.data as Uri
+            if (null != selectedImageUri) {
+                profilePicture = contentResolver.openInputStream(selectedImageUri)?.readBytes()
+            }
+            populateEditText()
         }
     }
 

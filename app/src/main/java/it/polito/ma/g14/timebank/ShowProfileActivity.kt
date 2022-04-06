@@ -1,6 +1,7 @@
 package it.polito.ma.g14.timebank
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -12,6 +13,7 @@ import android.widget.TextView
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.internal.ContextUtils.getActivity
 
 
 class ShowProfileActivity : AppCompatActivity() {
@@ -39,6 +41,18 @@ class ShowProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_profile)
 
+        //val sharedPref = this?.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+
+        //val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
+        //with (sharedPref.edit()) {
+        //putInt(getString(R.string.saved_high_score_key), newHighScore)
+        //apply()
+        //}
+
+        //val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
+        //val defaultValue = resources.getInteger(R.integer.saved_high_score_default_key)
+        //val highScore = sharedPref.getInt(getString(R.string.saved_high_score_key), defaultValue)
+
         setViewsReferences()
         populateViews()
     }
@@ -63,6 +77,7 @@ class ShowProfileActivity : AppCompatActivity() {
                 i.putExtra("location",location)
                 i.putExtra("skills",skills)
                 i.putExtra("description",description)
+                i.putExtra("profilePicture",profilePicture)
                 startForResult.launch(i)
                 true
             }
@@ -79,6 +94,7 @@ class ShowProfileActivity : AppCompatActivity() {
         outState.putString("location",location)
         outState.putStringArrayList("skills",skills)
         outState.putString("description",description)
+        outState.putByteArray("profilePicture",profilePicture)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
@@ -90,6 +106,7 @@ class ShowProfileActivity : AppCompatActivity() {
         location = savedInstanceState.getString("location","")
         skills = savedInstanceState.getStringArrayList("skills") ?: arrayListOf()
         description = savedInstanceState.getString("description","")
+        profilePicture = savedInstanceState.getByteArray("profilePicture")
 
         populateViews()
     }

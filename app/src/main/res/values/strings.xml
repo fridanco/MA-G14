@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">TimeBank</string>
+    
+    <string name="preference_file_key">profile</string>
+    
     <string name="profile_edit_fullname_placeholder">Full name</string>
     <string name="profile_edit_nickname_placeholder">Nickname</string>
     <string name="profile_edit_email_placeholder">mymail@mail.com</string>
