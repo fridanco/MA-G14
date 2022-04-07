@@ -14,8 +14,11 @@ import android.widget.TextView
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import org.apache.commons.io.IOUtils
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.FileInputStream
+import java.io.FileNotFoundException
 
 
 class ShowProfileActivity : AppCompatActivity() {
@@ -56,7 +59,14 @@ class ShowProfileActivity : AppCompatActivity() {
             for (i in 0 until jsonSkills.length()) {
                 skills.add(jsonSkills.getString(i))
             }
+        }
 
+        try {
+            val inputStream : FileInputStream = applicationContext.openFileInput(getString(R.string.profile_picture_filename))
+            profilePicture = IOUtils.toByteArray(inputStream)
+        }
+        catch (e: FileNotFoundException){
+            profilePicture=null
         }
 
         setViewsReferences()
@@ -143,6 +153,10 @@ class ShowProfileActivity : AppCompatActivity() {
             with (sharedPref.edit()) {
                 putString("profile", jsonObject.toString())
                 apply()
+            }
+
+            applicationContext.openFileOutput("profile_picture", Context.MODE_PRIVATE).use {
+                it.write(profilePicture)
             }
 
             populateViews()

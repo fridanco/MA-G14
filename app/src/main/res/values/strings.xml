@@ -2,6 +2,7 @@
     <string name="app_name">TimeBank</string>
     
     <string name="preference_file_key">profile</string>
+    <string name="profile_picture_filename">profile_picture</string>
     
     <string name="profile_edit_fullname_placeholder">Full name</string>
     <string name="profile_edit_nickname_placeholder">Nickname</string>
