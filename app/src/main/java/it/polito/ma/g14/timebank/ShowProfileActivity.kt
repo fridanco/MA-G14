@@ -168,7 +168,10 @@ class ShowProfileActivity : AppCompatActivity() {
         tv_nickname = findViewById<TextView>(R.id.textView5)
         tv_email = findViewById<TextView>(R.id.textView6)
         tv_location = findViewById<TextView>(R.id.textView7)
+
+
         iv_profilePicture = findViewById<ImageView>(R.id.imageView3)
+
 
         h_tv_fullname = findViewById<TextView>(R.id.textView)
         h_tv_nickname = findViewById<TextView>(R.id.textView2)
@@ -187,6 +190,7 @@ class ShowProfileActivity : AppCompatActivity() {
         tv_nickname?.text = nickName
         tv_email?.text = email
         tv_location?.text = location
+
 
 
         h_tv_fullname?.text = fullName
