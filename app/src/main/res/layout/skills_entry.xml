@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheckedTextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/simpleCheckedTextView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="5dp"
+    android:layout_marginTop="18dp"
+    android:layout_marginRight="5dp"
+    android:checkMark="?android:attr/textCheckMarkInverse"
+    android:checked="false"
+    android:gravity="center_vertical"
+    android:padding="8dp"
+    android:text="Pet trainer"
+    android:textSize="18sp" />

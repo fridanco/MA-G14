@@ -3,6 +3,7 @@ package it.polito.ma.g14.timebank
 import android.R.attr.data
 import android.app.Activity
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -10,7 +11,9 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
+import android.util.Log
 import android.view.*
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -18,6 +21,9 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doOnTextChanged
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
+import org.json.JSONArray
 import java.io.ByteArrayOutputStream
 import org.json.JSONException
 import org.json.JSONObject
@@ -39,13 +45,15 @@ class EditProfileActivity : AppCompatActivity() {
     private var et_email : EditText? = null
     private var et_location : EditText? = null
     private var et_description : EditText? = null
+    private var et_skills : ChipGroup? = null
     private var iv_profilePicture : ImageView? = null
     private var h_et_fullname : EditText? = null
     private var h_et_nickname : EditText? = null
     private var h_et_email : EditText? = null
     private var h_et_location : EditText? = null
-    private var h_iv_profilePicture : ImageView? = null
+    private var h_et_skills : ChipGroup? = null
     private var h_et_description : EditText? = null
+    private var h_iv_profilePicture : ImageView? = null
 
     private var imgButton : ImageButton? = null
     private var imgButton2 : ImageButton? = null
@@ -73,6 +81,12 @@ class EditProfileActivity : AppCompatActivity() {
         }
         imgButton2?.let {
             registerForContextMenu(imgButton2)
+        }
+
+        findViewById<Button>(R.id.button)?.setOnClickListener {
+            val i = Intent(this, ChooseSkillsActivity::class.java)
+            i.putExtra("skills", skills)
+            startForChooseSkills.launch(i)
         }
     }
 
@@ -159,7 +173,14 @@ class EditProfileActivity : AppCompatActivity() {
         super.onBackPressed()
     }
 
+    private val startForChooseSkills = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val intent: Intent? = result.data
+            skills = intent?.getStringArrayListExtra("skills") as ArrayList<String>
 
+            populateEditText()
+        }
+    }
 
     private val startForTakeImageFromCamera = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
         if (result.resultCode == Activity.RESULT_OK ) {
@@ -190,13 +211,17 @@ class EditProfileActivity : AppCompatActivity() {
         et_nickname = findViewById<EditText>(R.id.editTextTextPersonName3)
         et_email = findViewById<EditText>(R.id.editTextTextEmailAddress)
         et_location = findViewById<EditText>(R.id.editTextTextPersonName4)
+        et_description = findViewById<EditText>(R.id.editTextTextMultiLine)
+        et_skills = findViewById<ChipGroup>(R.id.chipGroup)
         iv_profilePicture = findViewById<ImageView>(R.id.imageView3)
 
         h_et_fullname = findViewById<EditText>(R.id.editTextTextPersonName)
         h_et_nickname = findViewById<EditText>(R.id.editTextTextPersonName5)
         h_et_email = findViewById<EditText>(R.id.editTextTextEmailAddress2)
         h_et_location = findViewById<EditText>(R.id.editTextTextPersonName6)
+        h_et_description = findViewById<EditText>(R.id.editTextTextMultiLine2)
         h_iv_profilePicture = findViewById<ImageView>(R.id.imageView2)
+        //h_et_skills = findViewById<ChipGroup>(R.id.chipGroup2)
     }
 
     fun populateEditText(){
@@ -210,7 +235,22 @@ class EditProfileActivity : AppCompatActivity() {
         et_email?.text = email.toEditable()
         et_location?.text = location.toEditable()
         et_description?.text = description.toEditable()
+        et_skills?.let {
+            et_skills?.removeAllViews()
+            skills.forEach {
+                val inflater : LayoutInflater = layoutInflater
+                val skill : Chip = inflater.inflate(R.layout.skill_chip, null) as Chip
+                skill.text = it
+                skill.isCloseIconVisible = true
+                skill.setOnCloseIconClickListener{
+                    val skill = it as Chip
+                    skills.remove(skill.text.toString())
+                    et_skills?.removeView(it)
+                }
+                et_skills?.addView(skill)
+            }
 
+        }
 
         h_et_fullname?.text = fullName.toEditable()
         h_et_nickname?.text = nickName.toEditable()

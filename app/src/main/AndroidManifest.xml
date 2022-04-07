@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="it.polito.ma.g14.timebank" >
+    package="it.polito.ma.g14.timebank">
 
     <application
         android:allowBackup="true"
@@ -8,10 +8,16 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.TimeBank" >
+        android:theme="@style/Theme.TimeBank">
+        <activity
+            android:name=".testt"
+            android:exported="false" />
+        <activity
+            android:name=".ChooseSkillsActivity"
+            android:exported="false" />
         <activity
             android:name=".ShowProfileActivity"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

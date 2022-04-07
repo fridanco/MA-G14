@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -14,11 +15,15 @@ import android.widget.TextView
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import org.apache.commons.io.IOUtils
 import org.json.JSONArray
 import org.json.JSONObject
+import org.w3c.dom.Text
 import java.io.FileInputStream
 import java.io.FileNotFoundException
+import java.lang.Exception
 
 
 class ShowProfileActivity : AppCompatActivity() {
@@ -35,30 +40,44 @@ class ShowProfileActivity : AppCompatActivity() {
     private var tv_nickname : TextView? = null
     private var tv_email : TextView? = null
     private var tv_location : TextView? = null
+    private var tv_description : TextView? = null
+    private var et_skills : ChipGroup? = null
     private var iv_profilePicture : ImageView? = null
     private var h_tv_fullname : TextView? = null
     private var h_tv_nickname : TextView? = null
     private var h_tv_email : TextView? = null
     private var h_tv_location : TextView? = null
+    private var h_tv_description : TextView? = null
+    private var h_et_skills : ChipGroup? = null
     private var h_iv_profilePicture : ImageView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_profile)
 
-        val sharedPref = getPreferences(Context.MODE_PRIVATE)
-        val jsonPreferences = sharedPref.getString("profile", "")
-        if(jsonPreferences!=null && jsonPreferences.isNotEmpty()){
-            val jsonObject = JSONObject(jsonPreferences)
-            fullName = jsonObject.getString("fullName") ?: getString(R.string.profile_fullname_placeholder)
-            nickName = jsonObject.getString("nickName") ?: getString(R.string.profile_nickname_placeholder)
-            email = jsonObject.getString("email") ?: getString(R.string.profile_email_placeholder)
-            location = jsonObject.getString("fullName") ?: getString(R.string.profile_location_placeholder)
-            description = jsonObject.getString("description") ?: getString(R.string.profile_description_placeholder)
-            val jsonSkills : JSONArray = jsonObject.getJSONArray("skills") ?: JSONArray()
-            for (i in 0 until jsonSkills.length()) {
-                skills.add(jsonSkills.getString(i))
+        try {
+            val sharedPref = getPreferences(Context.MODE_PRIVATE)
+            val jsonPreferences = sharedPref.getString("profile", "")
+            if (jsonPreferences != null && jsonPreferences.isNotEmpty()) {
+                val jsonObject = JSONObject(jsonPreferences)
+                fullName = jsonObject.getString("fullName")
+                    ?: getString(R.string.profile_fullname_placeholder)
+                nickName = jsonObject.getString("nickName")
+                    ?: getString(R.string.profile_nickname_placeholder)
+                email =
+                    jsonObject.getString("email") ?: getString(R.string.profile_email_placeholder)
+                location = jsonObject.getString("fullName")
+                    ?: getString(R.string.profile_location_placeholder)
+                description = jsonObject.getString("description")
+                    ?: getString(R.string.profile_description_placeholder)
+                val jsonSkills: JSONArray = jsonObject.getJSONArray("skills") ?: JSONArray()
+                for (i in 0 until jsonSkills.length()) {
+                    skills.add(jsonSkills.getString(i))
+                }
             }
+        }
+        catch (e:Exception){
+            //do nothing
         }
 
         try {
@@ -168,16 +187,17 @@ class ShowProfileActivity : AppCompatActivity() {
         tv_nickname = findViewById<TextView>(R.id.textView5)
         tv_email = findViewById<TextView>(R.id.textView6)
         tv_location = findViewById<TextView>(R.id.textView7)
-
-
+        tv_description = findViewById<TextView>(R.id.textView19)
+        et_skills = findViewById<ChipGroup>(R.id.chipGroup)
         iv_profilePicture = findViewById<ImageView>(R.id.imageView3)
-
 
         h_tv_fullname = findViewById<TextView>(R.id.textView)
         h_tv_nickname = findViewById<TextView>(R.id.textView2)
         h_tv_email  = findViewById<TextView>(R.id.textView3)
         h_tv_location = findViewById<TextView>(R.id.textView8)
         h_iv_profilePicture = findViewById<ImageView>(R.id.imageView)
+        h_tv_description = findViewById<TextView>(R.id.textView20)
+        //h_et_skills = findViewById<ChipGroup>(R.id.chipGroup2)
     }
 
     fun populateViews(){
@@ -186,17 +206,29 @@ class ShowProfileActivity : AppCompatActivity() {
             iv_profilePicture?.setImageBitmap(bmp)
             h_iv_profilePicture?.setImageBitmap(bmp)
         }
+
         tv_fullname?.text = fullName
         tv_nickname?.text = nickName
         tv_email?.text = email
         tv_location?.text = location
+        tv_description?.text = description
+        et_skills?.let {
+            et_skills?.removeAllViews()
+            skills.forEach {
+                val inflater : LayoutInflater = layoutInflater
+                val skill : Chip = inflater.inflate(R.layout.skill_chip, null) as Chip
+                skill.text = it
+                skill.isCloseIconVisible = false
+                et_skills?.addView(skill)
+            }
 
-
+        }
 
         h_tv_fullname?.text = fullName
         h_tv_nickname?.text = nickName
         h_tv_email?.text = email
         h_tv_location?.text = location
+        h_tv_description?.text = description
 
     }
 

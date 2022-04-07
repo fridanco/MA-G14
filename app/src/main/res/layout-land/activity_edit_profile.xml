@@ -3,28 +3,31 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:weightSum="3"
+    android:baselineAligned="false">
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="2"
-        android:orientation="horizontal"
-        android:paddingLeft="16dp"
-        android:paddingRight="8dp">
+        android:layout_weight="1"
+        android:orientation="horizontal">
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingRight="8dp"
+            android:weightSum="5">
 
             <ImageButton
                 android:id="@+id/imageButton2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
                 android:layout_gravity="center_horizontal"
-                android:layout_weight="0.1"
+                android:layout_weight="1"
                 android:backgroundTint="#00FFFFFF"
                 android:contentDescription="Change profile picture"
                 app:srcCompat="@android:drawable/ic_menu_camera"
@@ -32,22 +35,21 @@
 
             <ImageView
                 android:id="@+id/imageView2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
                 android:layout_gravity="center_horizontal"
-                android:layout_weight="1"
+                android:layout_weight="4"
                 app:srcCompat="@drawable/user" />
+
         </LinearLayout>
 
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <ScrollView
+        android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:orientation="horizontal"
-        android:paddingLeft="8dp"
-        android:paddingRight="16dp">
+        android:layout_weight="2"
+        android:paddingLeft="8dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -69,7 +71,8 @@
                 android:ems="10"
                 android:hint="@string/profile_edit_fullname_placeholder"
                 android:inputType="textPersonName"
-                android:minHeight="48dp" />
+                android:minHeight="48dp"
+                tools:ignore="DuplicateSpeakableTextCheck" />
 
             <TextView
                 android:id="@+id/textView15"
@@ -85,7 +88,9 @@
                 android:ems="10"
                 android:hint="@string/profile_edit_nickname_placeholder"
                 android:inputType="textPersonName"
-                android:minHeight="48dp" />
+                android:minHeight="48dp"
+                tools:ignore="DuplicateSpeakableTextCheck"
+                android:autofillHints="" />
 
             <TextView
                 android:id="@+id/textView16"
@@ -101,7 +106,8 @@
                 android:ems="10"
                 android:hint="@string/profile_edit_email_placeholder"
                 android:inputType="textEmailAddress"
-                android:minHeight="48dp" />
+                android:minHeight="48dp"
+                android:autofillHints="" />
 
             <TextView
                 android:id="@+id/textView17"
@@ -117,7 +123,9 @@
                 android:ems="10"
                 android:hint="@string/profile_edit_location_placeholder"
                 android:inputType="textPersonName"
-                android:minHeight="48dp" />
+                android:minHeight="48dp"
+                tools:ignore="DuplicateSpeakableTextCheck"
+                android:autofillHints="" />
 
             <TextView
                 android:id="@+id/textView18"
@@ -133,7 +141,10 @@
                 android:gravity="start|top"
                 android:hint="@string/profile_edit_description_placeholder"
                 android:inputType="textMultiLine"
-                android:minHeight="48dp" />
+                android:minHeight="48dp"
+                tools:ignore="DuplicateSpeakableTextCheck"
+                android:autofillHints="" />
         </LinearLayout>
-    </LinearLayout>
+    </ScrollView>
+
 </LinearLayout>
