@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -13,7 +14,8 @@ import android.widget.TextView
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.internal.ContextUtils.getActivity
+import org.json.JSONArray
+import org.json.JSONObject
 
 
 class ShowProfileActivity : AppCompatActivity() {
@@ -41,17 +43,21 @@ class ShowProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_profile)
 
-        //val sharedPref = this?.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+        val sharedPref = getPreferences(Context.MODE_PRIVATE)
+        val jsonPreferences = sharedPref.getString("profile", "")
+        if(jsonPreferences!=null && jsonPreferences.isNotEmpty()){
+            val jsonObject = JSONObject(jsonPreferences)
+            fullName = jsonObject.getString("fullName") ?: getString(R.string.profile_fullname_placeholder)
+            nickName = jsonObject.getString("nickName") ?: getString(R.string.profile_nickname_placeholder)
+            email = jsonObject.getString("email") ?: getString(R.string.profile_email_placeholder)
+            location = jsonObject.getString("fullName") ?: getString(R.string.profile_location_placeholder)
+            description = jsonObject.getString("description") ?: getString(R.string.profile_description_placeholder)
+            val jsonSkills : JSONArray = jsonObject.getJSONArray("skills") ?: JSONArray()
+            for (i in 0 until jsonSkills.length()) {
+                skills.add(jsonSkills.getString(i))
+            }
 
-        //val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
-        //with (sharedPref.edit()) {
-        //putInt(getString(R.string.saved_high_score_key), newHighScore)
-        //apply()
-        //}
-
-        //val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
-        //val defaultValue = resources.getInteger(R.integer.saved_high_score_default_key)
-        //val highScore = sharedPref.getInt(getString(R.string.saved_high_score_key), defaultValue)
+        }
 
         setViewsReferences()
         populateViews()
@@ -121,6 +127,24 @@ class ShowProfileActivity : AppCompatActivity() {
             skills = intent?.getStringArrayListExtra("skills") ?: arrayListOf()
             description = intent?.getStringExtra("description") ?: ""
             profilePicture = intent?.getByteArrayExtra("profilePicture")
+
+            val jsonObject = JSONObject()
+            val jsonSkills = JSONArray(skills)
+            jsonObject.put("fullName", fullName)
+            jsonObject.put("email", email)
+            jsonObject.put("nickName", nickName)
+            jsonObject.put("location", location)
+            jsonObject.put("description", description)
+            jsonObject.put("skills",jsonSkills)
+
+            Log.d("Timebank",jsonObject.toString())
+
+            val sharedPref = getPreferences(Context.MODE_PRIVATE)
+            with (sharedPref.edit()) {
+                putString("profile", jsonObject.toString())
+                apply()
+            }
+
             populateViews()
         }
     }

@@ -37,12 +37,14 @@ class EditProfileActivity : AppCompatActivity() {
     private var et_nickname : EditText? = null
     private var et_email : EditText? = null
     private var et_location : EditText? = null
+    private var et_description : EditText? = null
     private var iv_profilePicture : ImageView? = null
     private var h_et_fullname : EditText? = null
     private var h_et_nickname : EditText? = null
     private var h_et_email : EditText? = null
     private var h_et_location : EditText? = null
     private var h_iv_profilePicture : ImageView? = null
+    private var h_et_description : EditText? = null
 
     private var imgButton : ImageButton? = null
     private var imgButton2 : ImageButton? = null
@@ -206,12 +208,14 @@ class EditProfileActivity : AppCompatActivity() {
         et_nickname?.text = nickName.toEditable()
         et_email?.text = email.toEditable()
         et_location?.text = location.toEditable()
+        et_description?.text = description.toEditable()
 
 
         h_et_fullname?.text = fullName.toEditable()
         h_et_nickname?.text = nickName.toEditable()
         h_et_email?.text = email.toEditable()
         h_et_location?.text = location.toEditable()
+        h_et_description?.text = description.toEditable()
     }
 
     fun attachTextChangedListeners(){
@@ -227,6 +231,10 @@ class EditProfileActivity : AppCompatActivity() {
         et_location?.doOnTextChanged { text, start, before, count ->
             location = text.toString()
         }
+        et_description?.doOnTextChanged { text, start, before, count ->
+            description = text.toString()
+        }
+
 
         h_et_fullname?.doOnTextChanged { text, start, before, count ->
             fullName = text.toString()
@@ -239,6 +247,9 @@ class EditProfileActivity : AppCompatActivity() {
         }
         h_et_location?.doOnTextChanged { text, start, before, count ->
             location = text.toString()
+        }
+        h_et_description?.doOnTextChanged { text, start, before, count ->
+            description = text.toString()
         }
 
     }

@@ -51,36 +51,32 @@
                     android:id="@+id/textView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:paddingBottom="4dp"
-                    android:text="TextView"
+                    android:text="@string/profile_fullname_placeholder"
                     android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
 
                 <TextView
                     android:id="@+id/textView2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:paddingBottom="4dp"
-                    android:text="TextView"
+                    android:text="@string/profile_nickname_placeholder"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
                 <TextView
                     android:id="@+id/textView3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:paddingBottom="4dp"
-                    android:text="TextView"
+                    android:text="@string/profile_email_placeholder"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
                 <TextView
                     android:id="@+id/textView8"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:paddingBottom="4dp"
-                    android:text="TextView"
+                    android:text="@string/profile_location_placeholder"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
             </LinearLayout>
