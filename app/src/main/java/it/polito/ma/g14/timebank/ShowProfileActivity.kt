@@ -20,7 +20,6 @@ import com.google.android.material.chip.ChipGroup
 import org.apache.commons.io.IOUtils
 import org.json.JSONArray
 import org.json.JSONObject
-import org.w3c.dom.Text
 import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.lang.Exception
@@ -182,7 +181,7 @@ class ShowProfileActivity : AppCompatActivity() {
         }
     }
 
-    fun setViewsReferences(){
+    private fun setViewsReferences(){
         tv_fullname = findViewById<TextView>(R.id.textView4)
         tv_nickname = findViewById<TextView>(R.id.textView5)
         tv_email = findViewById<TextView>(R.id.textView6)
@@ -197,38 +196,38 @@ class ShowProfileActivity : AppCompatActivity() {
         h_tv_location = findViewById<TextView>(R.id.textView8)
         h_iv_profilePicture = findViewById<ImageView>(R.id.imageView)
         h_tv_description = findViewById<TextView>(R.id.textView20)
-        //h_et_skills = findViewById<ChipGroup>(R.id.chipGroup2)
+        h_et_skills = findViewById<ChipGroup>(R.id.chipGroup2)
     }
 
-    fun populateViews(){
-        if (profilePicture != null) {
-            val bmp = BitmapFactory.decodeByteArray(profilePicture, 0, profilePicture!!.size)
-            iv_profilePicture?.setImageBitmap(bmp)
-            h_iv_profilePicture?.setImageBitmap(bmp)
-        }
-
+    private fun populateViews(){
         tv_fullname?.text = fullName
         tv_nickname?.text = nickName
         tv_email?.text = email
         tv_location?.text = location
         tv_description?.text = description
-        et_skills?.let {
-            et_skills?.removeAllViews()
-            skills.forEach {
-                val inflater : LayoutInflater = layoutInflater
-                val skill : Chip = inflater.inflate(R.layout.skill_chip, null) as Chip
-                skill.text = it
-                skill.isCloseIconVisible = false
-                et_skills?.addView(skill)
-            }
-
-        }
 
         h_tv_fullname?.text = fullName
         h_tv_nickname?.text = nickName
         h_tv_email?.text = email
         h_tv_location?.text = location
         h_tv_description?.text = description
+
+        profilePicture?.let{
+            val bmp = BitmapFactory.decodeByteArray(it, 0, it.size)
+            iv_profilePicture?.setImageBitmap(bmp)
+            h_iv_profilePicture?.setImageBitmap(bmp)
+        }
+
+        et_skills?.removeAllViews()
+        h_et_skills?.removeAllViews()
+        skills.forEach {
+            val inflater : LayoutInflater = layoutInflater
+            val skill : Chip = inflater.inflate(R.layout.skill_chip, null) as Chip
+            skill.text = it
+            skill.isCloseIconVisible = false
+            et_skills?.addView(skill)
+            h_et_skills?.addView(skill)
+        }
 
     }
 

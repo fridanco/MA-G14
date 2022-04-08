@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -1184,7 +1185,39 @@ class ChooseSkillsActivity : AppCompatActivity() {
 
         skill_entry_holder = findViewById<LinearLayout>(R.id.skill_entry_holder)
 
-        if(skill_entry_holder != null) {
+        populateSkills()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putStringArrayList("skills",checked_skills)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        checked_skills = savedInstanceState.getStringArrayList("skills") ?: arrayListOf()
+        populateSkills()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.navbar, menu)
+        supportActionBar?.title = "Choose your skills"
+        menu.findItem(R.id.pencil).setVisible(false)
+        return true
+    }
+
+    override fun onBackPressed() {
+        val resultData = Intent()
+        resultData.putExtra("skills", checked_skills)
+        setResult(Activity.RESULT_OK, resultData)
+
+        super.onBackPressed()
+    }
+
+    private fun populateSkills(){
+        skill_entry_holder?.let{
+            it.removeAllViews()
             skill_list.forEachIndexed { index, skill ->
                 val inflater: LayoutInflater = layoutInflater
                 val skill_entry: CheckedTextView =
@@ -1207,24 +1240,8 @@ class ChooseSkillsActivity : AppCompatActivity() {
                         checked_skills.remove(entry.text.toString())
                     }
                 }
-                skill_entry_holder!!.addView(skill_entry)
+                it.addView(skill_entry)
             }
         }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        val inflater: MenuInflater = menuInflater
-        inflater.inflate(R.menu.navbar, menu)
-        supportActionBar?.title = "Choose your skills"
-        menu.findItem(R.id.pencil).setVisible(false)
-        return true
-    }
-
-    override fun onBackPressed() {
-        val resultData = Intent()
-        resultData.putExtra("skills", checked_skills)
-        setResult(Activity.RESULT_OK, resultData)
-
-        super.onBackPressed()
     }
 }

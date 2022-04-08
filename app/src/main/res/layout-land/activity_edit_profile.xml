@@ -144,6 +144,28 @@
                 android:minHeight="48dp"
                 tools:ignore="DuplicateSpeakableTextCheck"
                 android:autofillHints="" />
+
+            <TextView
+                android:id="@+id/textView9"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Your skills" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroup2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:minHeight="25dp">
+
+            </com.google.android.material.chip.ChipGroup>
+
+            <Button
+                android:id="@+id/button2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:text="Add skills" />
         </LinearLayout>
     </ScrollView>
 

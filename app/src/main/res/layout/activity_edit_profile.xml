@@ -18,6 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
+            android:padding="16dp"
             android:weightSum="3">
 
             <LinearLayout
@@ -147,8 +148,7 @@
                 <com.google.android.material.chip.ChipGroup
                     android:id="@+id/chipGroup"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:minHeight="25dp">
+                    android:layout_height="wrap_content">
 
                 </com.google.android.material.chip.ChipGroup>
 
