@@ -3,6 +3,7 @@ package it.polito.ma.g14.timebank
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -13,6 +14,7 @@ import android.widget.*
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import org.apache.commons.io.IOUtils
@@ -24,6 +26,8 @@ import java.lang.Exception
 
 
 class ShowProfileActivity : AppCompatActivity() {
+
+    var sharedPref : SharedPreferences? = null
 
     var fullName :  String = "Peter Parker";
     var email : String = "peter.parker@stark.us"
@@ -53,28 +57,35 @@ class ShowProfileActivity : AppCompatActivity() {
         setContentView(R.layout.activity_show_profile)
 
         try {
-            val sharedPref = getPreferences(Context.MODE_PRIVATE)
-            val jsonPreferences = sharedPref.getString("profile", "")
-            if (jsonPreferences != null && jsonPreferences.isNotEmpty()) {
-                val jsonObject = JSONObject(jsonPreferences)
-                fullName = jsonObject.getString("fullName")
-                    ?: getString(R.string.profile_fullname_placeholder)
-                nickName = jsonObject.getString("nickName")
-                    ?: getString(R.string.profile_nickname_placeholder)
-                email =
-                    jsonObject.getString("email") ?: getString(R.string.profile_email_placeholder)
-                location = jsonObject.getString("fullName")
-                    ?: getString(R.string.profile_location_placeholder)
-                description = jsonObject.getString("description")
-                    ?: getString(R.string.profile_description_placeholder)
-                val jsonSkills: JSONArray = jsonObject.getJSONArray("skills") ?: JSONArray()
-                for (i in 0 until jsonSkills.length()) {
-                    skills.add(jsonSkills.getString(i))
+            sharedPref = getPreferences(Context.MODE_PRIVATE)
+            sharedPref?.let {
+                val jsonPreferences = it.getString("profile", "")
+                if (jsonPreferences != null && jsonPreferences.isNotEmpty()) {
+                    val jsonObject = JSONObject(jsonPreferences)
+                    fullName = jsonObject.getString("fullName")
+                        ?: getString(R.string.profile_fullname_placeholder)
+                    nickName = jsonObject.getString("nickName")
+                        ?: getString(R.string.profile_nickname_placeholder)
+                    email =
+                        jsonObject.getString("email") ?: getString(R.string.profile_email_placeholder)
+                    location = jsonObject.getString("fullName")
+                        ?: getString(R.string.profile_location_placeholder)
+                    description = jsonObject.getString("description")
+                        ?: getString(R.string.profile_description_placeholder)
+                    val jsonSkills: JSONArray = jsonObject.getJSONArray("skills") ?: JSONArray()
+                    for (i in 0 until jsonSkills.length()) {
+                        skills.add(jsonSkills.getString(i))
+                    }
                 }
             }
         }
         catch (e:Exception){
-            //do nothing
+            println("ERROR in retrieving sharedPrefs")
+            sharedPref?.let {
+                with(it.edit()) {
+                    clear()
+                }
+            }
         }
 
         try {
@@ -109,7 +120,7 @@ class ShowProfileActivity : AppCompatActivity() {
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.navbar, menu)
         supportActionBar?.title = ""
-        supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.parseColor("#03a2ff")))
+        //supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.parseColor("#03a2ff")))
         return true
     }
 
@@ -182,10 +193,12 @@ class ShowProfileActivity : AppCompatActivity() {
 
             Log.d("Timebank",jsonObject.toString())
 
-            val sharedPref = getPreferences(Context.MODE_PRIVATE)
-            with (sharedPref.edit()) {
-                putString("profile", jsonObject.toString())
-                apply()
+            sharedPref?.let {
+                with(it.edit()) {
+                    clear()
+                    putString("profile", jsonObject.toString())
+                    apply()
+                }
             }
 
             applicationContext.openFileOutput("profile_picture", Context.MODE_PRIVATE).use {
@@ -236,13 +249,22 @@ class ShowProfileActivity : AppCompatActivity() {
         et_skills?.removeAllViews()
         h_et_skills?.removeAllViews()
 
-        skills.forEach {
-            val inflater: LayoutInflater = layoutInflater
-            val skill: Chip = inflater.inflate(R.layout.skill_chip, null) as Chip
-            skill.text = it
-            skill.isCloseIconVisible = false
-            et_skills?.addView(skill)
-            h_et_skills?.addView(skill)
+        if(skills.size==0){
+            findViewById<TextView>(R.id.textView33)?.isVisible = true
+            findViewById<TextView>(R.id.textView30)?.isVisible = true
+        }
+        else {
+            findViewById<TextView>(R.id.textView33)?.isVisible = false
+            findViewById<TextView>(R.id.textView30)?.isVisible = false
+
+            skills.forEach {
+                val inflater: LayoutInflater = layoutInflater
+                val skill: Chip = inflater.inflate(R.layout.skill_chip, null) as Chip
+                skill.text = it
+                skill.isCloseIconVisible = false
+                et_skills?.addView(skill)
+                h_et_skills?.addView(skill)
+            }
         }
 
 

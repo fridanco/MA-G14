@@ -38,12 +38,25 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/textView32"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/profile_fullname_placeholder" />
+
+            <TextView
                 android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingBottom="12dp"
                 android:text="@string/profile_fullname_placeholder"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                android:textColor="#000000" />
+
+            <TextView
+                android:id="@+id/textView34"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/profile_nickname_placeholder" />
 
             <TextView
                 android:id="@+id/textView2"
@@ -51,7 +64,13 @@
                 android:layout_height="wrap_content"
                 android:paddingBottom="12dp"
                 android:text="@string/profile_nickname_placeholder"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+            <TextView
+                android:id="@+id/textView35"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/profile_edit_email_placeholder" />
 
             <TextView
                 android:id="@+id/textView3"
@@ -59,7 +78,13 @@
                 android:layout_height="wrap_content"
                 android:paddingBottom="12dp"
                 android:text="@string/profile_email_placeholder"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+            <TextView
+                android:id="@+id/textView36"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/profile_location_placeholder" />
 
             <TextView
                 android:id="@+id/textView8"
@@ -67,7 +92,13 @@
                 android:layout_height="wrap_content"
                 android:paddingBottom="12dp"
                 android:text="@string/profile_location_placeholder"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+            <TextView
+                android:id="@+id/textView37"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/profile_description_placeholder" />
 
             <TextView
                 android:id="@+id/textView20"
@@ -75,13 +106,29 @@
                 android:layout_height="wrap_content"
                 android:paddingBottom="12dp"
                 android:text="@string/profile_description_placeholder"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="#040404" />
+
+            <TextView
+                android:id="@+id/textView38"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/profile_skills_placeholder" />
+
+            <TextView
+                android:id="@+id/textView30"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:text="You have not selected any skill yet" />
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/chipGroup2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:minHeight="25dp">
+                android:paddingBottom="12dp">
 
             </com.google.android.material.chip.ChipGroup>
 

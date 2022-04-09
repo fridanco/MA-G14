@@ -5,7 +5,6 @@
     android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_weight="1"
     tools:context=".EditProfileActivity"
     tools:ignore="SpeakableTextPresentCheck">
 
@@ -13,43 +12,42 @@
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
         android:orientation="vertical"
         android:padding="16dp">
 
         <FrameLayout
+            android:id="@+id/frameLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_gravity="center_horizontal|center_vertical">
+
+            <ImageButton
+                android:id="@+id/imageButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#00FFFFFF"
+                app:srcCompat="@android:drawable/ic_menu_camera"
+                tools:ignore="SpeakableTextPresentCheck" />
+        </FrameLayout>
+
+        <FrameLayout
             android:id="@+id/frameLayout"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="250dp"
+            android:layout_gravity="center"
             android:paddingBottom="8dp">
 
-            <LinearLayout
+            <ImageView
+                android:id="@+id/imageView3"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:weightSum="5">
-
-                <ImageButton
-                    android:id="@+id/imageButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_weight="1"
-                    android:background="#00FFFFFF"
-                    android:contentDescription="@string/profile_picture_content_description"
-                    android:scaleType="fitCenter"
-                    android:src="@android:drawable/ic_menu_camera" />
-
-                <ImageView
-                    android:id="@+id/imageView3"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_weight="4"
-                    android:backgroundTint="#00FFFFFF"
-                    android:contentDescription="@string/change_profile_picture_content_description"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/user" />
-            </LinearLayout>
+                android:layout_gravity="fill_horizontal"
+                android:backgroundTint="#00FFFFFF"
+                android:contentDescription="@string/change_profile_picture_content_description"
+                android:foregroundGravity="fill_horizontal"
+                android:scaleType="fitCenter"
+                android:src="@drawable/user" />
 
         </FrameLayout>
 

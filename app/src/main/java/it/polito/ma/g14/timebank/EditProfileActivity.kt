@@ -2,12 +2,15 @@ package it.polito.ma.g14.timebank
 
 import android.app.Activity
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
+import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
+import android.graphics.ImageDecoder
+import android.graphics.Matrix
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
@@ -16,6 +19,7 @@ import android.widget.*
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import com.google.android.material.chip.Chip
@@ -68,6 +72,7 @@ class EditProfileActivity : AppCompatActivity() {
 
         val sv = findViewById<ScrollView>(R.id.scrollView)
         val frameLayout = findViewById<FrameLayout>(R.id.frameLayout)
+        val frameLayout2 = findViewById<FrameLayout>(R.id.frameLayout2)
         sv?.let {
             it.viewTreeObserver?.addOnGlobalLayoutListener(object :
                 ViewTreeObserver.OnGlobalLayoutListener {
@@ -75,7 +80,10 @@ class EditProfileActivity : AppCompatActivity() {
                     val height = sv.height
                     val width = sv.width
                     frameLayout?.post {
-                        frameLayout.layoutParams = LinearLayout.LayoutParams(width, height / 3)
+                        frameLayout.layoutParams = LinearLayout.LayoutParams(width, height / 15)
+                    }
+                    frameLayout2?.post {
+                        frameLayout.layoutParams = LinearLayout.LayoutParams(width, (height * 4) / 15)
                     }
                     sv.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 }
@@ -115,7 +123,7 @@ class EditProfileActivity : AppCompatActivity() {
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.navbar, menu)
         supportActionBar?.title = ""
-        supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.parseColor("#03a2ff")))
+        //supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.parseColor("#03a2ff")))
         menu.findItem(R.id.pencil).setVisible(false)
         return true
     }
@@ -186,7 +194,7 @@ class EditProfileActivity : AppCompatActivity() {
             val data: Intent? = result.data
             val imageBitmap = data?.extras?.get("data") as Bitmap
             val stream = ByteArrayOutputStream()
-            imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 10, stream)
             profilePicture = stream.toByteArray()
             populateEditText()
         }
@@ -198,8 +206,25 @@ class EditProfileActivity : AppCompatActivity() {
             // SELECT_PICTURE constant
             val data: Intent? = result.data
             val selectedImageUri: Uri? = data?.data as Uri
-            if (null != selectedImageUri) {
-                profilePicture = contentResolver.openInputStream(selectedImageUri)?.readBytes()
+            selectedImageUri?.let {
+                val bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    ImageDecoder.decodeBitmap(
+                        ImageDecoder.createSource(
+                            applicationContext.contentResolver,
+                            selectedImageUri
+                        )
+                    )
+                } else {
+                    MediaStore.Images.Media.getBitmap(
+                        applicationContext.contentResolver,
+                        selectedImageUri
+                    )
+                }
+
+                val stream = ByteArrayOutputStream()
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 10, stream)
+
+                profilePicture = stream.toByteArray()
             }
             populateEditText()
         }
@@ -332,6 +357,14 @@ class EditProfileActivity : AppCompatActivity() {
         }
     }
 
+    private fun rotateImage(source: Bitmap, angle: Float): Bitmap? {
+        val matrix = Matrix()
+        matrix.postRotate(angle)
+        return Bitmap.createBitmap(
+            source, 0, 0, source.width, source.height,
+            matrix, true
+        )
+    }
 
     private fun String.toEditable(): Editable =  Editable.Factory.getInstance().newEditable(this)
 
