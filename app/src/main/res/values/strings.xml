@@ -4,9 +4,6 @@
     <string name="preference_file_key">profile</string>
     <string name="profile_picture_filename">profile_picture</string>
 
-    <string name="profile_picture_content_description">Your profile picture</string>
-    <string name="change_profile_picture_content_description">Long click to change profile picture</string>
-
     <string name="profile_edit_fullname_placeholder">Full name</string>
     <string name="profile_edit_nickname_placeholder">Nickname</string>
     <string name="profile_edit_email_placeholder">mymail@mail.com</string>
@@ -20,6 +17,21 @@
     <string name="profile_location_placeholder">Location</string>
     <string name="profile_description_placeholder">Description</string>
     <string name="profile_skills_placeholder">Your skills</string>
+
+    <string name="profile_no_skills_selected">You have not selected any skill yet</string>
+    <string name="profile_add_skills">Add skills</string>
+
+    <string name="fullname_content_descriptor">Your fullname</string>
+    <string name="nickname_content_descriptor">Your nickname</string>
+    <string name="email_content_descriptor">Your email</string>
+    <string name="location_content_descriptor">Your location</string>
+    <string name="description_content_descriptor">Your description</string>
+    <string name="skills_content_descriptor">Your skills</string>
+    <string name="profile_picture_content_description">Your profile picture</string>
+    <string name="change_profile_picture_content_description">Change your profile picture</string>
+
+
+
 
     <string name="change_profile_picture_context_menu_camera">Take a picture</string>
     <string name="change_profile_picture_context_menu_gallery">Choose from gallery</string>

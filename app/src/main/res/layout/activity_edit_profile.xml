@@ -14,7 +14,9 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:paddingStart="16dp"
+        android:paddingTop="4dp"
+        android:paddingEnd="16dp">
 
         <FrameLayout
             android:id="@+id/frameLayout2"
@@ -27,8 +29,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:backgroundTint="#00FFFFFF"
+                android:contentDescription="@string/change_profile_picture_content_description"
                 app:srcCompat="@android:drawable/ic_menu_camera"
-                tools:ignore="SpeakableTextPresentCheck" />
+                tools:ignore="SpeakableTextPresentCheck,DuplicateSpeakableTextCheck" />
         </FrameLayout>
 
         <FrameLayout
@@ -44,7 +47,7 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="fill_horizontal"
                 android:backgroundTint="#00FFFFFF"
-                android:contentDescription="@string/change_profile_picture_content_description"
+                android:contentDescription="@string/profile_picture_content_description"
                 android:foregroundGravity="fill_horizontal"
                 android:scaleType="fitCenter"
                 android:src="@drawable/user" />
@@ -72,7 +75,8 @@
                 android:ems="10"
                 android:hint="@string/profile_edit_fullname_placeholder"
                 android:inputType="textPersonName"
-                android:minHeight="48dp" />
+                android:minHeight="48dp"
+                tools:ignore="DuplicateSpeakableTextCheck" />
 
             <TextView
                 android:id="@+id/textView23"
@@ -85,10 +89,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
+                android:autofillHints=""
                 android:ems="10"
                 android:hint="@string/profile_edit_nickname_placeholder"
                 android:inputType="textPersonName"
-                android:minHeight="48dp" />
+                android:minHeight="48dp"
+                tools:ignore="DuplicateSpeakableTextCheck" />
 
             <TextView
                 android:id="@+id/textView24"
@@ -101,10 +107,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
+                android:autofillHints=""
                 android:ems="10"
                 android:hint="@string/profile_edit_email_placeholder"
                 android:inputType="textEmailAddress"
-                android:minHeight="48dp" />
+                android:minHeight="48dp"
+                tools:ignore="TextContrastCheck" />
 
             <TextView
                 android:id="@+id/textView25"
@@ -116,11 +124,12 @@
                 android:id="@+id/editTextTextPersonName4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
+                android:autofillHints=""
                 android:ems="10"
                 android:hint="@string/profile_edit_location_placeholder"
-                android:inputType="textPersonName"
-                android:minHeight="48dp" />
+                android:inputType="textPostalAddress"
+                android:minHeight="48dp"
+                tools:ignore="DuplicateSpeakableTextCheck" />
 
             <TextView
                 android:id="@+id/textView26"
@@ -133,17 +142,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
+                android:autofillHints=""
                 android:ems="10"
                 android:gravity="start|top"
                 android:hint="@string/profile_edit_description_placeholder"
                 android:inputType="textMultiLine"
-                android:minHeight="48dp" />
+                android:minHeight="48dp"
+                tools:ignore="DuplicateSpeakableTextCheck" />
 
             <TextView
                 android:id="@+id/textView27"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Your skills" />
+                android:text="@string/profile_skills_placeholder" />
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/chipGroup"
@@ -157,15 +168,14 @@
                 android:gravity="center_horizontal"
                 android:paddingTop="8dp"
                 android:paddingBottom="8dp"
-                android:text="You have not selected any skill yet" />
+                android:text="@string/profile_no_skills_selected" />
 
             <Button
                 android:id="@+id/button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="4dp"
-                android:paddingBottom="4dp"
-                android:text="Add skills" />
+                android:layout_marginBottom="8dp"
+                android:text="@string/profile_add_skills" />
 
         </LinearLayout>
     </LinearLayout>
