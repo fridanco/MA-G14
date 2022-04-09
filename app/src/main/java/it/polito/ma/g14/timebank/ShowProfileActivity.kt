@@ -4,14 +4,12 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.widget.ImageView
-import android.widget.TextView
+import android.view.*
+import android.widget.*
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -87,6 +85,22 @@ class ShowProfileActivity : AppCompatActivity() {
             profilePicture=null
         }
 
+        val sv = findViewById<ScrollView>(R.id.scrollView2)
+        val frameLayout = findViewById<FrameLayout>(R.id.frameLayout2)
+        sv?.let {
+            it.viewTreeObserver?.addOnGlobalLayoutListener(object :
+                ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    val height = sv.height
+                    val width = sv.width
+                    frameLayout?.post {
+                        frameLayout.layoutParams = LinearLayout.LayoutParams(width, height / 3)
+                    }
+                    sv.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                }
+            })
+        }
+
         setViewsReferences()
         populateViews()
     }
@@ -95,6 +109,7 @@ class ShowProfileActivity : AppCompatActivity() {
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.navbar, menu)
         supportActionBar?.title = ""
+        supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.parseColor("#03a2ff")))
         return true
     }
 
@@ -188,7 +203,7 @@ class ShowProfileActivity : AppCompatActivity() {
         tv_location = findViewById<TextView>(R.id.textView7)
         tv_description = findViewById<TextView>(R.id.textView19)
         et_skills = findViewById<ChipGroup>(R.id.chipGroup)
-        iv_profilePicture = findViewById<ImageView>(R.id.imageView3)
+        iv_profilePicture = findViewById<ImageView>(R.id.imageView4)
 
         h_tv_fullname = findViewById<TextView>(R.id.textView)
         h_tv_nickname = findViewById<TextView>(R.id.textView2)
@@ -220,14 +235,17 @@ class ShowProfileActivity : AppCompatActivity() {
 
         et_skills?.removeAllViews()
         h_et_skills?.removeAllViews()
+
         skills.forEach {
-            val inflater : LayoutInflater = layoutInflater
-            val skill : Chip = inflater.inflate(R.layout.skill_chip, null) as Chip
+            val inflater: LayoutInflater = layoutInflater
+            val skill: Chip = inflater.inflate(R.layout.skill_chip, null) as Chip
             skill.text = it
             skill.isCloseIconVisible = false
             et_skills?.addView(skill)
             h_et_skills?.addView(skill)
         }
+
+
 
     }
 

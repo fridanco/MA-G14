@@ -30,8 +30,7 @@
                 android:layout_weight="1"
                 android:backgroundTint="#00FFFFFF"
                 android:contentDescription="Change profile picture"
-                app:srcCompat="@android:drawable/ic_menu_camera"
-                app:tint="#000000" />
+                app:srcCompat="@android:drawable/ic_menu_camera" />
 
             <ImageView
                 android:id="@+id/imageView2"
@@ -159,6 +158,15 @@
 
             </com.google.android.material.chip.ChipGroup>
 
+            <TextView
+                android:id="@+id/textView11"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:text="You have not selected any skill yet" />
+
             <Button
                 android:id="@+id/button2"
                 android:layout_width="match_parent"
@@ -166,6 +174,7 @@
                 android:paddingTop="4dp"
                 android:paddingBottom="4dp"
                 android:text="Add skills" />
+
         </LinearLayout>
     </ScrollView>
 

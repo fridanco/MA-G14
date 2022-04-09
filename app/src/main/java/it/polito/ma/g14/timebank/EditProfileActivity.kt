@@ -5,18 +5,18 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
 import android.view.*
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.ImageView
+import android.widget.*
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
@@ -66,6 +66,22 @@ class EditProfileActivity : AppCompatActivity() {
         description = intent.getStringExtra("description") ?: ""
         profilePicture = intent.getByteArrayExtra("profilePicture")
 
+        val sv = findViewById<ScrollView>(R.id.scrollView)
+        val frameLayout = findViewById<FrameLayout>(R.id.frameLayout)
+        sv?.let {
+            it.viewTreeObserver?.addOnGlobalLayoutListener(object :
+                ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    val height = sv.height
+                    val width = sv.width
+                    frameLayout?.post {
+                        frameLayout.layoutParams = LinearLayout.LayoutParams(width, height / 3)
+                    }
+                    sv.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                }
+            })
+        }
+
         setEditTextReferences()
         populateEditText()
         attachListeners()
@@ -99,6 +115,7 @@ class EditProfileActivity : AppCompatActivity() {
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.navbar, menu)
         supportActionBar?.title = ""
+        supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.parseColor("#03a2ff")))
         menu.findItem(R.id.pencil).setVisible(false)
         return true
     }
@@ -232,19 +249,31 @@ class EditProfileActivity : AppCompatActivity() {
 
         et_skills?.removeAllViews()
         h_et_skills?.removeAllViews()
-        skills.forEach {
-            val inflater : LayoutInflater = layoutInflater
-            val skill : Chip = inflater.inflate(R.layout.skill_chip, null) as Chip
-            skill.text = it
-            skill.isCloseIconVisible = true
-            skill.setOnCloseIconClickListener{
-                val skill = it as Chip
-                skills.remove(skill.text.toString())
-                et_skills?.removeView(it)
-                h_et_skills?.removeView(it)
+        if(skills.size==0){
+            findViewById<TextView>(R.id.textView10)?.isVisible = true
+            findViewById<TextView>(R.id.textView11)?.isVisible = true
+        }
+        else {
+            findViewById<TextView>(R.id.textView10)?.isVisible = false
+            findViewById<TextView>(R.id.textView11)?.isVisible = false
+            skills.forEach {
+                val inflater: LayoutInflater = layoutInflater
+                val skill: Chip = inflater.inflate(R.layout.skill_chip, null) as Chip
+                skill.text = it
+                skill.isCloseIconVisible = true
+                skill.setOnCloseIconClickListener {
+                    val skill = it as Chip
+                    skills.remove(skill.text.toString())
+                    et_skills?.removeView(it)
+                    h_et_skills?.removeView(it)
+                    if(skills.size==0){
+                        findViewById<TextView>(R.id.textView10)?.isVisible = true
+                        findViewById<TextView>(R.id.textView11)?.isVisible = true
+                    }
+                }
+                et_skills?.addView(skill)
+                h_et_skills?.addView(skill)
             }
-            et_skills?.addView(skill)
-            h_et_skills?.addView(skill)
         }
     }
 

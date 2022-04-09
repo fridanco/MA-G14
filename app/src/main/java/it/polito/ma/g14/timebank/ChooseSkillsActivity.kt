@@ -2,6 +2,8 @@ package it.polito.ma.g14.timebank
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.PersistableBundle
@@ -1203,6 +1205,7 @@ class ChooseSkillsActivity : AppCompatActivity() {
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.navbar, menu)
         supportActionBar?.title = "Choose your skills"
+        supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.parseColor("#03a2ff")))
         menu.findItem(R.id.pencil).setVisible(false)
         return true
     }
