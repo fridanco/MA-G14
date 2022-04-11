@@ -92,6 +92,9 @@ class ShowProfileActivity : AppCompatActivity() {
         try {
             val inputStream : FileInputStream = applicationContext.openFileInput(getString(R.string.profile_picture_filename))
             profilePicture = IOUtils.toByteArray(inputStream)
+            if(profilePicture?.size==0){
+                profilePicture = null
+            }
         }
         catch (e: Exception){
             profilePicture=null
@@ -200,9 +203,11 @@ class ShowProfileActivity : AppCompatActivity() {
                 }
             }
 
-            if (profilePicture != null){
-                applicationContext.openFileOutput("profile_picture", Context.MODE_PRIVATE).use {
-                    it.write(profilePicture)
+            profilePicture?.let {
+                if (profilePicture?.size != 0) {
+                    applicationContext.openFileOutput("profile_picture", Context.MODE_PRIVATE).use {
+                        it.write(profilePicture)
+                    }
                 }
             }
 
