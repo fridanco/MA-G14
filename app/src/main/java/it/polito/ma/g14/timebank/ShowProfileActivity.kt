@@ -93,7 +93,7 @@ class ShowProfileActivity : AppCompatActivity() {
             val inputStream : FileInputStream = applicationContext.openFileInput(getString(R.string.profile_picture_filename))
             profilePicture = IOUtils.toByteArray(inputStream)
         }
-        catch (e: FileNotFoundException){
+        catch (e: Exception){
             profilePicture=null
         }
 
@@ -190,7 +190,7 @@ class ShowProfileActivity : AppCompatActivity() {
             jsonObject.put("nickName", nickName)
             jsonObject.put("location", location)
             jsonObject.put("description", description)
-            jsonObject.put("skills",jsonSkills)
+            jsonObject.put("skills", jsonSkills)
 
             sharedPref?.let {
                 with(it.edit()) {
@@ -200,8 +200,10 @@ class ShowProfileActivity : AppCompatActivity() {
                 }
             }
 
-            applicationContext.openFileOutput("profile_picture", Context.MODE_PRIVATE).use {
-                it.write(profilePicture)
+            if (profilePicture != null){
+                applicationContext.openFileOutput("profile_picture", Context.MODE_PRIVATE).use {
+                    it.write(profilePicture)
+                }
             }
 
             val toast = Toast.makeText(this, "Profile successfully updated", Toast.LENGTH_LONG)

@@ -421,8 +421,14 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     private fun attachContextMenu() {
+        imgButton?.setOnClickListener{
+            openContextMenu(it)
+        }
         imgButton?.let {
             registerForContextMenu(imgButton)
+        }
+        imgButton2?.setOnClickListener {
+            openContextMenu(it)
         }
         imgButton2?.let {
             registerForContextMenu(imgButton2)
