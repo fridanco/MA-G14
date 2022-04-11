@@ -203,13 +203,20 @@ class ShowProfileActivity : AppCompatActivity() {
                 }
             }
 
-            profilePicture?.let {
-                if (profilePicture?.size != 0) {
-                    applicationContext.openFileOutput("profile_picture", Context.MODE_PRIVATE).use {
-                        it.write(profilePicture)
+            try {
+                profilePicture?.let {
+                    if (profilePicture?.size != 0) {
+                        applicationContext.openFileOutput("profile_picture", Context.MODE_PRIVATE).use {
+                            it.write(profilePicture)
+                        }
                     }
                 }
             }
+            catch (e: Exception){
+                profilePicture = null;
+                applicationContext.deleteFile("profile_picture")
+            }
+
 
             val toast = Toast.makeText(this, "Profile successfully updated", Toast.LENGTH_LONG)
             toast.setGravity(Gravity.CENTER, 0, 0)

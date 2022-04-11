@@ -2,25 +2,32 @@ package it.polito.ma.g14.timebank
 
 import android.app.Activity
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
+import android.graphics.Matrix
+import android.media.ExifInterface
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.text.Editable
+import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import java.io.ByteArrayOutputStream
+import java.io.File
 
 
 class EditProfileActivity : AppCompatActivity() {
@@ -136,6 +143,9 @@ class EditProfileActivity : AppCompatActivity() {
              R.id.change_profile_picture_camera -> {
                  try {
                      val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+//                     val filePhoto = File(applicationContext.filesDir, "profile_picture_tmp")
+//                     val imageUri = filePhoto.toUri()
+//                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri.path)
                      startForTakeImageFromCamera.launch(takePictureIntent)
                  } catch (e: ActivityNotFoundException) {
                      // display error state to the user
@@ -201,8 +211,58 @@ class EditProfileActivity : AppCompatActivity() {
             val data: Intent? = result.data
             val imageBitmap = data?.extras?.get("data") as Bitmap
             val stream = ByteArrayOutputStream()
-            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 10, stream)
+            imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+            val profilePictureSize = stream.toByteArray().size
+            if(profilePictureSize/1024 > 400){
+                val compressionRatio = (400 / (profilePictureSize/1024))*100;
+                imageBitmap.compress(Bitmap.CompressFormat.JPEG, compressionRatio, stream)
+            }
             profilePicture = stream.toByteArray()
+
+//            try {
+////                val stream = ByteArrayOutputStream()
+////                imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+////                profilePicture = stream.toByteArray()
+////                profilePicture?.let {
+////                    if (profilePicture?.size != 0) {
+////                        applicationContext.openFileOutput("profile_picture_tmp", Context.MODE_PRIVATE).use {
+////                            it.write(profilePicture)
+////                        }
+////                    }
+////                }
+//                //val filename = "${applicationContext.filesDir}/profile_picture_tmp"
+//                val ei = ExifInterface("${applicationContext.filesDir}/profile_picture_tmp")
+//                val orientation: Int? = ei?.getAttributeInt(
+//                    ExifInterface.TAG_ORIENTATION,
+//                    ExifInterface.ORIENTATION_UNDEFINED
+//                )
+//
+//                var rotatedBitmap: Bitmap? = null
+//                when (orientation) {
+//                    ExifInterface.ORIENTATION_ROTATE_90 -> rotatedBitmap = rotateImage(imageBitmap, 90)
+//                    ExifInterface.ORIENTATION_ROTATE_180 -> rotatedBitmap = rotateImage(imageBitmap, 180)
+//                    ExifInterface.ORIENTATION_ROTATE_270 -> rotatedBitmap = rotateImage(imageBitmap, 270)
+//                    ExifInterface.ORIENTATION_NORMAL -> rotatedBitmap = imageBitmap
+//                    else -> rotatedBitmap = imageBitmap
+//                }
+//
+//                rotatedBitmap?.let {
+//                    val stream = ByteArrayOutputStream()
+//                    rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+//                    val profilePictureSize = stream.toByteArray().size
+//                    if(profilePictureSize/1024 > 400){
+//                        val compressionRatio = (400 / (profilePictureSize/1024))*100;
+//                        rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, compressionRatio, stream)
+//                    }
+//                    profilePicture = stream.toByteArray()
+//                }
+////                applicationContext.deleteFile("profile_picture_tmp")
+//            }
+//            catch (e: Exception){
+//                Log.d("timebank",e.message.toString())
+//                profilePicture = null;
+//            }
+
             populateEditText()
         }
     }
@@ -435,14 +495,11 @@ class EditProfileActivity : AppCompatActivity() {
         }
     }
 
-    //private fun rotateImage(source: Bitmap, angle: Float): Bitmap? {
-    //    val matrix = Matrix()
-    //    matrix.postRotate(angle)
-    //    return Bitmap.createBitmap(
-    //        source, 0, 0, source.width, source.height,
-    //        matrix, true
-    //    )
-    //}
+    fun rotateImage(source: Bitmap, angle: Int): Bitmap? {
+        val matrix = Matrix()
+        matrix.postRotate(angle.toFloat())
+        return Bitmap.createBitmap(source, 0, 0, source.width, source.height, matrix, true)
+    }
 
     private fun String.toEditable(): Editable =  Editable.Factory.getInstance().newEditable(this)
 
