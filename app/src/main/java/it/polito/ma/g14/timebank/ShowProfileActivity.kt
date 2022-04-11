@@ -192,8 +192,6 @@ class ShowProfileActivity : AppCompatActivity() {
             jsonObject.put("description", description)
             jsonObject.put("skills",jsonSkills)
 
-            Log.d("Timebank",jsonObject.toString())
-
             sharedPref?.let {
                 with(it.edit()) {
                     clear()
@@ -205,6 +203,10 @@ class ShowProfileActivity : AppCompatActivity() {
             applicationContext.openFileOutput("profile_picture", Context.MODE_PRIVATE).use {
                 it.write(profilePicture)
             }
+
+            val toast = Toast.makeText(this, "Profile successfully updated", Toast.LENGTH_LONG)
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
 
             populateViews()
         }

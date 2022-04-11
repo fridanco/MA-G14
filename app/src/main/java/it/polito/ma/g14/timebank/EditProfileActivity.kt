@@ -2,9 +2,7 @@ package it.polito.ma.g14.timebank
 
 import android.app.Activity
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
-import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
@@ -19,7 +17,6 @@ import android.widget.*
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import com.google.android.material.chip.Chip
@@ -159,12 +156,14 @@ class EditProfileActivity : AppCompatActivity() {
              }
              else -> super.onContextItemSelected(item)
         }
-        return true
     }
 
     override fun onBackPressed() {
         if(et_fullname?.error != null || et_nickname?.error != null || et_email?.error != null ||et_location?.error != null ||
             h_et_fullname?.error != null || h_et_nickname?.error != null || h_et_email?.error != null || h_et_location?.error != null){
+            val toast = Toast.makeText(this, "Please fill in all the mandatory fields", Toast.LENGTH_LONG)
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
             return;
         }
 
@@ -189,6 +188,10 @@ class EditProfileActivity : AppCompatActivity() {
         if (result.resultCode == Activity.RESULT_OK) {
             val intent: Intent? = result.data
             skills = intent?.getStringArrayListExtra("skills") as ArrayList<String>
+
+            val toast = Toast.makeText(this, "Skills updated", Toast.LENGTH_LONG)
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
 
             populateEditText()
         }

@@ -54,7 +54,7 @@
                 android:id="@+id/textView14"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/profile_fullname_placeholder" />
+                android:text="@string/profile_edit_fullname_label" />
 
             <EditText
                 android:id="@+id/editTextTextPersonName"
@@ -72,7 +72,7 @@
                 android:id="@+id/textView15"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/profile_nickname_placeholder" />
+                android:text="@string/profile_edit_nickname_label" />
 
             <EditText
                 android:id="@+id/editTextTextPersonName5"
@@ -109,7 +109,7 @@
                 android:id="@+id/textView17"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/profile_location_placeholder" />
+                android:text="@string/profile_edit_location_label" />
 
             <EditText
                 android:id="@+id/editTextTextPersonName6"
@@ -127,7 +127,7 @@
                 android:id="@+id/textView18"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/profile_description_placeholder" />
+                android:text="@string/profile_edit_description_label" />
 
             <EditText
                 android:id="@+id/editTextTextMultiLine2"
@@ -146,7 +146,7 @@
                 android:id="@+id/textView9"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/profile_skills_placeholder" />
+                android:text="@string/profile_edit_skills_label" />
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/chipGroup2"

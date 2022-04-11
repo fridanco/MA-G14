@@ -43,7 +43,7 @@
                 android:id="@+id/textView32"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/profile_fullname_placeholder" />
+                android:text="@string/profile_show_fullname_label" />
 
             <TextView
                 android:id="@+id/textView"
@@ -58,7 +58,7 @@
                 android:id="@+id/textView34"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/profile_nickname_placeholder" />
+                android:text="@string/profile_show_nickname_label" />
 
             <TextView
                 android:id="@+id/textView2"
@@ -72,7 +72,7 @@
                 android:id="@+id/textView35"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/profile_edit_email_placeholder" />
+                android:text="@string/profile_show_email_label" />
 
             <TextView
                 android:id="@+id/textView3"
@@ -86,7 +86,7 @@
                 android:id="@+id/textView36"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/profile_location_placeholder" />
+                android:text="@string/profile_show_location_label" />
 
             <TextView
                 android:id="@+id/textView8"
@@ -100,7 +100,7 @@
                 android:id="@+id/textView37"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/profile_description_placeholder" />
+                android:text="@string/profile_show_description_label" />
 
             <TextView
                 android:id="@+id/textView20"
@@ -125,7 +125,7 @@
                 android:id="@+id/textView38"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/profile_skills_placeholder" />
+                android:text="@string/profile_show_skills_label" />
 
             <TextView
                 android:id="@+id/textView30"
