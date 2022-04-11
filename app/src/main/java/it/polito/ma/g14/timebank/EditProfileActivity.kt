@@ -6,7 +6,6 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
-import android.graphics.Matrix
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -119,7 +118,7 @@ class EditProfileActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.navbar, menu)
-        supportActionBar?.title = ""
+        supportActionBar?.title = "Edit profile"
         //supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.parseColor("#03a2ff")))
         menu.findItem(R.id.pencil).setVisible(false)
         return true
@@ -164,7 +163,7 @@ class EditProfileActivity : AppCompatActivity() {
             val toast = Toast.makeText(this, "Please fill in all the mandatory fields", Toast.LENGTH_LONG)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
-            return;
+            return
         }
 
         //Returning result to ShowProfileActivity
@@ -213,8 +212,9 @@ class EditProfileActivity : AppCompatActivity() {
             // compare the resultCode with the
             // SELECT_PICTURE constant
             val data: Intent? = result.data
-            val selectedImageUri: Uri? = data?.data as Uri
-            selectedImageUri?.let {
+            val selectedImageUri: Uri = data?.data as Uri
+
+            selectedImageUri.let {
                 val bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     ImageDecoder.decodeBitmap(
                         ImageDecoder.createSource(
@@ -429,14 +429,14 @@ class EditProfileActivity : AppCompatActivity() {
         }
     }
 
-    private fun rotateImage(source: Bitmap, angle: Float): Bitmap? {
-        val matrix = Matrix()
-        matrix.postRotate(angle)
-        return Bitmap.createBitmap(
-            source, 0, 0, source.width, source.height,
-            matrix, true
-        )
-    }
+    //private fun rotateImage(source: Bitmap, angle: Float): Bitmap? {
+    //    val matrix = Matrix()
+    //    matrix.postRotate(angle)
+    //    return Bitmap.createBitmap(
+    //        source, 0, 0, source.width, source.height,
+    //        matrix, true
+    //    )
+    //}
 
     private fun String.toEditable(): Editable =  Editable.Factory.getInstance().newEditable(this)
 

@@ -120,7 +120,7 @@ class ShowProfileActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.navbar, menu)
-        supportActionBar?.title = ""
+        supportActionBar?.title = "Your profile"
         //supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.parseColor("#03a2ff")))
         return true
     }
