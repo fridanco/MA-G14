@@ -14,6 +14,7 @@ import android.widget.*
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
@@ -232,13 +233,28 @@ class ShowProfileActivity : AppCompatActivity() {
         tv_nickname?.text = nickName
         tv_email?.text = email
         tv_location?.text = location
-        tv_description?.text = description
+
+
 
         h_tv_fullname?.text = fullName
         h_tv_nickname?.text = nickName
         h_tv_email?.text = email
         h_tv_location?.text = location
-        h_tv_description?.text = description
+
+
+        if(description.trim().length==0){
+            tv_description?.isGone = true
+            h_tv_description?.isGone = true
+            findViewById<TextView>(R.id.textView39)?.isVisible = true;
+            findViewById<TextView>(R.id.textView40)?.isVisible = true;
+        }else{
+            tv_description?.isVisible = true
+            h_tv_description?.isVisible = true
+            tv_description?.text = description
+            h_tv_description?.text = description
+            findViewById<TextView>(R.id.textView39)?.isGone = true;
+            findViewById<TextView>(R.id.textView40)?.isGone = true;
+        }
 
         profilePicture?.let{
             val bmp = BitmapFactory.decodeByteArray(it, 0, it.size)

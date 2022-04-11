@@ -19,6 +19,7 @@
     <string name="profile_skills_placeholder">Your skills</string>
 
     <string name="profile_no_skills_selected">You have not selected any skill yet</string>
+    <string name="profile_no_description">You have not provided any description yet</string>
     <string name="profile_add_skills">Add skills</string>
 
     <string name="fullname_content_descriptor">Your fullname</string>

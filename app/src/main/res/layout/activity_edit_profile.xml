@@ -124,6 +124,7 @@
                 android:id="@+id/editTextTextPersonName4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
                 android:autofillHints=""
                 android:ems="10"
                 android:hint="@string/profile_edit_location_placeholder"

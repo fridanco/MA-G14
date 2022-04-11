@@ -163,6 +163,11 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
+        if(et_fullname?.error != null || et_nickname?.error != null || et_email?.error != null ||et_location?.error != null ||
+            h_et_fullname?.error != null || h_et_nickname?.error != null || h_et_email?.error != null || h_et_location?.error != null){
+            return;
+        }
+
         //Returning result to ShowProfileActivity
         val resultData = Intent()
         resultData.putExtra("fullName", fullName)
@@ -305,15 +310,47 @@ class EditProfileActivity : AppCompatActivity() {
     private fun attachListeners(){
         et_fullname?.doOnTextChanged { text, start, before, count ->
             fullName = text.toString()
+            if(fullName.trim().isEmpty()){
+                et_fullname?.error = "Fullname cannot be empty"
+                h_et_fullname?.error = "Fullname cannot be empty"
+            }
+            else{
+                et_fullname?.error = null
+                h_et_fullname?.error = null
+            }
         }
         et_nickname?.doOnTextChanged { text, start, before, count ->
             nickName = text.toString()
+            if(nickName.trim().isEmpty()){
+                et_nickname?.error = "Nickname cannot be empty"
+                h_et_nickname?.error = "Nickname cannot be empty"
+            }
+            else{
+                et_nickname?.error = null
+                h_et_nickname?.error = null
+            }
         }
         et_email?.doOnTextChanged { text, start, before, count ->
             email = text.toString()
+            if(email.trim().isEmpty()){
+                et_email?.error = "Email cannot be empty"
+                h_et_email?.error = "Email cannot be empty"
+            }
+            else{
+                et_email?.error = null
+                h_et_email?.error = null
+            }
         }
         et_location?.doOnTextChanged { text, start, before, count ->
             location = text.toString()
+            if(location.trim().isEmpty()){
+                et_location?.error = "Location cannot be empty"
+                h_et_location?.error = "Location cannot be empty"
+            }
+            else{
+                et_location?.error = null
+                h_et_location?.error = null
+            }
         }
         et_description?.doOnTextChanged { text, start, before, count ->
             description = text.toString()
@@ -327,15 +364,47 @@ class EditProfileActivity : AppCompatActivity() {
 
         h_et_fullname?.doOnTextChanged { text, start, before, count ->
             fullName = text.toString()
+            if(fullName.trim().isEmpty()){
+                et_fullname?.error = "Fullname cannot be empty"
+                h_et_fullname?.error = "Fullname cannot be empty"
+            }
+            else{
+                et_fullname?.error = null
+                h_et_fullname?.error = null
+            }
         }
         h_et_nickname?.doOnTextChanged { text, start, before, count ->
             nickName = text.toString()
+            if(nickName.trim().isEmpty()){
+                et_nickname?.error = "Nickname cannot be empty"
+                h_et_nickname?.error = "Nickname cannot be empty"
+            }
+            else{
+                et_nickname?.error = null
+                h_et_nickname?.error = null
+            }
         }
         h_et_email?.doOnTextChanged { text, start, before, count ->
             email = text.toString()
+            if(email.trim().isEmpty()){
+                et_email?.error = "Email cannot be empty"
+                h_et_email?.error = "Email cannot be empty"
+            }
+            else{
+                et_email?.error = null
+                h_et_email?.error = null
+            }
         }
         h_et_location?.doOnTextChanged { text, start, before, count ->
             location = text.toString()
+            if(location.trim().isEmpty()){
+                et_location?.error = "Location cannot be empty"
+                h_et_location?.error = "Location cannot be empty"
+            }
+            else{
+                et_location?.error = null
+                h_et_location?.error = null
+            }
         }
         h_et_description?.doOnTextChanged { text, start, before, count ->
             description = text.toString()

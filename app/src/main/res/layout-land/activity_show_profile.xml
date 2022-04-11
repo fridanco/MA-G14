@@ -112,6 +112,16 @@
                 android:textColor="#040404" />
 
             <TextView
+                android:id="@+id/textView40"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:text="@string/profile_no_description"
+                tools:visibility="visible" />
+
+            <TextView
                 android:id="@+id/textView38"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
