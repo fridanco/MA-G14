@@ -69,7 +69,7 @@ class ShowProfileActivity : AppCompatActivity() {
                         ?: getString(R.string.profile_nickname_placeholder)
                     email =
                         jsonObject.getString("email") ?: getString(R.string.profile_email_placeholder)
-                    location = jsonObject.getString("fullName")
+                    location = jsonObject.getString("location")
                         ?: getString(R.string.profile_location_placeholder)
                     description = jsonObject.getString("description")
                         ?: getString(R.string.profile_description_placeholder)
