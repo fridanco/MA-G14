@@ -1213,6 +1213,7 @@ class ChooseSkillsActivity : AppCompatActivity() {
             }
             override fun onQueryTextSubmit(qString: String): Boolean {
                 adapter.addFilter(qString)
+                findViewById<SearchView>(R.id.searchBar)?.clearFocus()
                 return true
             }
         })
@@ -1221,11 +1222,15 @@ class ChooseSkillsActivity : AppCompatActivity() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putStringArrayList("skills", adapter.checked_skills as ArrayList<String>)
+        outState.putString("searchText", searchText)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         adapter.checked_skills = savedInstanceState.getStringArrayList("skills") ?: arrayListOf()
+        searchText = savedInstanceState.getString("searchText", "")
+        findViewById<SearchView>(R.id.searchBar)?.setQuery(searchText, true)
+        findViewById<SearchView>(R.id.searchBar)?.clearFocus()
         populateSkills()
     }
 

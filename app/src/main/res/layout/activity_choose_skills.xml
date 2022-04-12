@@ -14,7 +14,8 @@
         android:layout_margin="8dp"
         android:commitIcon="@android:drawable/ic_menu_send"
         android:goIcon="@android:drawable/ic_menu_send"
-        android:iconifiedByDefault="false" />
+        android:iconifiedByDefault="false"
+        android:queryHint="@string/search_skill_placeholder" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycleView"
