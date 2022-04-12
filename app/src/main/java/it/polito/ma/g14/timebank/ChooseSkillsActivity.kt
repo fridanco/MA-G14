@@ -2,23 +2,16 @@ package it.polito.ma.g14.timebank
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.PersistableBundle
-import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
-import android.widget.CheckedTextView
 import android.widget.LinearLayout
 import android.widget.SearchView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.listapplication.Item
 import it.polito.listapplication.ItemAdapter
-import java.util.ArrayList
-import java.util.zip.Inflater
 
 class ChooseSkillsActivity : AppCompatActivity() {
 
@@ -1205,9 +1198,14 @@ class ChooseSkillsActivity : AppCompatActivity() {
 
         rv.adapter = adapter
 
+        val searchView = findViewById<SearchView>(R.id.searchBar)
+
         findViewById<SearchView>(R.id.searchBar)?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
 
             override fun onQueryTextChange(qString: String): Boolean {
+                if (qString == "") {
+                    onQueryTextSubmit("")
+                }
                 searchText = qString
                 return true
             }
@@ -1216,6 +1214,7 @@ class ChooseSkillsActivity : AppCompatActivity() {
                 findViewById<SearchView>(R.id.searchBar)?.clearFocus()
                 return true
             }
+
         })
     }
 
