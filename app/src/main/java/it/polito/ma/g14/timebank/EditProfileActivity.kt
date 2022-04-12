@@ -113,6 +113,7 @@ class EditProfileActivity : AppCompatActivity() {
         outState.putStringArrayList("skills",skills)
         outState.putString("description",description)
         outState.putByteArray("profilePicture",profilePicture)
+        outState.putString("imageFilepath",imageFilepath)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
@@ -124,6 +125,7 @@ class EditProfileActivity : AppCompatActivity() {
         skills = savedInstanceState.getStringArrayList("skills") ?: arrayListOf()
         description = savedInstanceState.getString("description","")
         profilePicture = savedInstanceState.getByteArray("profilePicture")
+        imageFilepath = savedInstanceState.getString("imageFilepath", "")
         populateEditText()
     }
 
@@ -237,11 +239,6 @@ class EditProfileActivity : AppCompatActivity() {
                 }
                 val stream = ByteArrayOutputStream()
                 rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 20, stream)
-                //val profilePictureSize = stream.toByteArray().size
-                //if(profilePictureSize/1024 > 400){
-                //    val compressionRatio = (400 / (profilePictureSize/1024))*100;
-                //    rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, compressionRatio, stream)
-                //}
                 profilePicture = stream.toByteArray()
             }
             populateEditText()
@@ -271,7 +268,7 @@ class EditProfileActivity : AppCompatActivity() {
                 }
 
                 val stream = ByteArrayOutputStream()
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 10, stream)
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 20, stream)
 
                 profilePicture = stream.toByteArray()
             }
