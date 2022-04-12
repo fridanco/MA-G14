@@ -33,9 +33,7 @@ import java.util.*
 
 class EditProfileActivity : AppCompatActivity() {
 
-    lateinit var imageFilepath : String
-
-    lateinit var imageUri : Uri
+    var imageFilepath : String = ""
 
     var fullName :  String = ""
     var email : String = ""
@@ -113,7 +111,7 @@ class EditProfileActivity : AppCompatActivity() {
         outState.putStringArrayList("skills",skills)
         outState.putString("description",description)
         outState.putByteArray("profilePicture",profilePicture)
-        outState.putString("imageFilepath",imageFilepath)
+        outState.putString("imageFilepath", imageFilepath)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
@@ -152,7 +150,7 @@ class EditProfileActivity : AppCompatActivity() {
                      val imageFile = createImageFile()
                      val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
                      val authorities = "$packageName.fileprovider"
-                     imageUri = FileProvider.getUriForFile(this, authorities, imageFile)
+                     val imageUri = FileProvider.getUriForFile(this, authorities, imageFile)
                      takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
                      startForTakeImageFromCamera.launch(takePictureIntent)
                  } catch (e: Exception) {
