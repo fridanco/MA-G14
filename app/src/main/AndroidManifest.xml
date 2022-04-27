@@ -22,13 +22,6 @@
         <activity
             android:name=".ChooseSkillsActivity"
             android:exported="false" />
-        <activity
-            android:name=".ShowProfileActivity"
-            android:exported="false">
-        </activity>
-        <activity
-            android:name=".EditProfileActivity"
-            android:exported="false" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
