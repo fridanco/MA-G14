@@ -48,7 +48,7 @@
     <string name="change_profile_picture_context_menu_camera">Take a picture</string>
     <string name="change_profile_picture_context_menu_gallery">Choose from gallery</string>
     <string name="search_skill_placeholder">Search skill</string>
-    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_main">Timebank</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
@@ -60,6 +60,9 @@
     <string name="menu_profile">My profile</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="app_bar_edit_profile">Edit profile</string>
 
 
 </resources>

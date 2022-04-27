@@ -15,6 +15,16 @@
         android:id="@+id/nav_profile"
         android:name="it.polito.ma.g14.timebank.fragments.ShowProfileFragment"
         android:label="@string/menu_profile"
-        tools:layout="@layout/fragment_show_profile" />
+        tools:layout="@layout/fragment_show_profile" >
+        <action
+            android:id="@+id/action_nav_profile_to_edit_profile"
+            app:destination="@id/edit_profile" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/edit_profile"
+        android:name="it.polito.ma.g14.timebank.fragments.EditProfileFragment"
+        android:label="Edit profile"
+        tools:layout="@layout/fragment_edit_profile" />
 
 </navigation>

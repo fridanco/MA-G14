@@ -3,12 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".fragments.TimeSlotDetailsFragment"
     android:orientation="vertical"
     android:paddingStart="16dp"
     android:paddingTop="8dp"
     android:paddingEnd="16dp"
-    android:paddingBottom="16dp">
+    android:paddingBottom="16dp"
+    tools:context=".fragments.TimeSlotDetailsFragment">
 
     <TextView
         android:id="@+id/textView4"
@@ -75,13 +75,5 @@
         android:text="Location address"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textColor="#000000" />
-
-    <com.google.android.material.chip.ChipGroup
-        android:id="@+id/chipGroup"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="12dp">
-
-    </com.google.android.material.chip.ChipGroup>
 
 </LinearLayout>

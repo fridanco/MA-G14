@@ -55,14 +55,12 @@ class ShowProfileFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        arguments?.let {
-//            param1 = it.getString(ARG_PARAM1)
-//            param2 = it.getString(ARG_PARAM2)
-//        }
+        setHasOptionsMenu(true)
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        // Inflate the layout for this fragment
+        val view = inflater.inflate(R.layout.fragment_show_profile, container, false)
 
         try {
             sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
@@ -97,7 +95,7 @@ class ShowProfileFragment : Fragment() {
         }
 
         try {
-            val inputStream : FileInputStream = context.openFileInput(getString(R.string.profile_picture_filename))
+            val inputStream : FileInputStream = requireContext().openFileInput(getString(R.string.profile_picture_filename))
             profilePicture = IOUtils.toByteArray(inputStream)
             if(profilePicture?.size==0){
                 profilePicture = null
@@ -107,16 +105,7 @@ class ShowProfileFragment : Fragment() {
             profilePicture=null
         }
 
-
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_show_profile, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+        activity?.invalidateOptionsMenu()
 
         val sv = view?.findViewById<ScrollView>(R.id.scrollView2)
         val frameLayout = view?.findViewById<FrameLayout>(R.id.frameLayout2)
@@ -134,60 +123,23 @@ class ShowProfileFragment : Fragment() {
             })
         }
 
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+
         setViewsReferences()
         populateViews()
     }
 
-//    private val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-//        if (result.resultCode == Activity.RESULT_OK) {
-//            val intent: Intent? = result.data
-//            fullName = intent?.getStringExtra("fullName") ?: ""
-//            email = intent?.getStringExtra("email") ?: ""
-//            nickName = intent?.getStringExtra("nickName") ?: ""
-//            location = intent?.getStringExtra("location") ?: ""
-//            skills = intent?.getStringArrayListExtra("skills") ?: arrayListOf()
-//            description = intent?.getStringExtra("description") ?: ""
-//            profilePicture = intent?.getByteArrayExtra("profilePicture")
-//
-//            val jsonObject = JSONObject()
-//            val jsonSkills = JSONArray(skills)
-//            jsonObject.put("fullName", fullName)
-//            jsonObject.put("email", email)
-//            jsonObject.put("nickName", nickName)
-//            jsonObject.put("location", location)
-//            jsonObject.put("description", description)
-//            jsonObject.put("skills", jsonSkills)
-//
-//            sharedPref?.let {
-//                with(it.edit()) {
-//                    clear()
-//                    putString("profile", jsonObject.toString())
-//                    apply()
-//                }
-//            }
-//
-//            try {
-//                profilePicture?.let {
-//                    if (profilePicture?.size != 0) {
-//                        context?.openFileOutput("profile_picture", Context.MODE_PRIVATE).use {
-//                            it?.write(profilePicture)
-//                        }
-//                    }
-//                }
-//            }
-//            catch (e: Exception){
-//                profilePicture = null;
-//                context?.deleteFile("profile_picture")
-//            }
-//
-//
-//            val toast = Toast.makeText(context, "Profile successfully updated", Toast.LENGTH_LONG)
-//            toast.setGravity(Gravity.CENTER, 0, 0)
-//            toast.show()
-//
-//            populateViews()
-//        }
-//    }
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
+
+        val pencilItem = menu.findItem(R.id.app_bar_pencil)
+        pencilItem.isVisible = true
+    }
 
     private fun setViewsReferences(){
         tv_fullname = view?.findViewById<TextView>(R.id.textView4)
