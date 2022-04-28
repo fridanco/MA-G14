@@ -30,4 +30,10 @@ class TimeSlotVM(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun deleteTimeSlot(id: Long) {
+        thread {
+            repo.deleteTimeSlotByID(id)
+        }
+    }
+
 }

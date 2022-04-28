@@ -7,16 +7,21 @@
     android:id="@+id/time_slot_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:backgroundTint="#EAEAEA"
+    android:foregroundTint="#E6E6E6"
     android:orientation="vertical">
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="4dp"
+        android:clickable="true"
         app:cardCornerRadius="10dp"
-        app:contentPaddingBottom="8dp"
-        app:contentPaddingLeft="16dp"
-        app:contentPaddingRight="16dp"
-        app:contentPaddingTop="8dp">
+        app:contentPadding="8dp">
 
         <LinearLayout
             android:layout_width="match_parent"

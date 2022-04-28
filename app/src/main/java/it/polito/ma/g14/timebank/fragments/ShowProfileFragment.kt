@@ -16,6 +16,7 @@ import androidx.core.view.isVisible
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import it.polito.ma.g14.timebank.R
+import it.polito.ma.g14.timebank.utils.Utils
 import org.apache.commons.io.IOUtils
 import org.json.JSONArray
 import org.json.JSONObject
@@ -136,9 +137,7 @@ class ShowProfileFragment : Fragment() {
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
-
-        val pencilItem = menu.findItem(R.id.app_bar_pencil)
-        pencilItem.isVisible = true
+        Utils.manageActionBarItemsVisibility(requireActivity(), menu)
     }
 
     private fun setViewsReferences(){

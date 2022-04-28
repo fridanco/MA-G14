@@ -10,6 +10,7 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.viewModels
 import it.polito.ma.g14.timebank.R
+import it.polito.ma.g14.timebank.utils.Utils
 import org.w3c.dom.Text
 
 /**
@@ -17,9 +18,11 @@ import org.w3c.dom.Text
  * Use the [TimeSlotDetailsFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class TimeSlotDetailsFragment(val timeSlotID : Long) : Fragment() {
+class TimeSlotDetailsFragment() : Fragment() {
 
     val vm by viewModels<TimeSlotVM>()
+
+    var timeSlotID : Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +44,8 @@ class TimeSlotDetailsFragment(val timeSlotID : Long) : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        timeSlotID = requireArguments().getLong("timeSlotID")
+
         val tv_title = view?.findViewById<TextView>(R.id.textView4)
         val tv_description = view?.findViewById<TextView>(R.id.textView5)
         val tv_dateTime = view?.findViewById<TextView>(R.id.textView6)
@@ -59,7 +64,10 @@ class TimeSlotDetailsFragment(val timeSlotID : Long) : Fragment() {
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
-        val pencilItem = menu.findItem(R.id.app_bar_pencil)
-        pencilItem.isVisible = true
+        Utils.manageActionBarItemsVisibility(requireActivity(), menu)
+    }
+
+    fun deleteTimeSlot() {
+        vm.deleteTimeSlot(timeSlotID)
     }
 }

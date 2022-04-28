@@ -6,6 +6,9 @@ import android.view.ViewGroup
 import android.widget.CheckedTextView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.cardview.widget.CardView
+import androidx.core.os.bundleOf
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Entity
@@ -27,7 +30,7 @@ class TimeSlot {
     override fun toString(): String = "{ id:$id, title:$title, description:$description, dateTime:${dateTime.toString()}, duration:$duration, location:$location }"
 }
 
-class TimeSlotAdapter(): RecyclerView.Adapter<TimeSlotAdapter.ItemViewHolder>() {
+class TimeSlotAdapter(val view: View): RecyclerView.Adapter<TimeSlotAdapter.ItemViewHolder>() {
     var filter: Boolean = false
     var data = listOf<TimeSlot>()
     var displayData = data.toMutableList()
@@ -41,7 +44,7 @@ class TimeSlotAdapter(): RecyclerView.Adapter<TimeSlotAdapter.ItemViewHolder>() 
             timeSlotContainer.findViewById<TextView>(R.id.textView6).text = timeSlot.dateTime
             timeSlotContainer.findViewById<TextView>(R.id.textView7).text = timeSlot.duration.toString()
             timeSlotContainer.findViewById<TextView>(R.id.textView19).text = timeSlot.location
-            timeSlotContainer.setOnClickListener(action)
+            timeSlotContainer.findViewById<CardView>(R.id.cardView).setOnClickListener(action)
         }
         fun unbind() {
             timeSlotContainer.setOnClickListener(null)
@@ -58,18 +61,8 @@ class TimeSlotAdapter(): RecyclerView.Adapter<TimeSlotAdapter.ItemViewHolder>() 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val timeSlot = displayData[position]
         holder.bind(timeSlot) {
-            val pos = data.indexOf(timeSlot)
-//            if (pos!=-1) {
-//                if(!(holder.itemView as CheckedTextView).isChecked){
-//                    (holder.itemView as CheckedTextView).isChecked = true
-//                    checked_skills.add(data[pos].name)
-//                }
-//                else{
-//                    (holder.itemView as CheckedTextView).isChecked = false
-//                    checked_skills.remove(data[pos].name)
-//                }
-//
-//            }
+            val bundle = bundleOf("timeSlotID" to timeSlot.id)
+            view.findNavController().navigate(R.id.action_timeSlotListFragment_to_timeSlotDetailsFragment, bundle)
         }
     }
 

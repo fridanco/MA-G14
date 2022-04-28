@@ -40,4 +40,6 @@ class TimeSlotREPO(application: Application) {
         timeSlotDAO.updateTimeSlot(ts)
     }
 
+    fun deleteTimeSlotByID(id: Long) = timeSlotDAO.deleteTimeSlotByID(id)
+
 }

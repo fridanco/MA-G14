@@ -12,6 +12,7 @@ import android.widget.TextView
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.viewModels
 import it.polito.ma.g14.timebank.R
+import it.polito.ma.g14.timebank.utils.Utils
 import java.util.*
 
 
@@ -39,6 +40,8 @@ class TimeSlotEditFragment() : Fragment() {
     var duration = ""
     var location = ""
 
+    var cancelOperation = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -58,6 +61,8 @@ class TimeSlotEditFragment() : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        cancelOperation = false
 
         timeSlotID = requireArguments().getLong("timeSlotID")
         operationType = requireArguments().getString("operationType").toString()
@@ -85,16 +90,16 @@ class TimeSlotEditFragment() : Fragment() {
             } else {
                 et_title.error = null
             }
-            if(operationType=="edit_time_slot") {
-                vm.editTimeSlot(
-                    timeSlotID,
-                    title,
-                    description,
-                    date,
-                    5,
-                    location
-                )
-            }
+//            if(operationType=="edit_time_slot") {
+//                vm.editTimeSlot(
+//                    timeSlotID,
+//                    title,
+//                    description,
+//                    date,
+//                    5,
+//                    location
+//                )
+//            }
         }
 
 
@@ -105,16 +110,16 @@ class TimeSlotEditFragment() : Fragment() {
             } else {
                 et_description.error = null
             }
-            if(operationType=="edit_time_slot") {
-                vm.editTimeSlot(
-                    timeSlotID,
-                    title,
-                    description,
-                    date,
-                    5,
-                    location
-                )
-            }
+//            if(operationType=="edit_time_slot") {
+//                vm.editTimeSlot(
+//                    timeSlotID,
+//                    title,
+//                    description,
+//                    date,
+//                    5,
+//                    location
+//                )
+//            }
         }
 
         et_dateTime.doOnTextChanged { text, start, before, count ->
@@ -124,16 +129,16 @@ class TimeSlotEditFragment() : Fragment() {
             } else {
                 et_dateTime.error = null
             }
-            if(operationType=="edit_time_slot") {
-                vm.editTimeSlot(
-                    timeSlotID,
-                    title,
-                    description,
-                    date,
-                    5,
-                    location
-                )
-            }
+//            if(operationType=="edit_time_slot") {
+//                vm.editTimeSlot(
+//                    timeSlotID,
+//                    title,
+//                    description,
+//                    date,
+//                    5,
+//                    location
+//                )
+//            }
         }
 
         et_duration.doOnTextChanged { text, start, before, count ->
@@ -143,16 +148,16 @@ class TimeSlotEditFragment() : Fragment() {
             } else {
                 et_duration.error = null
             }
-            if(operationType=="edit_time_slot") {
-                vm.editTimeSlot(
-                    timeSlotID,
-                    title,
-                    description,
-                    date,
-                    5,
-                    location
-                )
-            }
+//            if(operationType=="edit_time_slot") {
+//                vm.editTimeSlot(
+//                    timeSlotID,
+//                    title,
+//                    description,
+//                    date,
+//                    5,
+//                    location
+//                )
+//            }
         }
 
         et_location.doOnTextChanged { text, start, before, count ->
@@ -162,31 +167,35 @@ class TimeSlotEditFragment() : Fragment() {
             } else {
                 et_location.error = null
             }
-            if(operationType=="edit_time_slot") {
-                vm.editTimeSlot(
-                    timeSlotID,
-                    title,
-                    description,
-                    date,
-                    5,
-                    location
-                )
-            }
+//            if(operationType=="edit_time_slot") {
+//                vm.editTimeSlot(
+//                    timeSlotID,
+//                    title,
+//                    description,
+//                    date,
+//                    5,
+//                    location
+//                )
+//            }
         }
 
     }
 
-    override fun onStop() {
-        vm.addTimeSlot(title, description, date, 5, location)
-        println("SAVING time slot")
-        super.onStop()
+    override fun onDestroy() {
+        if(!cancelOperation){
+            if(operationType=="edit_time_slot"){
+                vm.editTimeSlot(timeSlotID, title, description, date, 5, location)
+            }
+            else if(operationType=="add_time_slot"){
+                vm.addTimeSlot(title, description, date, 5, location)
+            }
+        }
+        super.onDestroy()
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
-
-        val pencilItem = menu.findItem(R.id.app_bar_pencil)
-        pencilItem.isVisible = false
+        Utils.manageActionBarItemsVisibility(requireActivity(), menu)
     }
 
     private fun String.toEditable(): Editable =  Editable.Factory.getInstance().newEditable(this)

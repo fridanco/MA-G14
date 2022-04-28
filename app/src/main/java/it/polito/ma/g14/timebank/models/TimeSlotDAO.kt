@@ -18,8 +18,8 @@ interface TimeSlotDAO {
     @Insert
     fun insertTimeSlot(timeSlot: TimeSlot)
 
-    @Delete
-    fun deleteTimeSlot(timeSlot: TimeSlot)
+    @Query("DELETE FROM time_slots WHERE id=:timeSlotID")
+    fun deleteTimeSlotByID(timeSlotID: Long)
 
     @Update
     fun updateTimeSlot(timeSlot: TimeSlot)

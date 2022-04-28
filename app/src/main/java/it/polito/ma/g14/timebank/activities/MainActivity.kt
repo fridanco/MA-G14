@@ -8,15 +8,14 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
-import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.*
 import com.google.android.material.navigation.NavigationView
-import com.google.android.material.snackbar.Snackbar
 import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.databinding.ActivityMainBinding
 import it.polito.ma.g14.timebank.fragments.EditProfileFragment
+import it.polito.ma.g14.timebank.utils.Utils.ActionBarUtils.manageActionBarItemActions
 
 
 class MainActivity : AppCompatActivity() {
@@ -35,6 +34,7 @@ class MainActivity : AppCompatActivity() {
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
         val navController = findNavController(R.id.nav_host_fragment_content_main)
+
         NavigationUI.setupActionBarWithNavController(this, navController)
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity() {
             R.id.edit_profile -> {
                 val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
                 val fragment = navHostFragment!!.childFragmentManager.fragments[0] as EditProfileFragment
-                if(!fragment.isFormValid()){
+                if(!fragment.isFormValid() && !fragment.cancelOperation){
                     val toast = Toast.makeText(this, "Please fill in all the mandatory fields", Toast.LENGTH_LONG)
                     toast.setGravity(Gravity.CENTER, 0, 0)
                     toast.show()
@@ -71,7 +71,7 @@ class MainActivity : AppCompatActivity() {
             R.id.edit_profile -> {
                 val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
                 val fragment = navHostFragment!!.childFragmentManager.fragments[0] as EditProfileFragment
-                if(!fragment.isFormValid()){
+                if(!fragment.isFormValid() && !fragment.cancelOperation){
                     val toast = Toast.makeText(this, "Please fill in all the mandatory fields", Toast.LENGTH_LONG)
                     toast.setGravity(Gravity.CENTER, 0, 0)
                     toast.show()
@@ -91,9 +91,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
-            R.id.app_bar_pencil -> Navigation.findNavController(this, R.id.nav_host_fragment_content_main).navigate(R.id.action_nav_profile_to_edit_profile)
-        }
+        manageActionBarItemActions(this, item)
         return super.onOptionsItemSelected(item)
     }
 

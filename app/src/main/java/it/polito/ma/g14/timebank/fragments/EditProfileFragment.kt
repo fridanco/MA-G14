@@ -29,6 +29,7 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.activities.MainActivity
+import it.polito.ma.g14.timebank.utils.Utils
 import org.apache.commons.io.IOUtils
 import org.json.JSONArray
 import org.json.JSONObject
@@ -77,6 +78,8 @@ class EditProfileFragment : Fragment() {
 
     private var imgButton : ImageButton? = null
     private var imgButton2 : ImageButton? = null
+
+    var cancelOperation = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -160,13 +163,20 @@ class EditProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        cancelOperation = false
+
         setEditTextReferences()
         populateEditText()
         attachListeners()
         attachContextMenu()
     }
 
-    override fun onStop() {
+    override fun onDestroy() {
+        if(cancelOperation){
+            super.onDestroy()
+            return
+        }
+
         val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
 
         val jsonObject = JSONObject()
@@ -199,15 +209,12 @@ class EditProfileFragment : Fragment() {
             profilePicture = null;
             requireContext().deleteFile("profile_picture")
         }
-        super.onStop()
+        super.onDestroy()
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
-
-        val pencilItem = menu.findItem(R.id.app_bar_pencil)
-        pencilItem.isVisible = false
-
+        Utils.manageActionBarItemsVisibility(requireActivity(), menu)
     }
 
     override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenu.ContextMenuInfo?) {

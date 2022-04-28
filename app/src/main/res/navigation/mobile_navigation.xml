@@ -25,6 +25,9 @@
         <action
             android:id="@+id/action_timeSlotDetailsFragment_to_timeSlotEditFragment"
             app:destination="@id/timeSlotEditFragment" />
+        <action
+            android:id="@+id/action_timeSlotDetailsFragment_to_timeSlotListFragment"
+            app:destination="@id/timeSlotListFragment" />
     </fragment>
     <fragment
         android:id="@+id/timeSlotEditFragment"
@@ -53,6 +56,10 @@
         android:id="@+id/edit_profile"
         android:name="it.polito.ma.g14.timebank.fragments.EditProfileFragment"
         android:label="Edit profile"
-        tools:layout="@layout/fragment_edit_profile" />
+        tools:layout="@layout/fragment_edit_profile" >
+        <action
+            android:id="@+id/action_edit_profile_to_nav_profile"
+            app:destination="@id/nav_profile" />
+    </fragment>
 
 </navigation>

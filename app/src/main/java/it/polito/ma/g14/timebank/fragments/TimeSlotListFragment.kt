@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.models.TimeSlotAdapter
+import it.polito.ma.g14.timebank.utils.Utils
 
 /**
  * A simple [Fragment] subclass.
@@ -41,7 +42,7 @@ class TimeSlotListFragment : Fragment() {
         val rv = view?.findViewById<RecyclerView>(R.id.timeSlotRecyclerView)
         rv?.let {
             it.layoutManager = LinearLayoutManager(requireContext())
-            val adapter = TimeSlotAdapter()
+            val adapter = TimeSlotAdapter(view)
             it.adapter = adapter
 
             vm.timeSlots.observe(viewLifecycleOwner) {
@@ -70,8 +71,6 @@ class TimeSlotListFragment : Fragment() {
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
-
-        val pencilItem = menu.findItem(R.id.app_bar_pencil)
-        pencilItem.isVisible = false
+        Utils.manageActionBarItemsVisibility(requireActivity(), menu)
     }
 }
