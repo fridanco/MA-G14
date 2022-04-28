@@ -3,13 +3,41 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_home">
+    app:startDestination="@id/timeSlotListFragment">
 
     <fragment
-        android:id="@+id/nav_home"
+        android:id="@+id/timeSlotListFragment"
+        android:name="it.polito.ma.g14.timebank.fragments.TimeSlotListFragment"
+        android:label="My advertisments"
+        tools:layout="@layout/fragment_time_slot_list" >
+        <action
+            android:id="@+id/action_timeSlotListFragment_to_timeSlotDetailsFragment"
+            app:destination="@id/timeSlotDetailsFragment" />
+        <action
+            android:id="@+id/action_timeSlotListFragment_to_timeSlotEditFragment"
+            app:destination="@id/timeSlotEditFragment"/>
+    </fragment>
+    <fragment
+        android:id="@+id/timeSlotDetailsFragment"
         android:name="it.polito.ma.g14.timebank.fragments.TimeSlotDetailsFragment"
-        android:label="@string/menu_home"
-        tools:layout="@layout/fragment_time_slot_details" />
+        android:label="Time slot details"
+        tools:layout="@layout/fragment_time_slot_details" >
+        <action
+            android:id="@+id/action_timeSlotDetailsFragment_to_timeSlotEditFragment"
+            app:destination="@id/timeSlotEditFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/timeSlotEditFragment"
+        android:name="it.polito.ma.g14.timebank.fragments.TimeSlotEditFragment"
+        android:label="Edit time slot"
+        tools:layout="@layout/fragment_time_slot_edit" >
+        <action
+            android:id="@+id/action_timeSlotEditFragment_to_timeSlotDetailsFragment"
+            app:destination="@id/timeSlotDetailsFragment" />
+        <action
+            android:id="@+id/action_timeSlotEditFragment_to_timeSlotListFragment"
+            app:destination="@id/timeSlotListFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_profile"

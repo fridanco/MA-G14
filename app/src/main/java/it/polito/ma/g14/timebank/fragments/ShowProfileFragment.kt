@@ -105,7 +105,7 @@ class ShowProfileFragment : Fragment() {
             profilePicture=null
         }
 
-        activity?.invalidateOptionsMenu()
+        requireActivity().invalidateOptionsMenu()
 
         val sv = view?.findViewById<ScrollView>(R.id.scrollView2)
         val frameLayout = view?.findViewById<FrameLayout>(R.id.frameLayout2)
