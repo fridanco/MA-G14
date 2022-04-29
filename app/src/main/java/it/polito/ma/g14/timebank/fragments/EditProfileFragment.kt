@@ -541,6 +541,23 @@ class EditProfileFragment : Fragment() {
     private fun String.toEditable(): Editable =  Editable.Factory.getInstance().newEditable(this)
 
     fun isFormValid() : Boolean {
+        if(fullName.trim().isEmpty()){
+            et_fullname?.error = "Fullname cannot be empty"
+            h_et_fullname?.error = "Fullname cannot be empty"
+        }
+        if(nickName.trim().isEmpty()){
+            et_nickname?.error = "Nickname cannot be empty"
+            h_et_nickname?.error = "Nickname cannot be empty"
+        }
+        if(email.trim().isEmpty()){
+            et_email?.error = "Email cannot be empty"
+            h_et_email?.error = "Email cannot be empty"
+        }
+        if(location.trim().isEmpty()){
+            et_location?.error = "Location cannot be empty"
+            h_et_location?.error = "Location cannot be empty"
+        }
+
         if(et_fullname?.error != null || et_nickname?.error != null || et_email?.error != null ||et_location?.error != null ||
             h_et_fullname?.error != null || h_et_nickname?.error != null || h_et_email?.error != null || h_et_location?.error != null){
             return false

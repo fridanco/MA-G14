@@ -15,6 +15,7 @@ import com.google.android.material.navigation.NavigationView
 import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.databinding.ActivityMainBinding
 import it.polito.ma.g14.timebank.fragments.EditProfileFragment
+import it.polito.ma.g14.timebank.fragments.TimeSlotEditFragment
 import it.polito.ma.g14.timebank.utils.Utils.ActionBarUtils.manageActionBarItemActions
 
 
@@ -60,6 +61,16 @@ class MainActivity : AppCompatActivity() {
                     return;
                 }
             }
+            R.id.timeSlotEditFragment -> {
+                val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
+                val fragment = navHostFragment!!.childFragmentManager.fragments[0] as TimeSlotEditFragment
+                if(!fragment.isFormValid() && !fragment.cancelOperation){
+                    val toast = Toast.makeText(this, "Please fill in all the mandatory fields", Toast.LENGTH_LONG)
+                    toast.setGravity(Gravity.CENTER, 0, 0)
+                    toast.show()
+                    return;
+                }
+            }
         }
         super.onBackPressed()
     }
@@ -71,6 +82,16 @@ class MainActivity : AppCompatActivity() {
             R.id.edit_profile -> {
                 val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
                 val fragment = navHostFragment!!.childFragmentManager.fragments[0] as EditProfileFragment
+                if(!fragment.isFormValid() && !fragment.cancelOperation){
+                    val toast = Toast.makeText(this, "Please fill in all the mandatory fields", Toast.LENGTH_LONG)
+                    toast.setGravity(Gravity.CENTER, 0, 0)
+                    toast.show()
+                    return false;
+                }
+            }
+            R.id.timeSlotEditFragment -> {
+                val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
+                val fragment = navHostFragment!!.childFragmentManager.fragments[0] as TimeSlotEditFragment
                 if(!fragment.isFormValid() && !fragment.cancelOperation){
                     val toast = Toast.makeText(this, "Please fill in all the mandatory fields", Toast.LENGTH_LONG)
                     toast.setGravity(Gravity.CENTER, 0, 0)

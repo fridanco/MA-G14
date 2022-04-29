@@ -15,14 +15,14 @@
         android:id="@+id/textView50"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Advertisment title" />
+        android:text="@string/time_slot_edit_title_label" />
 
     <EditText
         android:id="@+id/textView51"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:hint="Advertisment title"
         android:paddingBottom="12dp"
-        android:text="Advertisment title"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         android:textColor="#000000" />
 
@@ -30,55 +30,56 @@
         android:id="@+id/textView52"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Service description" />
+        android:text="@string/time_slot_edit_description_label" />
 
     <EditText
         android:id="@+id/textView53"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:hint="Service description"
         android:paddingBottom="12dp"
-        android:text="Service description"
         android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
     <TextView
         android:id="@+id/textView54"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Date and time" />
+        android:text="@string/time_slot_edit_dateTime_label" />
 
     <EditText
         android:id="@+id/editTextDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
+        android:hint="Date and time"
         android:inputType="date" />
 
     <TextView
         android:id="@+id/textView55"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Duration" />
+        android:text="@string/time_slot_edit_duration_label" />
 
     <EditText
         android:id="@+id/textView56"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:hint="5h 30min"
         android:paddingBottom="12dp"
-        android:text="5h 30min"
         android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
     <TextView
         android:id="@+id/textView57"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Location" />
+        android:text="@string/time_slot_edit_location_label" />
 
     <EditText
         android:id="@+id/textView58"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:hint="Location address"
         android:paddingBottom="12dp"
-        android:text="Location address"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textColor="#000000" />
 </LinearLayout>

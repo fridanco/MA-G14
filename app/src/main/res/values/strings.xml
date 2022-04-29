@@ -44,6 +44,12 @@
     <string name="profile_picture_content_description">Your profile picture</string>
     <string name="change_profile_picture_content_description">Change your profile picture</string>
 
+    <string name="time_slot_edit_title_label">Advertisment title<font color='#FF0000'>*</font></string>
+    <string name="time_slot_edit_description_label">Description<font color='#FF0000'>*</font></string>
+    <string name="time_slot_edit_dateTime_label">Date and time<font color='#FF0000'>*</font></string>
+    <string name="time_slot_edit_duration_label">Duration<font color='#FF0000'>*</font></string>
+    <string name="time_slot_edit_location_label">Location<font color='#FF0000'>*</font></string>
+
 
     <string name="change_profile_picture_context_menu_camera">Take a picture</string>
     <string name="change_profile_picture_context_menu_gallery">Choose from gallery</string>
