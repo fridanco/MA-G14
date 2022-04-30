@@ -41,4 +41,8 @@ class ProfileREPO(application: Application) {
     fun removeSkill(skill: String){
         profileDAO.removeSkill(Skill().apply {this.skill = skill })
     }
+
+    fun removeAllSkills(){
+        profileDAO.removeAllSkills()
+    }
 }

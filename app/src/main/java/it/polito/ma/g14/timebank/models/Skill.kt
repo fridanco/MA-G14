@@ -7,6 +7,7 @@ import android.widget.CheckedTextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Entity
+import androidx.room.OnConflictStrategy
 import androidx.room.PrimaryKey
 import it.polito.ma.g14.timebank.R
 

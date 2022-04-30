@@ -6,7 +6,10 @@ import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.core.os.bundleOf
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -39,13 +42,21 @@ class TimeSlotListFragment : Fragment() {
 
         requireActivity().invalidateOptionsMenu()
 
-        val rv = view?.findViewById<RecyclerView>(R.id.timeSlotRecyclerView)
-        rv?.let {
-            it.layoutManager = LinearLayoutManager(requireContext())
-            val adapter = TimeSlotAdapter(view)
-            it.adapter = adapter
+        val rv = view.findViewById<RecyclerView>(R.id.timeSlotRecyclerView)
+        val emptyRv = view.findViewById<TextView>(R.id.textView60)
 
-            vm.timeSlots.observe(viewLifecycleOwner) {
+        rv.layoutManager = LinearLayoutManager(requireContext())
+        val adapter = TimeSlotAdapter(view)
+        rv.adapter = adapter
+
+        vm.timeSlots.observe(viewLifecycleOwner) {
+            if(it.isEmpty()){
+                rv.isGone = true
+                emptyRv.isVisible = true
+            }
+            else {
+                rv.isVisible = true
+                emptyRv.isGone = true
                 adapter.updateTimeSlots(it)
             }
         }

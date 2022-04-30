@@ -39,4 +39,10 @@ class ProfileVM(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun removeAllSkills(){
+        thread {
+            repo.removeAllSkills()
+        }
+    }
+
 }

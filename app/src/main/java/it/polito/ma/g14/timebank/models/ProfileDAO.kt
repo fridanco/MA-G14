@@ -21,9 +21,12 @@ interface ProfileDAO {
     @Query("SELECT * FROM skills")
     fun getSkills() : LiveData<List<Skill>>
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addSkill(skill: Skill)
 
     @Delete
     fun removeSkill(skill: Skill)
+
+    @Query("DELETE FROM skills")
+    fun removeAllSkills()
 }

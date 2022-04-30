@@ -6,6 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
+import android.widget.TextView
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -41,11 +44,22 @@ class ChooseSkillsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val rv = view.findViewById<RecyclerView>(R.id.recyclerViewSkills)
-        rv.layoutManager = LinearLayoutManager(requireContext())
-        adapter = SkillAdapter(skillList,vm)
-        rv.adapter = adapter
-        vm.skills.observe(viewLifecycleOwner){
-            adapter.updateSelectedSkills(it.map { it.skill } as MutableList<String>)
+        val emptyRv = view.findViewById<TextView>(R.id.textView59)
+
+        if(skillList.isEmpty()){
+            rv.isGone = true
+            emptyRv.isVisible = true
+        }
+        else {
+            emptyRv.isGone = true
+            rv.isVisible = true
+            rv.layoutManager = LinearLayoutManager(requireContext())
+            adapter = SkillAdapter(skillList, vm)
+            rv.adapter = adapter
+
+            vm.skills.observe(viewLifecycleOwner) {
+                adapter.updateSelectedSkills(it.map { it.skill } as MutableList<String>)
+            }
         }
 
         val searchView = view.findViewById<SearchView>(R.id.searchBar)
@@ -66,6 +80,20 @@ class ChooseSkillsFragment : Fragment() {
             }
 
         })
+    }
+
+    override fun onDestroy() {
+        if(cancelOperation){
+            super.onDestroy()
+            return
+        }
+
+        vm.removeAllSkills()
+        for(skill in adapter.checked_skills){
+            vm.addSkill(skill)
+        }
+
+        super.onDestroy()
     }
 
 }

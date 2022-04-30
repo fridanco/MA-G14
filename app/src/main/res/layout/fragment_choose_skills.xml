@@ -15,7 +15,20 @@
         android:paddingTop="8dp"
         android:paddingEnd="16dp"
         android:paddingBottom="8dp"
-        android:queryHint="@string/search_skill_placeholder" />
+        android:queryHint="@string/search_skill_placeholder" >
+
+    </SearchView>
+
+    <TextView
+        android:id="@+id/textView59"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="32dp"
+        android:gravity="center_horizontal"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:text="There are no skills to choose from at this moment" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewSkills"
