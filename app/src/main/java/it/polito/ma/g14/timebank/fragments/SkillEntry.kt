@@ -1,31 +1,30 @@
-package it.polito.listapplication
+package it.polito.ma.g14.timebank.fragments
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckedTextView
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.ma.g14.timebank.R
+import it.polito.ma.g14.timebank.models.MyDiffCallback
+import it.polito.ma.g14.timebank.models.TimeSlot
 
-data class Item(val name:String, var active:Boolean )
+data class SkillEntry(val name:String, var active:Boolean )
 
-class ItemAdapter(val data:MutableList<Item>): RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
+class SkillAdapter(val data:MutableList<SkillEntry>, val vm: ProfileVM): RecyclerView.Adapter<SkillAdapter.ItemViewHolder>() {
     var filter: Boolean = false
     var displayData = data.toMutableList()
     var checked_skills = mutableListOf<String>()
 
 
-    class ItemViewHolder(v:View): RecyclerView.ViewHolder(v) {
+    class ItemViewHolder(v: View): RecyclerView.ViewHolder(v) {
         private val skill: CheckedTextView = v.findViewById(R.id.simpleCheckedTextView)
 
-        fun bind(item:Item, action: (v:View)->Unit) {
-            skill.text = item.name
-            skill.isChecked = item.active
-            skill.setOnClickListener(action)
+        fun bind(skillEntry: SkillEntry, action: (v: View)->Unit) {
+            this.skill.text = skillEntry.name
+            this.skill.isChecked = skillEntry.active
+            this.skill.setOnClickListener(action)
         }
         fun unbind() {
             skill.setOnClickListener(null)
@@ -48,10 +47,12 @@ class ItemAdapter(val data:MutableList<Item>): RecyclerView.Adapter<ItemAdapter.
                 if(!(holder.itemView as CheckedTextView).isChecked){
                     (holder.itemView as CheckedTextView).isChecked = true
                     checked_skills.add(data[pos].name)
+                    vm.addSkill(data[pos].name)
                 }
                 else{
                     (holder.itemView as CheckedTextView).isChecked = false
                     checked_skills.remove(data[pos].name)
+                    vm.removeSkill(data[pos].name)
                 }
 
             }
@@ -62,29 +63,34 @@ class ItemAdapter(val data:MutableList<Item>): RecyclerView.Adapter<ItemAdapter.
 
 
     fun addFilter(text: String) {
-        var newData = mutableListOf<Item>()
+        var newData = mutableListOf<SkillEntry>()
         if(text.isEmpty() || text.isBlank()){
             newData = data
         }
         else{
-            newData = data.filter { it.name.contains(text, ignoreCase = true) } as MutableList<Item>
+            newData = data.filter { it.name.contains(text, ignoreCase = true) } as MutableList<SkillEntry>
         }
-        val diffs = DiffUtil.calculateDiff(MyDiffCallback(displayData, newData))
+        val diffs = DiffUtil.calculateDiff(MyDiffCallbackSkills(displayData, newData))
         displayData = newData
         diffs.dispatchUpdatesTo(this)
     }
+
+    fun updateSelectedSkills(checkedSkills: List<String>){
+        checked_skills = checkedSkills as MutableList<String>
+        notifyDataSetChanged()
+    }
 }
 
-class MyDiffCallback(val old: List<Item>, val new: List<Item>): DiffUtil.Callback() {
+class MyDiffCallbackSkills(val old: List<SkillEntry>, val aNew: List<SkillEntry>): DiffUtil.Callback() {
     override fun getOldListSize(): Int = old.size
 
-    override fun getNewListSize(): Int = new.size
+    override fun getNewListSize(): Int = aNew.size
 
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return old[oldItemPosition] === new[newItemPosition]
+        return old[oldItemPosition] === aNew[newItemPosition]
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return old[oldItemPosition] == new[newItemPosition]
+        return old[oldItemPosition] == aNew[newItemPosition]
     }
 }

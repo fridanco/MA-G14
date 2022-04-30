@@ -60,6 +60,14 @@
         <action
             android:id="@+id/action_edit_profile_to_nav_profile"
             app:destination="@id/nav_profile" />
+        <action
+            android:id="@+id/action_edit_profile_to_chooseSkillsFragment"
+            app:destination="@id/chooseSkillsFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/chooseSkillsFragment"
+        android:name="it.polito.ma.g14.timebank.fragments.ChooseSkillsFragment"
+        android:label="fragment_choose_skills"
+        tools:layout="@layout/fragment_choose_skills" />
 
 </navigation>

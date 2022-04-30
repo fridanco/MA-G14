@@ -19,20 +19,21 @@ import android.text.Editable
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.*
-import androidx.activity.addCallback
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
+import androidx.fragment.app.viewModels
+import androidx.navigation.findNavController
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.activities.MainActivity
+import it.polito.ma.g14.timebank.models.Profile
+import it.polito.ma.g14.timebank.models.Skill
 import it.polito.ma.g14.timebank.utils.Utils
 import org.apache.commons.io.IOUtils
-import org.json.JSONArray
-import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileInputStream
@@ -47,6 +48,8 @@ import kotlin.collections.ArrayList
  * create an instance of this fragment.
  */
 class EditProfileFragment : Fragment() {
+
+    val vm by viewModels<ProfileVM>()
 
     var imageFilepath : String = ""
 
@@ -92,36 +95,36 @@ class EditProfileFragment : Fragment() {
 
         val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
 
-        try {
-            sharedPref?.let {
-                val jsonPreferences = it.getString("profile", "")
-                if (jsonPreferences != null && jsonPreferences.isNotEmpty()) {
-                    val jsonObject = JSONObject(jsonPreferences)
-                    fullName = jsonObject.getString("fullName")
-                        ?: getString(R.string.profile_fullname_placeholder)
-                    nickName = jsonObject.getString("nickName")
-                        ?: getString(R.string.profile_nickname_placeholder)
-                    email =
-                        jsonObject.getString("email") ?: getString(R.string.profile_email_placeholder)
-                    location = jsonObject.getString("location")
-                        ?: getString(R.string.profile_location_placeholder)
-                    description = jsonObject.getString("description")
-                        ?: getString(R.string.profile_description_placeholder)
-                    val jsonSkills: JSONArray = jsonObject.getJSONArray("skills") ?: JSONArray()
-                    for (i in 0 until jsonSkills.length()) {
-                        skills.add(jsonSkills.getString(i))
-                    }
-                }
-            }
-        }
-        catch (e:Exception){
-            println("ERROR in retrieving sharedPrefs")
-            sharedPref?.let {
-                with(it.edit()) {
-                    clear()
-                }
-            }
-        }
+//        try {
+//            sharedPref?.let {
+//                val jsonPreferences = it.getString("profile", "")
+//                if (jsonPreferences != null && jsonPreferences.isNotEmpty()) {
+//                    val jsonObject = JSONObject(jsonPreferences)
+//                    fullName = jsonObject.getString("fullName")
+//                        ?: getString(R.string.profile_fullname_placeholder)
+//                    nickName = jsonObject.getString("nickName")
+//                        ?: getString(R.string.profile_nickname_placeholder)
+//                    email =
+//                        jsonObject.getString("email") ?: getString(R.string.profile_email_placeholder)
+//                    location = jsonObject.getString("location")
+//                        ?: getString(R.string.profile_location_placeholder)
+//                    description = jsonObject.getString("description")
+//                        ?: getString(R.string.profile_description_placeholder)
+//                    val jsonSkills: JSONArray = jsonObject.getJSONArray("skills") ?: JSONArray()
+//                    for (i in 0 until jsonSkills.length()) {
+//                        skills.add(jsonSkills.getString(i))
+//                    }
+//                }
+//            }
+//        }
+//        catch (e:Exception){
+//            println("ERROR in retrieving sharedPrefs")
+//            sharedPref?.let {
+//                with(it.edit()) {
+//                    clear()
+//                }
+//            }
+//        }
 
         try {
             val inputStream : FileInputStream = requireContext().openFileInput(getString(R.string.profile_picture_filename))
@@ -166,9 +169,16 @@ class EditProfileFragment : Fragment() {
         cancelOperation = false
 
         setEditTextReferences()
-        populateEditText()
+        populateProfileImage()
         attachListeners()
         attachContextMenu()
+
+        vm.profile.observe(viewLifecycleOwner){
+            populateProfileEditText(it)
+        }
+        vm.skills.observe(viewLifecycleOwner){
+            populateProfileSkills(it)
+        }
     }
 
     override fun onDestroy() {
@@ -177,24 +187,26 @@ class EditProfileFragment : Fragment() {
             return
         }
 
-        val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
+//        val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
+//
+//        val jsonObject = JSONObject()
+//        val jsonSkills = JSONArray(skills)
+//        jsonObject.put("fullName", fullName)
+//        jsonObject.put("email", email)
+//        jsonObject.put("nickName", nickName)
+//        jsonObject.put("location", location)
+//        jsonObject.put("description", description)
+//        jsonObject.put("skills", jsonSkills)
+//
+//        sharedPref?.let {
+//            with(it.edit()) {
+//                clear()
+//                putString("profile", jsonObject.toString())
+//                apply()
+//            }
+//        }
 
-        val jsonObject = JSONObject()
-        val jsonSkills = JSONArray(skills)
-        jsonObject.put("fullName", fullName)
-        jsonObject.put("email", email)
-        jsonObject.put("nickName", nickName)
-        jsonObject.put("location", location)
-        jsonObject.put("description", description)
-        jsonObject.put("skills", jsonSkills)
 
-        sharedPref?.let {
-            with(it.edit()) {
-                clear()
-                putString("profile", jsonObject.toString())
-                apply()
-            }
-        }
 
         try {
             profilePicture?.let {
@@ -209,6 +221,9 @@ class EditProfileFragment : Fragment() {
             profilePicture = null;
             requireContext().deleteFile("profile_picture")
         }
+
+        vm.updateProfile(fullName, nickName, email, location, description)
+
         super.onDestroy()
     }
 
@@ -282,7 +297,7 @@ class EditProfileFragment : Fragment() {
                 rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 20, stream)
                 profilePicture = stream.toByteArray()
             }
-            populateEditText()
+            populateProfileImage()
         }
     }
 
@@ -313,7 +328,7 @@ class EditProfileFragment : Fragment() {
 
                 profilePicture = stream.toByteArray()
             }
-            populateEditText()
+            populateProfileImage()
         }
     }
 
@@ -339,26 +354,31 @@ class EditProfileFragment : Fragment() {
         h_iv_profilePicture = view?.findViewById<ImageView>(R.id.imageView2)
     }
 
-    private fun populateEditText(){
-
-        et_fullname?.text = fullName.toEditable()
-        et_nickname?.text = nickName.toEditable()
-        et_email?.text = email.toEditable()
-        et_location?.text = location.toEditable()
-        et_description?.text = description.toEditable()
-
-        h_et_fullname?.text = fullName.toEditable()
-        h_et_nickname?.text = nickName.toEditable()
-        h_et_email?.text = email.toEditable()
-        h_et_location?.text = location.toEditable()
-        h_et_description?.text = description.toEditable()
-
+    private fun populateProfileImage(){
         profilePicture?.let{
             val bmp = BitmapFactory.decodeByteArray(it, 0, it.size)
             iv_profilePicture?.setImageBitmap(bmp)
             h_iv_profilePicture?.setImageBitmap(bmp)
         }
+    }
 
+    private fun populateProfileEditText(profile: Profile){
+
+        et_fullname?.text = profile.fullname.toEditable()
+        et_nickname?.text = profile.nickname.toEditable()
+        et_email?.text = profile.email.toEditable()
+        et_location?.text = profile.location.toEditable()
+        et_description?.text = profile.description.toEditable()
+
+        h_et_fullname?.text = profile.fullname.toEditable()
+        h_et_nickname?.text = profile.nickname.toEditable()
+        h_et_email?.text = profile.email.toEditable()
+        h_et_location?.text = profile.location.toEditable()
+        h_et_description?.text = profile.description.toEditable()
+
+    }
+
+    private fun populateProfileSkills(skills: List<Skill>){
         et_skills?.removeAllViews()
         h_et_skills?.removeAllViews()
         if(skills.size==0){
@@ -368,20 +388,13 @@ class EditProfileFragment : Fragment() {
         else {
             view?.findViewById<TextView>(R.id.textView10)?.isVisible = false
             view?.findViewById<TextView>(R.id.textView11)?.isVisible = false
-            skills.forEach {
+            skills.forEach { skillObj: Skill ->
                 val inflater: LayoutInflater = layoutInflater
                 val skill: Chip = inflater.inflate(R.layout.skill_chip, null) as Chip
-                skill.text = it
+                skill.text = skillObj.skill
                 skill.isCloseIconVisible = true
                 skill.setOnCloseIconClickListener {
-                    val skill = it as Chip
-                    skills.remove(skill.text.toString())
-                    et_skills?.removeView(it)
-                    h_et_skills?.removeView(it)
-                    if(skills.size==0){
-                        view?.findViewById<TextView>(R.id.textView10)?.isVisible = true
-                        view?.findViewById<TextView>(R.id.textView11)?.isVisible = true
-                    }
+                    vm.removeSkill(skillObj.skill)
                 }
                 et_skills?.addView(skill)
                 h_et_skills?.addView(skill)
@@ -437,11 +450,10 @@ class EditProfileFragment : Fragment() {
         et_description?.doOnTextChanged { text, start, before, count ->
             description = text.toString()
         }
-//        button_skills?.setOnClickListener {
-//            val i = Intent(this, ChooseSkillsActivity::class.java)
-//            i.putExtra("skills", skills)
-//            startForChooseSkills.launch(i)
-//        }
+
+        button_skills?.setOnClickListener {
+            view?.findNavController()?.navigate(R.id.action_edit_profile_to_chooseSkillsFragment)
+        }
 
 
         h_et_fullname?.doOnTextChanged { text, start, before, count ->
@@ -492,11 +504,7 @@ class EditProfileFragment : Fragment() {
             description = text.toString()
         }
         h_button_skills?.setOnClickListener {
-            val mainActivity = requireActivity() as MainActivity
-            mainActivity.replaceFragment(ChooseSkillsFragment())
-            //val i = Intent(this, ChooseSkillsActivity::class.java)
-            //i.putExtra("skills", skills)
-            //startForChooseSkills.launch(i)
+            view?.findNavController()?.navigate(R.id.action_edit_profile_to_chooseSkillsFragment)
         }
 
     }

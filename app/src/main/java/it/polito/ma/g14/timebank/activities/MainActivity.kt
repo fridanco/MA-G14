@@ -5,9 +5,11 @@ import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.*
@@ -15,17 +17,26 @@ import com.google.android.material.navigation.NavigationView
 import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.databinding.ActivityMainBinding
 import it.polito.ma.g14.timebank.fragments.EditProfileFragment
+import it.polito.ma.g14.timebank.fragments.ProfileVM
 import it.polito.ma.g14.timebank.fragments.TimeSlotEditFragment
 import it.polito.ma.g14.timebank.utils.Utils.ActionBarUtils.manageActionBarItemActions
 
 
 class MainActivity : AppCompatActivity() {
 
+    val vm by viewModels<ProfileVM>()
+
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        vm.isProfileInitalized.observe(this){
+            if(it==0){
+                vm.initProfile()
+            }
+        }
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)

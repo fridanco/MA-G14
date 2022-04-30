@@ -3,7 +3,6 @@ package it.polito.ma.g14.timebank.models
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckedTextView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
@@ -13,9 +12,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import it.polito.listapplication.Item
 import it.polito.ma.g14.timebank.R
-import java.util.*
 
 @Entity(tableName = "time_slots")
 class TimeSlot {

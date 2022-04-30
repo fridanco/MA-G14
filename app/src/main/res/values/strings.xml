@@ -69,6 +69,7 @@
     <string name="app_bar_edit_profile">Edit profile</string>
     <string name="app_bar_delete">Delete</string>
     <string name="app_bar_cancel">Cancel</string>
+    <string name="app_bar_add">Add</string>
 
 
 </resources>

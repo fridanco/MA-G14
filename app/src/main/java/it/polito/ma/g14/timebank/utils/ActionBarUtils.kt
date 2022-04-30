@@ -25,26 +25,33 @@ class Utils {
                     menu.findItem(R.id.app_bar_pencil).isVisible = false
                     menu.findItem(R.id.app_bar_delete).isVisible = false
                     menu.findItem(R.id.app_bar_cancel).isVisible = false
+                    menu.findItem(R.id.app_bar_add).isVisible = false
                 }
                 R.id.timeSlotEditFragment -> {
                     menu.findItem(R.id.app_bar_pencil).isVisible = false
                     menu.findItem(R.id.app_bar_delete).isVisible = false
                     menu.findItem(R.id.app_bar_cancel).isVisible = true
+                    val navHostFragment = (activity as FragmentActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
+                    val fragment = navHostFragment!!.childFragmentManager.fragments[0] as TimeSlotEditFragment
+                    menu.findItem(R.id.app_bar_add).isVisible = fragment.operationType=="add_time_slot"
                 }
                 R.id.timeSlotDetailsFragment -> {
                     menu.findItem(R.id.app_bar_pencil).isVisible = true
                     menu.findItem(R.id.app_bar_delete).isVisible = true
                     menu.findItem(R.id.app_bar_cancel).isVisible = false
+                    menu.findItem(R.id.app_bar_add).isVisible = false
                 }
                 R.id.nav_profile -> {
                     menu.findItem(R.id.app_bar_pencil).isVisible = true
                     menu.findItem(R.id.app_bar_delete).isVisible = false
                     menu.findItem(R.id.app_bar_cancel).isVisible = false
+                    menu.findItem(R.id.app_bar_add).isVisible = false
                 }
                 R.id.edit_profile -> {
                     menu.findItem(R.id.app_bar_pencil).isVisible = false
                     menu.findItem(R.id.app_bar_delete).isVisible = false
                     menu.findItem(R.id.app_bar_cancel).isVisible = true
+                    menu.findItem(R.id.app_bar_add).isVisible = false
                 }
             }
         }
