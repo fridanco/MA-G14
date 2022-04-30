@@ -10,14 +10,11 @@
         android:id="@+id/searchBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="text"
-        android:paddingStart="16dp"
-        android:paddingTop="8dp"
-        android:paddingEnd="16dp"
-        android:paddingBottom="8dp"
-        android:queryHint="@string/search_skill_placeholder" >
-
-    </SearchView>
+        android:layout_margin="8dp"
+        android:commitIcon="@android:drawable/ic_menu_send"
+        android:goIcon="@android:drawable/ic_menu_send"
+        android:iconifiedByDefault="false"
+        android:queryHint="@string/search_skill_placeholder" />
 
     <TextView
         android:id="@+id/textView59"

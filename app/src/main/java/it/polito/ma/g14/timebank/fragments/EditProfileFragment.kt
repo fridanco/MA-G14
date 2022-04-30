@@ -29,7 +29,6 @@ import androidx.navigation.findNavController
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import it.polito.ma.g14.timebank.R
-import it.polito.ma.g14.timebank.activities.MainActivity
 import it.polito.ma.g14.timebank.models.Profile
 import it.polito.ma.g14.timebank.models.Skill
 import it.polito.ma.g14.timebank.utils.Utils
@@ -82,6 +81,12 @@ class EditProfileFragment : Fragment() {
     private var imgButton : ImageButton? = null
     private var imgButton2 : ImageButton? = null
 
+//    var profileDataBackup : Profile? = null
+//    var profileSkillsBackup : MutableList<Skill>? = null
+//    var profileImageBackup : ByteArray? = null
+//
+//    var profileSkills = listOf<Skill>()
+
     var cancelOperation = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -92,39 +97,6 @@ class EditProfileFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_edit_profile, container, false)
-
-        val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
-
-//        try {
-//            sharedPref?.let {
-//                val jsonPreferences = it.getString("profile", "")
-//                if (jsonPreferences != null && jsonPreferences.isNotEmpty()) {
-//                    val jsonObject = JSONObject(jsonPreferences)
-//                    fullName = jsonObject.getString("fullName")
-//                        ?: getString(R.string.profile_fullname_placeholder)
-//                    nickName = jsonObject.getString("nickName")
-//                        ?: getString(R.string.profile_nickname_placeholder)
-//                    email =
-//                        jsonObject.getString("email") ?: getString(R.string.profile_email_placeholder)
-//                    location = jsonObject.getString("location")
-//                        ?: getString(R.string.profile_location_placeholder)
-//                    description = jsonObject.getString("description")
-//                        ?: getString(R.string.profile_description_placeholder)
-//                    val jsonSkills: JSONArray = jsonObject.getJSONArray("skills") ?: JSONArray()
-//                    for (i in 0 until jsonSkills.length()) {
-//                        skills.add(jsonSkills.getString(i))
-//                    }
-//                }
-//            }
-//        }
-//        catch (e:Exception){
-//            println("ERROR in retrieving sharedPrefs")
-//            sharedPref?.let {
-//                with(it.edit()) {
-//                    clear()
-//                }
-//            }
-//        }
 
         try {
             val inputStream : FileInputStream = requireContext().openFileInput(getString(R.string.profile_picture_filename))
@@ -186,27 +158,6 @@ class EditProfileFragment : Fragment() {
             super.onDestroy()
             return
         }
-
-//        val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
-//
-//        val jsonObject = JSONObject()
-//        val jsonSkills = JSONArray(skills)
-//        jsonObject.put("fullName", fullName)
-//        jsonObject.put("email", email)
-//        jsonObject.put("nickName", nickName)
-//        jsonObject.put("location", location)
-//        jsonObject.put("description", description)
-//        jsonObject.put("skills", jsonSkills)
-//
-//        sharedPref?.let {
-//            with(it.edit()) {
-//                clear()
-//                putString("profile", jsonObject.toString())
-//                apply()
-//            }
-//        }
-
-
 
         try {
             profilePicture?.let {
@@ -452,6 +403,7 @@ class EditProfileFragment : Fragment() {
         }
 
         button_skills?.setOnClickListener {
+            vm.updateProfile(fullName, nickName, email, location, description)
             view?.findNavController()?.navigate(R.id.action_edit_profile_to_chooseSkillsFragment)
         }
 
@@ -504,6 +456,7 @@ class EditProfileFragment : Fragment() {
             description = text.toString()
         }
         h_button_skills?.setOnClickListener {
+            vm.updateProfile(fullName, nickName, email, location, description)
             view?.findNavController()?.navigate(R.id.action_edit_profile_to_chooseSkillsFragment)
         }
 

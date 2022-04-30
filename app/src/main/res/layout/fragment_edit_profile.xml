@@ -23,7 +23,7 @@
             android:paddingEnd="16dp">
 
             <FrameLayout
-                android:id="@+id/frameLayout2"
+                android:id="@+id/frameLayout"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_gravity="center_horizontal|center_vertical">
@@ -39,20 +39,21 @@
             </FrameLayout>
 
             <FrameLayout
-                android:id="@+id/frameLayout"
+                android:id="@+id/frameLayout2"
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
-                android:layout_gravity="center"
+                android:layout_gravity="center|fill|fill_horizontal|fill_vertical"
+                android:foregroundGravity="fill_horizontal|fill_vertical|fill"
                 android:paddingBottom="8dp">
 
                 <ImageView
                     android:id="@+id/imageView3"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_gravity="fill_horizontal"
+                    android:layout_gravity="center_horizontal|center_vertical"
                     android:backgroundTint="#00FFFFFF"
                     android:contentDescription="@string/profile_picture_content_description"
-                    android:foregroundGravity="fill_horizontal"
+                    android:foregroundGravity="center_vertical|center_horizontal"
                     android:scaleType="fitCenter"
                     android:src="@drawable/user" />
 

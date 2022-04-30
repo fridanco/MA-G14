@@ -67,7 +67,11 @@
     <fragment
         android:id="@+id/chooseSkillsFragment"
         android:name="it.polito.ma.g14.timebank.fragments.ChooseSkillsFragment"
-        android:label="fragment_choose_skills"
-        tools:layout="@layout/fragment_choose_skills" />
+        android:label="Choose skills"
+        tools:layout="@layout/fragment_choose_skills">
+        <action
+            android:id="@+id/action_chooseSkillsFragment_to_edit_profile"
+            app:destination="@id/edit_profile" />
+    </fragment>
 
 </navigation>

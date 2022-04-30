@@ -1,6 +1,5 @@
 package it.polito.ma.g14.timebank.fragments
 
-import android.content.Context
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.*
@@ -59,38 +58,6 @@ class ShowProfileFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_show_profile, container, false)
 
-//        try {
-//            sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
-//            sharedPref?.let {
-//                val jsonPreferences = it.getString("profile", "")
-//                if (jsonPreferences != null && jsonPreferences.isNotEmpty()) {
-//                    val jsonObject = JSONObject(jsonPreferences)
-//                    fullName = jsonObject.getString("fullName")
-//                        ?: getString(R.string.profile_fullname_placeholder)
-//                    nickName = jsonObject.getString("nickName")
-//                        ?: getString(R.string.profile_nickname_placeholder)
-//                    email =
-//                        jsonObject.getString("email") ?: getString(R.string.profile_email_placeholder)
-//                    location = jsonObject.getString("location")
-//                        ?: getString(R.string.profile_location_placeholder)
-//                    description = jsonObject.getString("description")
-//                        ?: getString(R.string.profile_description_placeholder)
-//                    val jsonSkills: JSONArray = jsonObject.getJSONArray("skills") ?: JSONArray()
-//                    for (i in 0 until jsonSkills.length()) {
-//                        skills.add(jsonSkills.getString(i))
-//                    }
-//                }
-//            }
-//        }
-//        catch (e:Exception){
-//            println("ERROR in retrieving sharedPrefs")
-//            sharedPref?.let {
-//                with(it.edit()) {
-//                    clear()
-//                }
-//            }
-//        }
-
         try {
             val inputStream : FileInputStream = requireContext().openFileInput(getString(R.string.profile_picture_filename))
             profilePicture = IOUtils.toByteArray(inputStream)
@@ -105,7 +72,7 @@ class ShowProfileFragment : Fragment() {
         requireActivity().invalidateOptionsMenu()
 
         val sv = view?.findViewById<ScrollView>(R.id.scrollView2)
-        val frameLayout = view?.findViewById<FrameLayout>(R.id.frameLayout2)
+        val frameLayout = view?.findViewById<FrameLayout>(R.id.frameLayout)
         sv?.let {
             it.viewTreeObserver?.addOnGlobalLayoutListener(object :
                 ViewTreeObserver.OnGlobalLayoutListener {

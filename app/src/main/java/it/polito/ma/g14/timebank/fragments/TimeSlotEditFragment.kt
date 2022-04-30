@@ -206,6 +206,10 @@ class TimeSlotEditFragment() : Fragment() {
 
     private fun String.toEditable(): Editable =  Editable.Factory.getInstance().newEditable(this)
 
+    fun addTimeSlot(){
+        vm.addTimeSlot(title, description, date, 5, location)
+    }
+
     fun isFormValid() : Boolean {
         if(title.trim().isEmpty()){
             et_title?.error = "Title cannot be empty"

@@ -2,12 +2,29 @@ package it.polito.ma.g14.timebank.fragments
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import it.polito.ma.g14.timebank.models.Profile
 import it.polito.ma.g14.timebank.models.ProfileREPO
 import kotlin.concurrent.thread
 
 class ProfileVM(application: Application) : AndroidViewModel(application) {
+
+    private val _inMemoryProfile = Profile()
+
+    private val _inMemoryProfileValue = MutableLiveData<Profile>().apply {
+        value = _inMemoryProfile
+    }
+
+    val inMemoryProfile: LiveData<Profile> = _inMemoryProfileValue
+
+    fun updateInMemoryProfile(fullname: String, nickname: String, email: String, location: String, description: String){
+        _inMemoryProfile.fullname = fullname
+        _inMemoryProfile.nickname = nickname
+        _inMemoryProfile.email = email
+        _inMemoryProfile.location = location
+        _inMemoryProfile.description = description
+    }
 
     val repo = ProfileREPO(application)
 

@@ -1,5 +1,6 @@
 package it.polito.ma.g14.timebank.fragments
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -75,6 +76,10 @@ class SkillAdapter(val data:MutableList<SkillEntry>, val vm: ProfileVM): Recycle
 
     fun updateSelectedSkills(checkedSkills: List<String>){
         checked_skills = checkedSkills as MutableList<String>
+        var newData = data
+        for(skillItem in checkedSkills){
+            newData.find{ it.name==skillItem}?.active = true
+        }
         notifyDataSetChanged()
     }
 }
