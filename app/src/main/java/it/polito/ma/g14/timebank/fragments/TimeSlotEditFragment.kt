@@ -94,6 +94,12 @@ class TimeSlotEditFragment() : Fragment() {
 
         if(operationType=="edit_time_slot") {
             vm.getTimeSlot(timeSlotID).observe(viewLifecycleOwner) {
+                title = it.title
+                description = it.description
+                date = it.date
+                from = it.from
+                to = it.to
+                location = it.location
                 et_title?.text = it.title.toEditable()
                 et_description?.text = it.description.toEditable()
                 et_date?.text = it.date.toEditable()
@@ -109,7 +115,7 @@ class TimeSlotEditFragment() : Fragment() {
             }
         }
 
-        et_title?.doOnTextChanged { text, start, before, count ->
+        et_title?.doOnTextChanged { text, _, _, _ ->
             title = text.toString()
             if (title.trim().isEmpty()) {
                 et_title?.error = "Title cannot be empty"
@@ -117,7 +123,7 @@ class TimeSlotEditFragment() : Fragment() {
                 et_title?.error = null
             }
         }
-        h_et_title?.doOnTextChanged { text, start, before, count ->
+        h_et_title?.doOnTextChanged { text, _, _, _ ->
             title = text.toString()
             if (title.trim().isEmpty()) {
                 h_et_title?.error = "Title cannot be empty"
@@ -127,7 +133,7 @@ class TimeSlotEditFragment() : Fragment() {
         }
 
 
-        et_description?.doOnTextChanged { text, start, before, count ->
+        et_description?.doOnTextChanged { text, _, _, _ ->
             description = text.toString()
             if (description.trim().isEmpty()) {
                 et_description?.error = "Description cannot be empty"
@@ -135,7 +141,7 @@ class TimeSlotEditFragment() : Fragment() {
                 et_description?.error = null
             }
         }
-        h_et_description?.doOnTextChanged { text, start, before, count ->
+        h_et_description?.doOnTextChanged { text, _, _, _ ->
             description = text.toString()
             if (description.trim().isEmpty()) {
                 h_et_description?.error = "Description cannot be empty"
@@ -165,7 +171,7 @@ class TimeSlotEditFragment() : Fragment() {
             TimePickerFragment(toTimeSetListener, from).show(requireActivity().supportFragmentManager, "toTimePicker")
         }
 
-        et_location?.doOnTextChanged { text, start, before, count ->
+        et_location?.doOnTextChanged { text, _, _, _ ->
             location = text.toString()
             if (location.trim().isEmpty()) {
                 et_location?.error = "Location cannot be empty"
@@ -173,7 +179,7 @@ class TimeSlotEditFragment() : Fragment() {
                 et_location?.error = null
             }
         }
-        h_et_location?.doOnTextChanged { text, start, before, count ->
+        h_et_location?.doOnTextChanged { text, _, _, _ ->
             location = text.toString()
             if (location.trim().isEmpty()) {
                 h_et_location?.error = "Location cannot be empty"
@@ -187,10 +193,10 @@ class TimeSlotEditFragment() : Fragment() {
     override fun onDestroy() {
         if(!cancelOperation){
             if(operationType=="edit_time_slot"){
-                vm.editTimeSlot(timeSlotID, title, description, date, from, to, location)
+                vm.editTimeSlot(timeSlotID, title.capitalized(), description.capitalized(), date, from, to, location.capitalized())
             }
             else if(operationType=="add_time_slot"){
-                vm.addTimeSlot(title, description, date, from, to, location)
+                vm.addTimeSlot(title.capitalized(), description.capitalized(), date, from, to, location.capitalized())
             }
         }
         super.onDestroy()
@@ -201,10 +207,8 @@ class TimeSlotEditFragment() : Fragment() {
         Utils.manageActionBarItemsVisibility(requireActivity(), menu)
     }
 
-    private fun String.toEditable(): Editable =  Editable.Factory.getInstance().newEditable(this)
-
     fun addTimeSlot(){
-        vm.addTimeSlot(title, description, date, from, to, location)
+        vm.addTimeSlot(title.capitalized(), description.capitalized(), date, from, to, location.capitalized())
     }
 
     fun isFormValid() : Boolean {
@@ -229,11 +233,11 @@ class TimeSlotEditFragment() : Fragment() {
             h_et_to?.error = "End time must be selected"
         }
         if(from.trim().isNotEmpty() && to.trim().isNotEmpty()){
-            var calFrom = Calendar.getInstance()
+            val calFrom = Calendar.getInstance()
             calFrom.time = SimpleDateFormat("HH:mm").parse(from)
-            var calTo = Calendar.getInstance()
+            val calTo = Calendar.getInstance()
             calTo.time = SimpleDateFormat("HH:mm").parse(to)
-            if(calFrom.compareTo(calTo)>=0){
+            if(calFrom >= calTo){
                 et_to?.error = "End time must be later than start time"
                 h_et_to?.error = "End time must be later than start time"
             }
@@ -252,7 +256,7 @@ class TimeSlotEditFragment() : Fragment() {
 
     val dateSetListener = object : DatePickerDialog.OnDateSetListener {
         override fun onDateSet(view: DatePicker, year: Int, monthOfYear: Int, dayOfMonth: Int) {
-            var cal = Calendar.getInstance()
+            val cal = Calendar.getInstance()
 
             cal.set(Calendar.YEAR, year)
             cal.set(Calendar.MONTH, monthOfYear)
@@ -261,30 +265,37 @@ class TimeSlotEditFragment() : Fragment() {
             val formattedDate = SimpleDateFormat("EEE, d MMM yyyy").format(cal.time)
             date = formattedDate
             et_date?.text = formattedDate
+            et_date?.error = null
             h_et_date?.text = formattedDate
+            h_et_date?.error = null
         }
     }
 
     val fromTimeSetListener = object : TimePickerDialog.OnTimeSetListener {
         override fun onTimeSet(view: TimePicker, hourOfDay: Int, minute: Int) {
-            var calFrom = Calendar.getInstance()
+            val calFrom = Calendar.getInstance()
 
             calFrom.set(Calendar.HOUR_OF_DAY, hourOfDay)
             calFrom.set(Calendar.MINUTE, minute)
 
-            val formattedDate = SimpleDateFormat("HH:mm").format(calFrom.time)
-            from = formattedDate
-            et_from?.text = formattedDate
-            h_et_from?.text = formattedDate
+            val formattedTime = SimpleDateFormat("HH:mm").format(calFrom.time)
+            from = formattedTime
+            et_from?.text = formattedTime
+            et_from?.error = null
+            h_et_from?.text = formattedTime
+            h_et_from?.error = null
 
             if(to.isNotEmpty()) {
-                var calTo = Calendar.getInstance()
+                val calTo = Calendar.getInstance()
                 calTo.time = SimpleDateFormat("HH:mm").parse(to)
+                calFrom.time = SimpleDateFormat("HH:mm").parse(from)
                 //if FROM later than TO
-                if(calFrom.compareTo(calFrom)==1){
-                    to = formattedDate
-                    et_to?.text = formattedDate
-                    h_et_to?.text = formattedDate
+                if(calFrom >= calTo){
+                    to = formattedTime
+                    et_to?.text = formattedTime
+                    et_to?.error = null
+                    h_et_to?.text = formattedTime
+                    h_et_to?.error = null
                 }
             }
         }
@@ -292,7 +303,7 @@ class TimeSlotEditFragment() : Fragment() {
 
     val toTimeSetListener = object : TimePickerDialog.OnTimeSetListener {
         override fun onTimeSet(view: TimePicker, hourOfDay: Int, minute: Int) {
-            var calTo = Calendar.getInstance()
+            val calTo = Calendar.getInstance()
 
             calTo.set(Calendar.HOUR_OF_DAY, hourOfDay)
             calTo.set(Calendar.MINUTE, minute)
@@ -300,18 +311,33 @@ class TimeSlotEditFragment() : Fragment() {
             val formattedDate = SimpleDateFormat("HH:mm").format(calTo.time)
             to = formattedDate
             et_to?.text = formattedDate
+            et_to?.error = null
             h_et_to?.text = formattedDate
+            h_et_to?.error = null
 
             if(from.isNotEmpty()) {
-                var calFrom = Calendar.getInstance()
+                val calFrom = Calendar.getInstance()
+                calTo.time = SimpleDateFormat("HH:mm").parse(to)
                 calFrom.time = SimpleDateFormat("HH:mm").parse(from)
                 //if TO earlier than FROM
-                if(calTo.compareTo(calFrom)==-1){
+                if(calFrom >= calTo){
                     from = formattedDate
                     et_from?.text = formattedDate
+                    et_from?.error = null
                     h_et_from?.text = formattedDate
+                    h_et_from?.error = null
                 }
             }
+        }
+    }
+
+    private fun String.toEditable(): Editable =  Editable.Factory.getInstance().newEditable(this)
+
+    private fun String.capitalized(): String {
+        return this.replaceFirstChar {
+            if (it.isLowerCase())
+                it.titlecase(Locale.getDefault())
+            else it.toString()
         }
     }
 

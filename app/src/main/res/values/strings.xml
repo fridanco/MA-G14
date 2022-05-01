@@ -87,6 +87,11 @@
     <string name="timeslot_to_placeholder">To time</string>
     <string name="timeslot_location_label">Location</string>
     <string name="timeslot_location_placeholder">Location address</string>
+    <string name="timeslot_advertisment_title_list">Advertisment title</string>
+    <string name="timeslot_service_description_list">Service description</string>
+    <string name="timeslot_date_list">Thu, 26 June, 2022</string>
+    <string name="timeslot_from_to_list">From 08:00 to 14:30</string>
+    <string name="timeslot_location_list">Location address</string>
 
 
 </resources>

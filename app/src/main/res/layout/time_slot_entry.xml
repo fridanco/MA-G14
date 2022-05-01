@@ -21,7 +21,8 @@
         android:layout_marginBottom="4dp"
         android:clickable="true"
         app:cardCornerRadius="10dp"
-        app:contentPadding="8dp">
+        app:contentPadding="8dp"
+        android:focusable="true">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -33,7 +34,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingBottom="12dp"
-                android:text="Advertisment title"
+                android:text="@string/timeslot_advertisment_title_list"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display1"
                 android:textColor="#000000" />
 
@@ -41,42 +42,41 @@
                 android:id="@+id/textView5"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/ic_baseline_description_24"
                 android:drawablePadding="2dp"
                 android:paddingBottom="12dp"
-                android:text="Service description"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                android:text="@string/timeslot_service_description_list"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                app:drawableLeftCompat="@drawable/ic_baseline_description_24" />
 
             <TextView
                 android:id="@+id/textView6"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/ic_baseline_calendar_today_24"
                 android:drawablePadding="2dp"
                 android:paddingBottom="12dp"
-                android:text="Thu, 26 June, 2022"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                android:text="@string/timeslot_date_list"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                app:drawableLeftCompat="@drawable/ic_baseline_calendar_today_24" />
 
             <TextView
                 android:id="@+id/textView7"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/ic_baseline_access_time_24"
                 android:drawablePadding="2dp"
                 android:paddingBottom="12dp"
-                android:text="5h 30min"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                android:text="@string/timeslot_from_to_list"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                app:drawableLeftCompat="@drawable/ic_baseline_access_time_24" />
 
             <TextView
                 android:id="@+id/textView19"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/ic_baseline_location_city_24"
                 android:drawablePadding="2dp"
                 android:paddingBottom="12dp"
-                android:text="Location address"
+                android:text="@string/timeslot_location_list"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="#000000" />
+                app:drawableLeftCompat="@drawable/ic_baseline_location_city_24" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 

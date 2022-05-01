@@ -47,7 +47,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Select date"
+        android:paddingStart="4dp"
         android:paddingTop="8dp"
+        android:paddingEnd="4dp"
         android:paddingBottom="8dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
@@ -74,7 +76,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Select time"
+                android:paddingStart="4dp"
                 android:paddingTop="8dp"
+                android:paddingEnd="4dp"
                 android:paddingBottom="8dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
@@ -97,7 +101,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Select time"
+                android:paddingStart="4dp"
                 android:paddingTop="8dp"
+                android:paddingEnd="4dp"
                 android:paddingBottom="8dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large" />
         </LinearLayout>
