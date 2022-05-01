@@ -18,6 +18,7 @@ import it.polito.ma.g14.timebank.fragments.TimeSlotEditFragment
 class Utils {
 
     companion object ActionBarUtils {
+
         fun manageActionBarItemsVisibility(activity: Activity, menu: Menu) {
             val navController = activity.findNavController(R.id.nav_host_fragment_content_main)
             val currDestinationID = navController.currentDestination?.id
@@ -51,7 +52,7 @@ class Utils {
                 R.id.edit_profile -> {
                     menu.findItem(R.id.app_bar_pencil).isVisible = false
                     menu.findItem(R.id.app_bar_delete).isVisible = false
-                    menu.findItem(R.id.app_bar_cancel).isVisible = false
+                    menu.findItem(R.id.app_bar_cancel).isVisible = true
                     menu.findItem(R.id.app_bar_add).isVisible = false
                 }
                 R.id.chooseSkillsFragment -> {
@@ -115,7 +116,8 @@ class Utils {
                 R.id.nav_profile -> {
                     when(item.itemId){
                         R.id.app_bar_pencil -> {
-                            navController.navigate(R.id.action_nav_profile_to_edit_profile)
+                            val bundle = bundleOf("performProfileBackup" to true, "performSkillsBackup" to true)
+                            navController.navigate(R.id.action_nav_profile_to_edit_profile, bundle)
                         }
                     }
                 }
@@ -125,6 +127,7 @@ class Utils {
                             val navHostFragment = (activity as FragmentActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
                             val fragment = navHostFragment!!.childFragmentManager.fragments[0] as EditProfileFragment
                             fragment.cancelOperation = true
+                            fragment.restoreProfile()
                             navController.navigate(R.id.action_edit_profile_to_nav_profile)
                         }
                     }

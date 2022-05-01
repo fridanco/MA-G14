@@ -81,13 +81,15 @@ class EditProfileFragment : Fragment() {
     private var imgButton : ImageButton? = null
     private var imgButton2 : ImageButton? = null
 
-//    var profileDataBackup : Profile? = null
-//    var profileSkillsBackup : MutableList<Skill>? = null
-//    var profileImageBackup : ByteArray? = null
-//
-//    var profileSkills = listOf<Skill>()
+    var vmSkills = listOf<Skill>()
 
+    var performProfileBackup = false
+    var performSkillsBackup = false
     var cancelOperation = false
+
+    var profileBackup: Profile? = null
+    var skillsBackup = mutableListOf<Skill>()
+    var profileImageBackup = byteArrayOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -97,6 +99,9 @@ class EditProfileFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_edit_profile, container, false)
+
+        performProfileBackup = arguments?.getBoolean("performProfileBackup") ?: false
+        performSkillsBackup = arguments?.getBoolean("performSkillsBackup") ?: false
 
         try {
             val inputStream : FileInputStream = requireContext().openFileInput(getString(R.string.profile_picture_filename))
@@ -140,15 +145,34 @@ class EditProfileFragment : Fragment() {
 
         cancelOperation = false
 
+        if(performProfileBackup && profilePicture!=null){
+            profileImageBackup = profilePicture as ByteArray
+        }
+
         setEditTextReferences()
         populateProfileImage()
         attachListeners()
         attachContextMenu()
 
         vm.profile.observe(viewLifecycleOwner){
+            if(performProfileBackup){
+                profileBackup = Profile().apply {
+                    this.fullname = it.fullname
+                    this.nickname = it.nickname
+                    this.email = it.email
+                    this.location = it.location
+                    this.description = it.description
+                }
+                performProfileBackup = false
+            }
             populateProfileEditText(it)
         }
         vm.skills.observe(viewLifecycleOwner){
+            if(performSkillsBackup){
+                skillsBackup = it as MutableList<Skill>
+                performSkillsBackup = false
+            }
+            vmSkills = it
             populateProfileSkills(it)
         }
     }
@@ -219,7 +243,6 @@ class EditProfileFragment : Fragment() {
              else -> super.onContextItemSelected(item)
         }
     }
-
 
     private val startForTakeImageFromCamera = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
         if (result.resultCode == Activity.RESULT_OK ) {
@@ -524,6 +547,43 @@ class EditProfileFragment : Fragment() {
             return false
         }
         return true
+    }
+
+    fun restoreProfile(){
+        //Restore profile data
+        profileBackup?.let {
+            vm.updateProfile(it.fullname,it.nickname,it.email,it.location,it.description)
+        }
+
+        //Restore skills
+        for(skill in vmSkills){
+            if(!skillsBackup.contains(skill)){
+                vm.removeSkill(skill.skill)
+                skillsBackup.remove(skill)
+            }
+        }
+        for(skill in skillsBackup){
+            vm.addSkill(skill.skill)
+        }
+
+        //Restore profile image
+        if(profileImageBackup.isNotEmpty()){
+            try {
+                profileImageBackup.let {
+                    requireContext().openFileOutput("profile_picture", Context.MODE_PRIVATE).use {
+                        it.write(profileImageBackup)
+                    }
+                }
+            }
+            catch (e: Exception){
+                requireContext().deleteFile("profile_picture")
+            }
+        }
+
+        //Clear helper variables
+        profileBackup = null
+        skillsBackup.clear()
+        profileImageBackup = byteArrayOf()
     }
 
 }

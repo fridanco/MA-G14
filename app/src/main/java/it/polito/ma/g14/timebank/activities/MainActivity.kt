@@ -126,11 +126,4 @@ class MainActivity : AppCompatActivity() {
         manageActionBarItemActions(this, item)
         return super.onOptionsItemSelected(item)
     }
-
-    fun replaceFragment(fragment : Fragment){
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.nav_host_fragment_content_main, fragment)
-            .commit()
-    }
 }
