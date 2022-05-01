@@ -46,8 +46,9 @@
 
     <string name="time_slot_edit_title_label">Advertisment title<font color='#FF0000'>*</font></string>
     <string name="time_slot_edit_description_label">Description<font color='#FF0000'>*</font></string>
-    <string name="time_slot_edit_dateTime_label">Date and time<font color='#FF0000'>*</font></string>
-    <string name="time_slot_edit_duration_label">Duration<font color='#FF0000'>*</font></string>
+    <string name="time_slot_edit_dateTime_label">Date<font color='#FF0000'>*</font></string>
+    <string name="time_slot_edit_from_label">From<font color='#FF0000'>*</font></string>
+    <string name="time_slot_edit_to_label">To<font color='#FF0000'>*</font></string>
     <string name="time_slot_edit_location_label">Location<font color='#FF0000'>*</font></string>
 
 
@@ -70,6 +71,22 @@
     <string name="app_bar_delete">Delete</string>
     <string name="app_bar_cancel">Cancel</string>
     <string name="app_bar_add">Add</string>
+    <string name="edit_timeslot_advertisment_title_placeholder">Advertisment title</string>
+    <string name="edit_timeslot_service_description_placeholder">Service description</string>
+    <string name="edit_timeslot_date_and_time_placeholder">Date and time</string>
+    <string name="edit_timeslot_duration_placeholder">5h 30min</string>
+    <string name="edit_timeslot_location_address_placeholder">Location address</string>
+    <string name="timeslot_advertisment_title_placeholder">Advertisment title</string>
+    <string name="timeslot_service_description_label">Service description</string>
+    <string name="timeslot_service_description_placeholder">Service description</string>
+    <string name="timeslot_date_label">Date</string>
+    <string name="timeslot_date_placeholder">Date</string>
+    <string name="timeslot_from_label">From</string>
+    <string name="timeslot_from_placeholder">From time</string>
+    <string name="timeslot_to_label">To</string>
+    <string name="timeslot_to_placeholder">To time</string>
+    <string name="timeslot_location_label">Location</string>
+    <string name="timeslot_location_placeholder">Location address</string>
 
 
 </resources>

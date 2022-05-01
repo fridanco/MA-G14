@@ -20,11 +20,12 @@ class TimeSlot {
     var id : Long = 0
     var title : String = ""
     var description : String = ""
-    var dateTime : String = ""
-    var duration : Int = 0
+    var date : String = ""
+    var from : String = ""
+    var to : String = ""
     var location : String = ""
 
-    override fun toString(): String = "{ id:$id, title:$title, description:$description, dateTime:${dateTime.toString()}, duration:$duration, location:$location }"
+    override fun toString(): String = "{ id:$id, title:$title, description:$description, date:${date.toString()}, from:$from, to:$to, location:$location }"
 }
 
 class TimeSlotAdapter(val view: View): RecyclerView.Adapter<TimeSlotAdapter.ItemViewHolder>() {
@@ -38,8 +39,8 @@ class TimeSlotAdapter(val view: View): RecyclerView.Adapter<TimeSlotAdapter.Item
         fun bind(timeSlot: TimeSlot, action: (v: View)->Unit) {
             timeSlotContainer.findViewById<TextView>(R.id.textView4).text = timeSlot.title
             timeSlotContainer.findViewById<TextView>(R.id.textView5).text = timeSlot.description
-            timeSlotContainer.findViewById<TextView>(R.id.textView6).text = timeSlot.dateTime
-            timeSlotContainer.findViewById<TextView>(R.id.textView7).text = timeSlot.duration.toString()
+            timeSlotContainer.findViewById<TextView>(R.id.textView6).text = timeSlot.date
+            timeSlotContainer.findViewById<TextView>(R.id.textView7).text = "From ${timeSlot.from} to ${timeSlot.to}"
             timeSlotContainer.findViewById<TextView>(R.id.textView19).text = timeSlot.location
             timeSlotContainer.findViewById<CardView>(R.id.cardView).setOnClickListener(action)
         }

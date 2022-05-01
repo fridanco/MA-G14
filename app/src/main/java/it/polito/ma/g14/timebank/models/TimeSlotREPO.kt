@@ -17,24 +17,26 @@ class TimeSlotREPO(application: Application) {
 
     fun getTimeSlotByID(id : Long) : LiveData<TimeSlot> = timeSlotDAO.getTimeSlotByID(id)
 
-    fun insertTimeSlot(title:String, description: String, dateTime: String, duration: Int, location: String){
+    fun insertTimeSlot(title:String, description: String, date: String, from: String, to: String, location: String){
         val ts = TimeSlot().also {
             it.title = title
             it.description = description
-            it.dateTime = dateTime
-            it.duration = duration
+            it.date = date
+            it.from = from
+            it.to = to
             it.location = location
         }
         timeSlotDAO.insertTimeSlot(ts)
     }
 
-    fun updateTimeSlot(id: Long, title:String, description: String, dateTime: String, duration: Int, location: String){
+    fun updateTimeSlot(id: Long, title:String, description: String, date: String, from: String, to: String, location: String){
         val ts = TimeSlot().also {
             it.id = id
             it.title = title
             it.description = description
-            it.dateTime = dateTime
-            it.duration = duration
+            it.date = date
+            it.from = from
+            it.to = to
             it.location = location
         }
         timeSlotDAO.updateTimeSlot(ts)

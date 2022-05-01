@@ -2,10 +2,7 @@ package it.polito.ma.g14.timebank.fragments
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
 import it.polito.ma.g14.timebank.models.TimeSlotREPO
-import java.util.*
 import kotlin.concurrent.thread
 
 class TimeSlotVM(application: Application) : AndroidViewModel(application) {
@@ -14,19 +11,17 @@ class TimeSlotVM(application: Application) : AndroidViewModel(application) {
 
     val timeSlots = repo.timeSlots()
 
-    val count = repo.numTimeSlots()
-
     fun getTimeSlot(id: Long) = repo.getTimeSlotByID(id)
 
-    fun addTimeSlot(title:String, description: String, dateTime: String, duration: Int, location: String) {
+    fun addTimeSlot(title:String, description: String, date: String, from: String, to: String, location: String) {
         thread {
-            repo.insertTimeSlot(title, description, dateTime, duration, location)
+            repo.insertTimeSlot(title, description, date, from, to, location)
         }
     }
 
-    fun editTimeSlot(id: Long, title:String, description: String, dateTime: String, duration: Int, location: String) {
+    fun editTimeSlot(id: Long, title:String, description: String, date: String, from: String, to: String, location: String) {
         thread {
-            repo.updateTimeSlot(id, title, description, dateTime, duration, location)
+            repo.updateTimeSlot(id, title, description, date, from, to, location)
         }
     }
 

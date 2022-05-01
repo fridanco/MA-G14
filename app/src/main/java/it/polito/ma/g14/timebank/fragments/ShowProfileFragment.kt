@@ -17,21 +17,16 @@ import it.polito.ma.g14.timebank.utils.Utils
 import org.apache.commons.io.IOUtils
 import java.io.FileInputStream
 
-/**
- * A simple [Fragment] subclass.
- * Use the [ShowProfileFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ShowProfileFragment : Fragment() {
 
     val vm by viewModels<ProfileVM>()
 
-    var fullName :  String = "Peter Parker";
+    var fullName :  String = "Peter Parker"
     var email : String = "peter.parker@stark.us"
     var nickName : String = "Underoose"
     var location : String = "Queens, New York, NY, US"
-    var skills = arrayListOf<String>();
-    var description : String = "";
+    var skills = arrayListOf<String>()
+    var description : String = ""
     var profilePicture : ByteArray? = null
 
     private var tv_fullname : TextView? = null
@@ -142,15 +137,15 @@ class ShowProfileFragment : Fragment() {
         if (profile.description.trim().isEmpty()) {
             tv_description?.isGone = true
             h_tv_description?.isGone = true
-            view?.findViewById<TextView>(R.id.textView39)?.isVisible = true;
-            view?.findViewById<TextView>(R.id.textView40)?.isVisible = true;
+            view?.findViewById<TextView>(R.id.textView39)?.isVisible = true
+            view?.findViewById<TextView>(R.id.textView40)?.isVisible = true
         } else {
             tv_description?.isVisible = true
             h_tv_description?.isVisible = true
             tv_description?.text = profile.description
             h_tv_description?.text = profile.description
-            view?.findViewById<TextView>(R.id.textView39)?.isGone = true;
-            view?.findViewById<TextView>(R.id.textView40)?.isGone = true;
+            view?.findViewById<TextView>(R.id.textView39)?.isGone = true
+            view?.findViewById<TextView>(R.id.textView40)?.isGone = true
         }
     }
 
@@ -183,5 +178,4 @@ class ShowProfileFragment : Fragment() {
             }
         }
     }
-
 }

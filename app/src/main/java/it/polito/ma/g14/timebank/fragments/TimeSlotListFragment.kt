@@ -19,11 +19,6 @@ import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.models.TimeSlotAdapter
 import it.polito.ma.g14.timebank.utils.Utils
 
-/**
- * A simple [Fragment] subclass.
- * Use the [TimeSlotListFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class TimeSlotListFragment : Fragment() {
 
     val vm by viewModels<TimeSlotVM>()

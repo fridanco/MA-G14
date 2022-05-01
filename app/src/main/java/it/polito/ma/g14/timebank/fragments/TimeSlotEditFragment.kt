@@ -2,7 +2,6 @@ package it.polito.ma.g14.timebank.fragments
 
 import android.os.Bundle
 import android.text.Editable
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
@@ -10,30 +9,30 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
 import androidx.core.widget.doOnTextChanged
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import it.polito.ma.g14.timebank.R
+import it.polito.ma.g14.timebank.fragments.dialogs.DatePickerFragment
+import it.polito.ma.g14.timebank.fragments.dialogs.TimePickerFragment
 import it.polito.ma.g14.timebank.utils.Utils
-import java.util.*
 
 
-/**
- * A simple [Fragment] subclass.
- * Use the [TimeSlotEditFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class TimeSlotEditFragment() : Fragment() {
 
     val vm by viewModels<TimeSlotVM>()
 
     private var et_title : TextView? = null
     private var et_description : TextView? = null
-    private var et_dateTime : TextView? = null
-    private var et_duration : TextView? = null
+    private var et_date : TextView? = null
+    private var et_from : TextView? = null
+    private var et_to : TextView? = null
     private var et_location : TextView? = null
+
     private var h_et_title : TextView? = null
     private var h_et_description : TextView? = null
-    private var h_et_dateTime : TextView? = null
-    private var h_et_duration : TextView? = null
+    private var h_et_date : TextView? = null
+    private var h_et_from : TextView? = null
+    private var h_et_to : TextView? = null
     private var h_et_location : TextView? = null
 
     var timeSlotID: Long = 0
@@ -42,7 +41,8 @@ class TimeSlotEditFragment() : Fragment() {
     var title = ""
     var description = ""
     var date = ""
-    var duration = ""
+    var from = ""
+    var to = ""
     var location = ""
 
     var cancelOperation = false
@@ -74,28 +74,32 @@ class TimeSlotEditFragment() : Fragment() {
 
         et_title = view.findViewById<EditText>(R.id.textView51)
         et_description = view.findViewById<EditText>(R.id.textView53)
-        et_dateTime = view.findViewById<EditText>(R.id.editTextDate)
-        et_duration = view.findViewById<EditText>(R.id.textView56)
+        et_date = view.findViewById<EditText>(R.id.textView56)
+        et_from = view.findViewById<EditText>(R.id.textView62)
+        et_to = view.findViewById<EditText>(R.id.textView63)
         et_location = view.findViewById<EditText>(R.id.textView58)
 
         h_et_title = view.findViewById<EditText>(R.id.textView42)
         h_et_description = view.findViewById<EditText>(R.id.textView44)
-        h_et_dateTime = view.findViewById<EditText>(R.id.editTextDate2)
-        h_et_duration = view.findViewById<EditText>(R.id.textView47)
+        h_et_date = view.findViewById<EditText>(R.id.textView46)
+        h_et_from = view.findViewById<EditText>(R.id.textView67)
+        h_et_to = view.findViewById<EditText>(R.id.textView68)
         h_et_location = view.findViewById<EditText>(R.id.textView49)
 
         if(operationType=="edit_time_slot") {
             vm.getTimeSlot(timeSlotID).observe(viewLifecycleOwner) {
                 et_title?.text = it.title.toEditable()
                 et_description?.text = it.description.toEditable()
-                et_dateTime?.text = it.dateTime.toString().toEditable()
-                et_duration?.text = it.duration.toString().toEditable()
-                et_location?.text = it.location.toString().toEditable()
+                et_date?.text = it.date.toEditable()
+                et_from?.text = it.from.toEditable()
+                et_to?.text = it.to.toEditable()
+                et_location?.text = it.location.toEditable()
                 h_et_title?.text = it.title.toEditable()
                 h_et_description?.text = it.description.toEditable()
-                h_et_dateTime?.text = it.dateTime.toString().toEditable()
-                h_et_duration?.text = it.duration.toString().toEditable()
-                h_et_location?.text = it.location.toString().toEditable()
+                h_et_date?.text = it.date.toEditable()
+                h_et_from?.text = it.from.toEditable()
+                h_et_to?.text = it.to.toEditable()
+                h_et_location?.text = it.location.toEditable()
             }
         }
 
@@ -134,38 +138,27 @@ class TimeSlotEditFragment() : Fragment() {
             }
         }
 
-        et_dateTime?.doOnTextChanged { text, start, before, count ->
-            date = text.toString()
-            if (date.trim().isEmpty()) {
-                et_dateTime?.error = "Date and time cannot be empty"
-            } else {
-                et_dateTime?.error = null
-            }
+        et_date?.setOnClickListener {
+            val newFragment = DatePickerFragment()
+            newFragment.show(requireActivity().supportFragmentManager, "datePicker")
         }
-        h_et_dateTime?.doOnTextChanged { text, start, before, count ->
-            date = text.toString()
-            if (date.trim().isEmpty()) {
-                h_et_dateTime?.error = "Date and time cannot be empty"
-            } else {
-                h_et_dateTime?.error = null
-            }
+        h_et_date?.setOnClickListener {
+            val newFragment = DatePickerFragment()
+            newFragment.show(requireActivity().supportFragmentManager, "datePicker")
         }
 
-        et_duration?.doOnTextChanged { text, start, before, count ->
-            duration = text.toString()
-            if (duration.trim().isEmpty()) {
-                et_duration?.error = "Duration cannot be empty"
-            } else {
-                et_duration?.error = null
-            }
+        et_from?.setOnClickListener {
+            TimePickerFragment().show(requireActivity().supportFragmentManager, "timePicker")
         }
-        h_et_duration?.doOnTextChanged { text, start, before, count ->
-            duration = text.toString()
-            if (duration.trim().isEmpty()) {
-                h_et_duration?.error = "Duration cannot be empty"
-            } else {
-                h_et_duration?.error = null
-            }
+        h_et_from?.setOnClickListener {
+            TimePickerFragment().show(requireActivity().supportFragmentManager, "timePicker")
+        }
+
+        et_to?.setOnClickListener {
+            TimePickerFragment().show(requireActivity().supportFragmentManager, "timePicker")
+        }
+        h_et_to?.setOnClickListener {
+            TimePickerFragment().show(requireActivity().supportFragmentManager, "timePicker")
         }
 
         et_location?.doOnTextChanged { text, start, before, count ->
@@ -190,10 +183,10 @@ class TimeSlotEditFragment() : Fragment() {
     override fun onDestroy() {
         if(!cancelOperation){
             if(operationType=="edit_time_slot"){
-                vm.editTimeSlot(timeSlotID, title, description, date, 5, location)
+                vm.editTimeSlot(timeSlotID, title, description, date, from, to, location)
             }
             else if(operationType=="add_time_slot"){
-                vm.addTimeSlot(title, description, date, 5, location)
+                vm.addTimeSlot(title, description, date, from, to, location)
             }
         }
         super.onDestroy()
@@ -207,7 +200,7 @@ class TimeSlotEditFragment() : Fragment() {
     private fun String.toEditable(): Editable =  Editable.Factory.getInstance().newEditable(this)
 
     fun addTimeSlot(){
-        vm.addTimeSlot(title, description, date, 5, location)
+        vm.addTimeSlot(title, description, date, from, to, location)
     }
 
     fun isFormValid() : Boolean {
@@ -220,23 +213,29 @@ class TimeSlotEditFragment() : Fragment() {
             h_et_description?.error = "Description cannot be empty"
         }
         if(date.trim().isEmpty()){
-            et_dateTime?.error = "Date and time cannot be empty"
-            h_et_dateTime?.error = "Date and time cannot be empty"
+            et_date?.error = "Date must be selected"
+            h_et_date?.error = "Date must be selected"
         }
-        if(duration.trim().isEmpty()){
-            et_duration?.error = "Duration cannot be empty"
-            h_et_duration?.error = "Duration cannot be empty"
+        if(from.trim().isEmpty()){
+            et_from?.error = "Start time must be selected"
+            h_et_from?.error = "Start time must be selected"
+        }
+        if(to.trim().isEmpty()){
+            et_to?.error = "End time must be selected"
+            h_et_to?.error = "End time must be selected"
         }
         if(location.trim().isEmpty()){
             et_location?.error = "Location cannot be empty"
             h_et_location?.error = "Location cannot be empty"
         }
 
-        if(et_title?.error != null || et_description?.error != null || et_dateTime?.error != null || et_duration?.error != null || et_location?.error != null ||
-            h_et_title?.error != null || h_et_description?.error != null || h_et_dateTime?.error != null || h_et_duration?.error != null || h_et_location?.error != null){
+        if(et_title?.error != null || et_description?.error != null || et_date?.error != null || et_from?.error != null || et_to?.error != null || et_location?.error != null ||
+            h_et_title?.error != null || h_et_description?.error != null || h_et_date?.error != null || h_et_to?.error != null || h_et_to?.error != null || h_et_location?.error != null){
             return false
         }
         return true
     }
-    
+
+
+
 }

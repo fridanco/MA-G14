@@ -1,23 +1,17 @@
 package it.polito.ma.g14.timebank.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.utils.Utils
-import org.w3c.dom.Text
 
-/**
- * A simple [Fragment] subclass.
- * Use the [TimeSlotDetailsFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
+
 class TimeSlotDetailsFragment() : Fragment() {
 
     val vm by viewModels<TimeSlotVM>()
@@ -46,17 +40,19 @@ class TimeSlotDetailsFragment() : Fragment() {
 
         timeSlotID = requireArguments().getLong("timeSlotID")
 
-        val tv_title = view?.findViewById<TextView>(R.id.textView4)
-        val tv_description = view?.findViewById<TextView>(R.id.textView5)
-        val tv_dateTime = view?.findViewById<TextView>(R.id.textView6)
-        val tv_duration = view?.findViewById<TextView>(R.id.textView7)
-        val tv_location = view?.findViewById<TextView>(R.id.textView19)
+        val tv_title = view.findViewById<TextView>(R.id.textView4)
+        val tv_description = view.findViewById<TextView>(R.id.textView5)
+        val tv_date = view.findViewById<TextView>(R.id.textView64)
+        val tv_from = view.findViewById<TextView>(R.id.textView62)
+        val tv_to = view.findViewById<TextView>(R.id.textView63)
+        val tv_location = view.findViewById<TextView>(R.id.textView19)
 
         vm.getTimeSlot(timeSlotID).observe(viewLifecycleOwner) {
-            tv_title?.text = it.title
-            tv_description?.text = it.description
-            tv_dateTime?.text = it.dateTime.toString()
-            tv_duration?.text = it.duration.toString()
+            tv_title.text = it.title
+            tv_description.text = it.description
+            tv_date.text = it.date
+            tv_from.text = it.from
+            tv_to.text = it.to
             tv_location.text = it.location
         }
 

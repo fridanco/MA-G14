@@ -18,11 +18,6 @@ import it.polito.ma.g14.timebank.models.Skill
 import it.polito.ma.g14.timebank.utils.SkillList
 import it.polito.ma.g14.timebank.utils.Utils
 
-/**
- * A simple [Fragment] subclass.
- * Use the [ChooseSkillsFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ChooseSkillsFragment : Fragment() {
 
     val vm by viewModels<ProfileVM>()
@@ -65,7 +60,7 @@ class ChooseSkillsFragment : Fragment() {
             emptyRv.isGone = true
             rv.isVisible = true
             rv.layoutManager = LinearLayoutManager(requireContext())
-            adapter = SkillAdapter(skillList, vm)
+            adapter = SkillAdapter(skillList)
             rv.adapter = adapter
 
             vm.skills.observe(viewLifecycleOwner) {

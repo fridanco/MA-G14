@@ -21,8 +21,9 @@
         android:id="@+id/textView51"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Advertisment title"
+        android:hint="@string/edit_timeslot_advertisment_title_placeholder"
         android:paddingBottom="12dp"
+        android:singleLine="true"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         android:textColor="#000000" />
 
@@ -36,8 +37,9 @@
         android:id="@+id/textView53"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Service description"
+        android:hint="@string/edit_timeslot_service_description_placeholder"
         android:paddingBottom="12dp"
+        android:singleLine="false"
         android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
     <TextView
@@ -46,27 +48,66 @@
         android:layout_height="wrap_content"
         android:text="@string/time_slot_edit_dateTime_label" />
 
-    <EditText
-        android:id="@+id/editTextDate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Date and time"
-        android:inputType="date" />
-
     <TextView
-        android:id="@+id/textView55"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/time_slot_edit_duration_label" />
-
-    <EditText
         android:id="@+id/textView56"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="5h 30min"
-        android:paddingBottom="12dp"
+        android:hint="Select date"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView61"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/time_slot_edit_from_label" />
+
+            <TextView
+                android:id="@+id/textView62"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Select time"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView55"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/time_slot_edit_to_label" />
+
+            <TextView
+                android:id="@+id/textView63"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Select time"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+        </LinearLayout>
+    </LinearLayout>
 
     <TextView
         android:id="@+id/textView57"
@@ -78,8 +119,10 @@
         android:id="@+id/textView58"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Location address"
+        android:hint="@string/edit_timeslot_location_address_placeholder"
         android:paddingBottom="12dp"
+        android:singleLine="true"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textColor="#000000" />
+
 </LinearLayout>

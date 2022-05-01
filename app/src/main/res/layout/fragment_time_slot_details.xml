@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="12dp"
-        android:text="Advertisment title"
+        android:text="@string/edit_timeslot_advertisment_title_placeholder"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         android:textColor="#000000" />
 
@@ -23,57 +23,96 @@
         android:id="@+id/textView13"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Service description" />
+        android:text="@string/timeslot_service_description_label" />
 
     <TextView
         android:id="@+id/textView5"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="12dp"
-        android:text="Service description"
+        android:text="@string/timeslot_service_description_label"
         android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
     <TextView
-        android:id="@+id/textView21"
+        android:id="@+id/textView47"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Date and time" />
+        android:text="@string/timeslot_date_label" />
 
     <TextView
-        android:id="@+id/textView6"
+        android:id="@+id/textView64"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="12dp"
-        android:text="Thu, 26 June, 2022"
+        android:text="@string/timeslot_date_label"
         android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
-    <TextView
-        android:id="@+id/textView29"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Duration" />
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:baselineAligned="false">
 
-    <TextView
-        android:id="@+id/textView7"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="12dp"
-        android:text="5h 30min"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView61"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/timeslot_from_label" />
+
+            <TextView
+                android:id="@+id/textView62"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/timeslot_from_placeholder"
+                android:paddingBottom="12dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textColorHint="#000000" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView55"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/timeslot_to_label" />
+
+            <TextView
+                android:id="@+id/textView63"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/timeslot_to_placeholder"
+                android:paddingBottom="12dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textColorHint="#000000" />
+        </LinearLayout>
+    </LinearLayout>
 
     <TextView
         android:id="@+id/textView28"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Location" />
+        android:text="@string/timeslot_location_label" />
 
     <TextView
         android:id="@+id/textView19"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="12dp"
-        android:text="Location address"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:text="@string/timeslot_location_placeholder"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textColor="#000000" />
 
 </LinearLayout>

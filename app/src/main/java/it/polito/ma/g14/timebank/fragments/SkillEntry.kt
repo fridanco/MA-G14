@@ -1,6 +1,5 @@
 package it.polito.ma.g14.timebank.fragments
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,12 +7,10 @@ import android.widget.CheckedTextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.ma.g14.timebank.R
-import it.polito.ma.g14.timebank.models.MyDiffCallback
-import it.polito.ma.g14.timebank.models.TimeSlot
 
 data class SkillEntry(val name:String, var active:Boolean )
 
-class SkillAdapter(val data:MutableList<SkillEntry>, val vm: ProfileVM): RecyclerView.Adapter<SkillAdapter.ItemViewHolder>() {
+class SkillAdapter(val data: MutableList<SkillEntry>): RecyclerView.Adapter<SkillAdapter.ItemViewHolder>() {
     var filter: Boolean = false
     var displayData = data.toMutableList()
     var checked_skills = mutableListOf<String>()
@@ -62,7 +59,7 @@ class SkillAdapter(val data:MutableList<SkillEntry>, val vm: ProfileVM): Recycle
 
 
     fun addFilter(text: String) {
-        var newData = mutableListOf<SkillEntry>()
+        val newData: MutableList<SkillEntry>
         if(text.isEmpty() || text.isBlank()){
             newData = data
         }
@@ -76,7 +73,7 @@ class SkillAdapter(val data:MutableList<SkillEntry>, val vm: ProfileVM): Recycle
 
     fun updateSelectedSkills(checkedSkills: List<String>){
         checked_skills = checkedSkills as MutableList<String>
-        var newData = data
+        val newData = data
         for(skillItem in checkedSkills){
             newData.find{ it.name==skillItem}?.active = true
         }

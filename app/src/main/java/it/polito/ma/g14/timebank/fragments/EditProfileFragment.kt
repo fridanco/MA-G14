@@ -1,6 +1,5 @@
 package it.polito.ma.g14.timebank.fragments
 
-import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.ActivityNotFoundException
 import android.content.Context
@@ -9,7 +8,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
 import android.graphics.Matrix
-import android.media.ExifInterface
+import androidx.exifinterface.media.ExifInterface
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -17,13 +16,13 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.text.Editable
 import android.view.*
-import androidx.fragment.app.Fragment
 import android.widget.*
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import com.google.android.material.chip.Chip
@@ -39,13 +38,8 @@ import java.io.FileInputStream
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
-/**
- * A simple [Fragment] subclass.
- * Use the [EditProfileFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
+
 class EditProfileFragment : Fragment() {
 
     val vm by viewModels<ProfileVM>()
@@ -193,7 +187,7 @@ class EditProfileFragment : Fragment() {
             }
         }
         catch (e: Exception){
-            profilePicture = null;
+            profilePicture = null
             requireContext().deleteFile("profile_picture")
         }
 
@@ -245,9 +239,9 @@ class EditProfileFragment : Fragment() {
     }
 
     private val startForTakeImageFromCamera = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-        if (result.resultCode == Activity.RESULT_OK ) {
+        if (result.resultCode == RESULT_OK ) {
 
-            var bitmap : Bitmap? = BitmapFactory.decodeFile(imageFilepath)
+            val bitmap : Bitmap? = BitmapFactory.decodeFile(imageFilepath)
 
             val ei = ExifInterface(imageFilepath)
             val orientation: Int = ei.getAttributeInt(
@@ -256,7 +250,7 @@ class EditProfileFragment : Fragment() {
             )
 
             bitmap?.let {
-                var rotatedBitmap: Bitmap
+                val rotatedBitmap: Bitmap
                 when (orientation) {
                     ExifInterface.ORIENTATION_ROTATE_90 -> rotatedBitmap =
                         rotateImage(bitmap, 90)
@@ -377,7 +371,7 @@ class EditProfileFragment : Fragment() {
     }
 
     private fun attachListeners(){
-        et_fullname?.doOnTextChanged { text, start, before, count ->
+        et_fullname?.doOnTextChanged { text, _, _, _ ->
             fullName = text.toString()
             if(fullName.trim().isEmpty()){
                 et_fullname?.error = "Fullname cannot be empty"
@@ -388,7 +382,7 @@ class EditProfileFragment : Fragment() {
                 h_et_fullname?.error = null
             }
         }
-        et_nickname?.doOnTextChanged { text, start, before, count ->
+        et_nickname?.doOnTextChanged { text, _, _, _ ->
             nickName = text.toString()
             if(nickName.trim().isEmpty()){
                 et_nickname?.error = "Nickname cannot be empty"
@@ -399,7 +393,7 @@ class EditProfileFragment : Fragment() {
                 h_et_nickname?.error = null
             }
         }
-        et_email?.doOnTextChanged { text, start, before, count ->
+        et_email?.doOnTextChanged { text, _, _, _ ->
             email = text.toString()
             if(email.trim().isEmpty()){
                 et_email?.error = "Email cannot be empty"
@@ -410,7 +404,7 @@ class EditProfileFragment : Fragment() {
                 h_et_email?.error = null
             }
         }
-        et_location?.doOnTextChanged { text, start, before, count ->
+        et_location?.doOnTextChanged { text, _, _, _ ->
             location = text.toString()
             if(location.trim().isEmpty()){
                 et_location?.error = "Location cannot be empty"
@@ -421,7 +415,7 @@ class EditProfileFragment : Fragment() {
                 h_et_location?.error = null
             }
         }
-        et_description?.doOnTextChanged { text, start, before, count ->
+        et_description?.doOnTextChanged { text, _, _, _ ->
             description = text.toString()
         }
 
@@ -431,7 +425,7 @@ class EditProfileFragment : Fragment() {
         }
 
 
-        h_et_fullname?.doOnTextChanged { text, start, before, count ->
+        h_et_fullname?.doOnTextChanged { text, _, _, _ ->
             fullName = text.toString()
             if(fullName.trim().isEmpty()){
                 et_fullname?.error = "Fullname cannot be empty"
@@ -442,7 +436,7 @@ class EditProfileFragment : Fragment() {
                 h_et_fullname?.error = null
             }
         }
-        h_et_nickname?.doOnTextChanged { text, start, before, count ->
+        h_et_nickname?.doOnTextChanged { text, _, _, _ ->
             nickName = text.toString()
             if(nickName.trim().isEmpty()){
                 et_nickname?.error = "Nickname cannot be empty"
@@ -453,7 +447,7 @@ class EditProfileFragment : Fragment() {
                 h_et_nickname?.error = null
             }
         }
-        h_et_email?.doOnTextChanged { text, start, before, count ->
+        h_et_email?.doOnTextChanged { text, _, _, _ ->
             email = text.toString()
             if(email.trim().isEmpty()){
                 et_email?.error = "Email cannot be empty"
@@ -464,7 +458,7 @@ class EditProfileFragment : Fragment() {
                 h_et_email?.error = null
             }
         }
-        h_et_location?.doOnTextChanged { text, start, before, count ->
+        h_et_location?.doOnTextChanged { text, _, _, _ ->
             location = text.toString()
             if(location.trim().isEmpty()){
                 et_location?.error = "Location cannot be empty"
@@ -475,7 +469,7 @@ class EditProfileFragment : Fragment() {
                 h_et_location?.error = null
             }
         }
-        h_et_description?.doOnTextChanged { text, start, before, count ->
+        h_et_description?.doOnTextChanged { text, _, _, _ ->
             description = text.toString()
         }
         h_button_skills?.setOnClickListener {
@@ -503,7 +497,7 @@ class EditProfileFragment : Fragment() {
     @Throws(IOException::class)
     private fun createImageFile() : File {
         val timestamp = SimpleDateFormat("yyyy-MM-dd-HH:mm:ss", Locale.US).format(Date())
-        val imageFilename = "JPEG_" + timestamp + "_";
+        val imageFilename = "JPEG_" + timestamp + "_"
         val storageDir = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         if(!storageDir!!.exists()){
             storageDir.mkdirs()
