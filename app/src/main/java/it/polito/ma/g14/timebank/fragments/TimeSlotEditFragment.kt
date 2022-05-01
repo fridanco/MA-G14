@@ -1,13 +1,17 @@
 package it.polito.ma.g14.timebank.fragments
 
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.os.Bundle
 import android.text.Editable
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
+import android.widget.DatePicker
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.TimePicker
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -15,6 +19,8 @@ import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.fragments.dialogs.DatePickerFragment
 import it.polito.ma.g14.timebank.fragments.dialogs.TimePickerFragment
 import it.polito.ma.g14.timebank.utils.Utils
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class TimeSlotEditFragment() : Fragment() {
@@ -139,26 +145,24 @@ class TimeSlotEditFragment() : Fragment() {
         }
 
         et_date?.setOnClickListener {
-            val newFragment = DatePickerFragment()
-            newFragment.show(requireActivity().supportFragmentManager, "datePicker")
+            DatePickerFragment(dateSetListener, date).show(requireActivity().supportFragmentManager, "datePicker")
         }
         h_et_date?.setOnClickListener {
-            val newFragment = DatePickerFragment()
-            newFragment.show(requireActivity().supportFragmentManager, "datePicker")
+            DatePickerFragment(dateSetListener, date).show(requireActivity().supportFragmentManager, "datePicker")
         }
 
         et_from?.setOnClickListener {
-            TimePickerFragment().show(requireActivity().supportFragmentManager, "timePicker")
+            TimePickerFragment(fromTimeSetListener, from).show(requireActivity().supportFragmentManager, "fromTimePicker")
         }
         h_et_from?.setOnClickListener {
-            TimePickerFragment().show(requireActivity().supportFragmentManager, "timePicker")
+            TimePickerFragment(fromTimeSetListener, from).show(requireActivity().supportFragmentManager, "fromTimePicker")
         }
 
         et_to?.setOnClickListener {
-            TimePickerFragment().show(requireActivity().supportFragmentManager, "timePicker")
+            TimePickerFragment(toTimeSetListener, from).show(requireActivity().supportFragmentManager, "toTimePicker")
         }
         h_et_to?.setOnClickListener {
-            TimePickerFragment().show(requireActivity().supportFragmentManager, "timePicker")
+            TimePickerFragment(toTimeSetListener, from).show(requireActivity().supportFragmentManager, "toTimePicker")
         }
 
         et_location?.doOnTextChanged { text, start, before, count ->
@@ -224,6 +228,16 @@ class TimeSlotEditFragment() : Fragment() {
             et_to?.error = "End time must be selected"
             h_et_to?.error = "End time must be selected"
         }
+        if(from.trim().isNotEmpty() && to.trim().isNotEmpty()){
+            var calFrom = Calendar.getInstance()
+            calFrom.time = SimpleDateFormat("HH:mm").parse(from)
+            var calTo = Calendar.getInstance()
+            calTo.time = SimpleDateFormat("HH:mm").parse(to)
+            if(calFrom.compareTo(calTo)>=0){
+                et_to?.error = "End time must be later than start time"
+                h_et_to?.error = "End time must be later than start time"
+            }
+        }
         if(location.trim().isEmpty()){
             et_location?.error = "Location cannot be empty"
             h_et_location?.error = "Location cannot be empty"
@@ -236,6 +250,69 @@ class TimeSlotEditFragment() : Fragment() {
         return true
     }
 
+    val dateSetListener = object : DatePickerDialog.OnDateSetListener {
+        override fun onDateSet(view: DatePicker, year: Int, monthOfYear: Int, dayOfMonth: Int) {
+            var cal = Calendar.getInstance()
 
+            cal.set(Calendar.YEAR, year)
+            cal.set(Calendar.MONTH, monthOfYear)
+            cal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+
+            val formattedDate = SimpleDateFormat("EEE, d MMM yyyy").format(cal.time)
+            date = formattedDate
+            et_date?.text = formattedDate
+            h_et_date?.text = formattedDate
+        }
+    }
+
+    val fromTimeSetListener = object : TimePickerDialog.OnTimeSetListener {
+        override fun onTimeSet(view: TimePicker, hourOfDay: Int, minute: Int) {
+            var calFrom = Calendar.getInstance()
+
+            calFrom.set(Calendar.HOUR_OF_DAY, hourOfDay)
+            calFrom.set(Calendar.MINUTE, minute)
+
+            val formattedDate = SimpleDateFormat("HH:mm").format(calFrom.time)
+            from = formattedDate
+            et_from?.text = formattedDate
+            h_et_from?.text = formattedDate
+
+            if(to.isNotEmpty()) {
+                var calTo = Calendar.getInstance()
+                calTo.time = SimpleDateFormat("HH:mm").parse(to)
+                //if FROM later than TO
+                if(calFrom.compareTo(calFrom)==1){
+                    to = formattedDate
+                    et_to?.text = formattedDate
+                    h_et_to?.text = formattedDate
+                }
+            }
+        }
+    }
+
+    val toTimeSetListener = object : TimePickerDialog.OnTimeSetListener {
+        override fun onTimeSet(view: TimePicker, hourOfDay: Int, minute: Int) {
+            var calTo = Calendar.getInstance()
+
+            calTo.set(Calendar.HOUR_OF_DAY, hourOfDay)
+            calTo.set(Calendar.MINUTE, minute)
+
+            val formattedDate = SimpleDateFormat("HH:mm").format(calTo.time)
+            to = formattedDate
+            et_to?.text = formattedDate
+            h_et_to?.text = formattedDate
+
+            if(from.isNotEmpty()) {
+                var calFrom = Calendar.getInstance()
+                calFrom.time = SimpleDateFormat("HH:mm").parse(from)
+                //if TO earlier than FROM
+                if(calTo.compareTo(calFrom)==-1){
+                    from = formattedDate
+                    et_from?.text = formattedDate
+                    h_et_from?.text = formattedDate
+                }
+            }
+        }
+    }
 
 }
