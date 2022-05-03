@@ -173,6 +173,36 @@ class EditProfileFragment : Fragment() {
 
     override fun onDestroy() {
         if(cancelOperation){
+            //Restore profile data
+            profileBackup?.let {
+                vm.updateProfile(it.fullname,it.nickname,it.email,it.location,it.description)
+            }
+
+            //Restore skills
+            for(skill in vmSkills){
+                if(!skillsBackup.contains(skill)){
+                    vm.removeSkill(skill.skill)
+                    skillsBackup.remove(skill)
+                }
+            }
+            for(skill in skillsBackup){
+                vm.addSkill(skill.skill)
+            }
+
+            //Restore profile image
+            if(profileImageBackup.isNotEmpty()){
+                try {
+                    profileImageBackup.let {
+                        requireContext().openFileOutput("profile_picture", Context.MODE_PRIVATE).use {
+                            it.write(profileImageBackup)
+                        }
+                    }
+                }
+                catch (e: Exception){
+                    requireContext().deleteFile("profile_picture")
+                }
+            }
+
             super.onDestroy()
             return
         }
@@ -541,43 +571,6 @@ class EditProfileFragment : Fragment() {
             return false
         }
         return true
-    }
-
-    fun restoreProfile(){
-        //Restore profile data
-        profileBackup?.let {
-            vm.updateProfile(it.fullname,it.nickname,it.email,it.location,it.description)
-        }
-
-        //Restore skills
-        for(skill in vmSkills){
-            if(!skillsBackup.contains(skill)){
-                vm.removeSkill(skill.skill)
-                skillsBackup.remove(skill)
-            }
-        }
-        for(skill in skillsBackup){
-            vm.addSkill(skill.skill)
-        }
-
-        //Restore profile image
-        if(profileImageBackup.isNotEmpty()){
-            try {
-                profileImageBackup.let {
-                    requireContext().openFileOutput("profile_picture", Context.MODE_PRIVATE).use {
-                        it.write(profileImageBackup)
-                    }
-                }
-            }
-            catch (e: Exception){
-                requireContext().deleteFile("profile_picture")
-            }
-        }
-
-        //Clear helper variables
-        profileBackup = null
-        skillsBackup.clear()
-        profileImageBackup = byteArrayOf()
     }
 
 }

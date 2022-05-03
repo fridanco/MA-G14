@@ -16,8 +16,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import it.polito.ma.g14.timebank.R
+import it.polito.ma.g14.timebank.models.TimeSlot
 import it.polito.ma.g14.timebank.models.TimeSlotAdapter
 import it.polito.ma.g14.timebank.utils.Utils
+import java.text.SimpleDateFormat
 
 class TimeSlotListFragment : Fragment() {
 
@@ -41,10 +43,10 @@ class TimeSlotListFragment : Fragment() {
         val emptyRv = view.findViewById<TextView>(R.id.textView60)
 
         rv.layoutManager = LinearLayoutManager(requireContext())
-        val adapter = TimeSlotAdapter(view)
+        val adapter = TimeSlotAdapter(view, vm)
         rv.adapter = adapter
 
-        vm.timeSlots.observe(viewLifecycleOwner) {
+        vm.timeSlots.observe(viewLifecycleOwner) { it ->
             if(it.isEmpty()){
                 rv.isGone = true
                 emptyRv.isVisible = true
@@ -52,7 +54,10 @@ class TimeSlotListFragment : Fragment() {
             else {
                 rv.isVisible = true
                 emptyRv.isGone = true
-                adapter.updateTimeSlots(it)
+                val sdf_date = SimpleDateFormat("EEE, d MMM yyyy")
+                val sdf_time = SimpleDateFormat("HH:mm")
+                val cmp = compareByDescending<TimeSlot> { sdf_date.parse(it.date) }.thenByDescending { sdf_time.parse(it.from) }
+                adapter.updateTimeSlots(it.sortedWith(cmp))
             }
         }
 

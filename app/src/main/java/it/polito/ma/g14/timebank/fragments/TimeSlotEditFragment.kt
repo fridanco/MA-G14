@@ -43,6 +43,7 @@ class TimeSlotEditFragment() : Fragment() {
 
     var timeSlotID: Long = 0
     var operationType: String = ""
+    var originFragment: String = ""
 
     var title = ""
     var description = ""
@@ -77,6 +78,7 @@ class TimeSlotEditFragment() : Fragment() {
 
         timeSlotID = requireArguments().getLong("timeSlotID")
         operationType = requireArguments().getString("operationType").toString()
+        originFragment = requireArguments().getString("originFragment") ?: "time_slot_details"
 
         et_title = view.findViewById<EditText>(R.id.textView51)
         et_description = view.findViewById<EditText>(R.id.textView53)
@@ -205,10 +207,6 @@ class TimeSlotEditFragment() : Fragment() {
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
         Utils.manageActionBarItemsVisibility(requireActivity(), menu)
-    }
-
-    fun addTimeSlot(){
-        vm.addTimeSlot(title.capitalized(), description.capitalized(), date, from, to, location.capitalized())
     }
 
     fun isFormValid() : Boolean {
