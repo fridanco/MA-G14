@@ -1,5 +1,6 @@
 package it.polito.ma.g14.timebank.models
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,11 +35,13 @@ class TimeSlotAdapter(val view: View, val vm: TimeSlotVM): RecyclerView.Adapter<
     var filter: Boolean = false
     var data = listOf<TimeSlot>()
     var displayData = data.toMutableList()
+    var colorList = mutableListOf("#FFFFFF")
+    var colorIndex = 0
 
     class ItemViewHolder(v: View): RecyclerView.ViewHolder(v) {
         private val timeSlotContainer = v.findViewById<LinearLayout>(R.id.time_slot_container)
 
-        fun bind(timeSlot: TimeSlot, action1: (v: View) -> Unit, action2: (v: View)->Unit, action3: (v: View)->Unit) {
+        fun bind(timeSlot: TimeSlot, color: String, action1: (v: View) -> Unit, action2: (v: View)->Unit, action3: (v: View)->Unit) {
             timeSlotContainer.findViewById<TextView>(R.id.textView4).text = timeSlot.title
             timeSlotContainer.findViewById<TextView>(R.id.textView5).text = timeSlot.description
             timeSlotContainer.findViewById<TextView>(R.id.textView6).text = timeSlot.date
@@ -47,6 +50,7 @@ class TimeSlotAdapter(val view: View, val vm: TimeSlotVM): RecyclerView.Adapter<
             timeSlotContainer.findViewById<CardView>(R.id.cardView).setOnClickListener(action1)
             timeSlotContainer.findViewById<ImageButton>(R.id.imageButton3).setOnClickListener(action2)
             timeSlotContainer.findViewById<ImageButton>(R.id.imageButton4).setOnClickListener(action3)
+            timeSlotContainer.findViewById<LinearLayout>(R.id.cardColor).setBackgroundColor(Color.parseColor(color))
         }
         fun unbind() {
             timeSlotContainer.setOnClickListener(null)
@@ -76,7 +80,7 @@ class TimeSlotAdapter(val view: View, val vm: TimeSlotVM): RecyclerView.Adapter<
             view.findNavController().navigate(R.id.action_timeSlotListFragment_to_timeSlotEditFragment, bundle)
         }
 
-        holder.bind(timeSlot, {action1(view)}, {action2(view)}, {action3(view)})
+        holder.bind(timeSlot, colorList[(colorIndex++)%colorList.size], {action1(view)}, {action2(view)}, {action3(view)})
     }
 
     override fun getItemCount(): Int = displayData.size

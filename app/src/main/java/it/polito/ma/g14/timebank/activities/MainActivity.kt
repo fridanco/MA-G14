@@ -1,15 +1,17 @@
 package it.polito.ma.g14.timebank.activities
 
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.*
@@ -20,6 +22,8 @@ import it.polito.ma.g14.timebank.fragments.EditProfileFragment
 import it.polito.ma.g14.timebank.fragments.ProfileVM
 import it.polito.ma.g14.timebank.fragments.TimeSlotEditFragment
 import it.polito.ma.g14.timebank.utils.Utils.ActionBarUtils.manageActionBarItemActions
+import org.apache.commons.io.IOUtils
+import java.io.FileInputStream
 
 
 class MainActivity : AppCompatActivity() {
@@ -45,6 +49,36 @@ class MainActivity : AppCompatActivity() {
 
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
+        val navViewHeaderImage = navView.getHeaderView(0).findViewById<ImageView>(R.id.nav_drawer_profileimage)
+        val navViewHeaderFullname = navView.getHeaderView(0).findViewById<TextView>(R.id.nav_drawer_name)
+        val navViewHeaderEmail = navView.getHeaderView(0).findViewById<TextView>(R.id.nav_drawer_email)
+        val navViewHeaderNumSkills = navView.getHeaderView(0).findViewById<TextView>(R.id.nav_drawer_numskills)
+        vm.profile.observe(this){
+            navViewHeaderFullname.text = it.fullname
+            navViewHeaderEmail.text = it.email
+        }
+        vm.skills.observe(this){
+            if(it.isEmpty()){
+                navViewHeaderNumSkills.text = R.string.nav_drawer_numskills_placeholder.toString()
+            }
+            else{
+                navViewHeaderNumSkills.text = "${it.size} skills"
+            }
+        }
+
+        try {
+            val inputStream : FileInputStream = openFileInput(getString(R.string.profile_picture_filename))
+            val profilePicture = IOUtils.toByteArray(inputStream)
+            if(profilePicture?.isNotEmpty() == true){
+                val bmp = BitmapFactory.decodeByteArray(profilePicture, 0, profilePicture.size)
+                navViewHeaderImage.setImageBitmap(bmp)
+            }
+        }
+        catch (e: Exception){
+            val id = resources.getIdentifier("$packageName:drawable/user", null, null)
+            navViewHeaderImage.setImageResource(id)
+        }
+
         val navController = findNavController(R.id.nav_host_fragment_content_main)
 
         NavigationUI.setupActionBarWithNavController(this, navController)
@@ -81,6 +115,9 @@ class MainActivity : AppCompatActivity() {
                     toast.show()
                     return;
                 }
+            }
+            R.id.timeSlotDetailsFragment -> {
+                navController.popBackStack(R.id.timeSlotListFragment, true)
             }
         }
         super.onBackPressed()

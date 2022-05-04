@@ -1,5 +1,6 @@
 package it.polito.ma.g14.timebank.fragments
 
+import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -25,6 +26,15 @@ class TimeSlotListFragment : Fragment() {
 
     val vm by viewModels<TimeSlotVM>()
 
+    //noinspection ResourceType
+    val colorList = listOf<String>(
+        requireContext().resources.getString(R.color.orange),
+        requireContext().resources.getString(R.color.purple),
+        requireContext().resources.getString(R.color.red),
+        requireContext().resources.getString(R.color.teal),
+        requireContext().resources.getString(R.color.brown),
+    )
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -44,6 +54,7 @@ class TimeSlotListFragment : Fragment() {
 
         rv.layoutManager = LinearLayoutManager(requireContext())
         val adapter = TimeSlotAdapter(view, vm)
+        adapter.colorList = colorList as MutableList<String>
         rv.adapter = adapter
 
         vm.timeSlots.observe(viewLifecycleOwner) { it ->
@@ -61,7 +72,7 @@ class TimeSlotListFragment : Fragment() {
             }
         }
 
-        val fab = view?.findViewById<FloatingActionButton>(R.id.floatingActionButton)
+        val fab = view?.findViewById< FloatingActionButton>(R.id.floatingActionButton)
         fab?.let {
             it.setOnClickListener {
                 val bundle = bundleOf("timeSlotID" to 0, "operationType" to "add_time_slot")
