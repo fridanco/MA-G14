@@ -28,7 +28,7 @@ import java.io.FileInputStream
 
 class MainActivity : AppCompatActivity() {
 
-    val vm by viewModels<ProfileVM>()
+    private val vm by viewModels<ProfileVM>()
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
@@ -53,13 +53,16 @@ class MainActivity : AppCompatActivity() {
         val navViewHeaderFullname = navView.getHeaderView(0).findViewById<TextView>(R.id.nav_drawer_name)
         val navViewHeaderEmail = navView.getHeaderView(0).findViewById<TextView>(R.id.nav_drawer_email)
         val navViewHeaderNumSkills = navView.getHeaderView(0).findViewById<TextView>(R.id.nav_drawer_numskills)
+
         vm.profile.observe(this){
+            println(it)
             navViewHeaderFullname.text = it.fullname
             navViewHeaderEmail.text = it.email
         }
+
         vm.skills.observe(this){
             if(it.isEmpty()){
-                navViewHeaderNumSkills.text = R.string.nav_drawer_numskills_placeholder.toString()
+                navViewHeaderNumSkills.text = "No skills selected"
             }
             else{
                 navViewHeaderNumSkills.text = "${it.size} skills"

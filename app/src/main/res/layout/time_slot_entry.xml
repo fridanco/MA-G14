@@ -71,13 +71,6 @@
                             android:text="@string/timeslot_service_description_list"
                             android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
-                        <View
-                            android:id="@+id/divider3"
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:layout_marginBottom="6dp"
-                            android:background="?android:attr/listDivider" />
-
                         <TextView
                             android:id="@+id/textView19"
                             android:layout_width="match_parent"

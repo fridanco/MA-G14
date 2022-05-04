@@ -145,4 +145,8 @@ class Utils {
         }
     }
 
+    fun manageActionBarNavigateUp(activity: Activity){
+
+    }
+
 }

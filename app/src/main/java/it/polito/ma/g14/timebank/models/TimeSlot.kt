@@ -86,6 +86,7 @@ class TimeSlotAdapter(val view: View, val vm: TimeSlotVM): RecyclerView.Adapter<
     override fun getItemCount(): Int = displayData.size
 
     fun updateTimeSlots(timeSlots : List<TimeSlot>){
+        colorIndex = 0
         data = timeSlots
         val diffs = DiffUtil.calculateDiff(MyDiffCallback(displayData, data))
         displayData = data as MutableList<TimeSlot>

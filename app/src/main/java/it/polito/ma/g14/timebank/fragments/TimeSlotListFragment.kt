@@ -26,15 +26,6 @@ class TimeSlotListFragment : Fragment() {
 
     val vm by viewModels<TimeSlotVM>()
 
-    //noinspection ResourceType
-    val colorList = listOf<String>(
-        requireContext().resources.getString(R.color.orange),
-        requireContext().resources.getString(R.color.purple),
-        requireContext().resources.getString(R.color.red),
-        requireContext().resources.getString(R.color.teal),
-        requireContext().resources.getString(R.color.brown),
-    )
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -51,6 +42,15 @@ class TimeSlotListFragment : Fragment() {
 
         val rv = view.findViewById<RecyclerView>(R.id.timeSlotRecyclerView)
         val emptyRv = view.findViewById<TextView>(R.id.textView60)
+
+        //noinspection ResourceType
+        val colorList = listOf<String>(
+            resources.getString(R.color.purple),
+            resources.getString(R.color.orange),
+            resources.getString(R.color.red),
+            resources.getString(R.color.teal),
+            resources.getString(R.color.brown),
+        )
 
         rv.layoutManager = LinearLayoutManager(requireContext())
         val adapter = TimeSlotAdapter(view, vm)
