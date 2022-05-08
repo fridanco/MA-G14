@@ -12,10 +12,18 @@
         tools:layout="@layout/fragment_time_slot_list" >
         <action
             android:id="@+id/action_timeSlotListFragment_to_timeSlotDetailsFragment"
-            app:destination="@id/timeSlotDetailsFragment" />
+            app:destination="@id/timeSlotDetailsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"/>
         <action
             android:id="@+id/action_timeSlotListFragment_to_timeSlotEditFragment"
-            app:destination="@id/timeSlotEditFragment"/>
+            app:destination="@id/timeSlotEditFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"/>
     </fragment>
     <fragment
         android:id="@+id/timeSlotDetailsFragment"
@@ -24,23 +32,17 @@
         tools:layout="@layout/fragment_time_slot_details" >
         <action
             android:id="@+id/action_timeSlotDetailsFragment_to_timeSlotEditFragment"
-            app:destination="@id/timeSlotEditFragment" />
-        <action
-            android:id="@+id/action_timeSlotDetailsFragment_to_timeSlotListFragment"
-            app:destination="@id/timeSlotListFragment" />
+            app:destination="@id/timeSlotEditFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"/>
     </fragment>
     <fragment
         android:id="@+id/timeSlotEditFragment"
         android:name="it.polito.ma.g14.timebank.fragments.TimeSlotEditFragment"
         android:label="Edit time slot"
-        tools:layout="@layout/fragment_time_slot_edit" >
-        <action
-            android:id="@+id/action_timeSlotEditFragment_to_timeSlotDetailsFragment"
-            app:destination="@id/timeSlotDetailsFragment" />
-        <action
-            android:id="@+id/action_timeSlotEditFragment_to_timeSlotListFragment"
-            app:destination="@id/timeSlotListFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_time_slot_edit" />
 
     <fragment
         android:id="@+id/nav_profile"
@@ -49,7 +51,11 @@
         tools:layout="@layout/fragment_show_profile" >
         <action
             android:id="@+id/action_nav_profile_to_edit_profile"
-            app:destination="@id/edit_profile" />
+            app:destination="@id/edit_profile"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
     </fragment>
 
     <fragment
@@ -58,20 +64,17 @@
         android:label="Edit profile"
         tools:layout="@layout/fragment_edit_profile" >
         <action
-            android:id="@+id/action_edit_profile_to_nav_profile"
-            app:destination="@id/nav_profile" />
-        <action
             android:id="@+id/action_edit_profile_to_chooseSkillsFragment"
-            app:destination="@id/chooseSkillsFragment" />
+            app:destination="@id/chooseSkillsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/chooseSkillsFragment"
         android:name="it.polito.ma.g14.timebank.fragments.ChooseSkillsFragment"
         android:label="Choose skills"
-        tools:layout="@layout/fragment_choose_skills">
-        <action
-            android:id="@+id/action_chooseSkillsFragment_to_edit_profile"
-            app:destination="@id/edit_profile" />
-    </fragment>
+        tools:layout="@layout/fragment_choose_skills"/>
 
 </navigation>

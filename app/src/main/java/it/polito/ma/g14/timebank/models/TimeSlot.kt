@@ -1,5 +1,6 @@
 package it.polito.ma.g14.timebank.models
 
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
@@ -47,10 +48,12 @@ class TimeSlotAdapter(val view: View, val vm: TimeSlotVM): RecyclerView.Adapter<
             timeSlotContainer.findViewById<TextView>(R.id.textView6).text = timeSlot.date
             timeSlotContainer.findViewById<TextView>(R.id.textView7).text = "${timeSlot.from} - ${timeSlot.to}"
             timeSlotContainer.findViewById<TextView>(R.id.textView19).text = timeSlot.location
+            timeSlotContainer.findViewById<LinearLayout>(R.id.cardColor).setBackgroundColor(Color.parseColor(color))
+            timeSlotContainer.findViewById<ImageButton>(R.id.imageButton3).backgroundTintList = ColorStateList.valueOf(Color.parseColor(color))
+            timeSlotContainer.findViewById<ImageButton>(R.id.imageButton4).backgroundTintList = ColorStateList.valueOf(Color.parseColor(color))
             timeSlotContainer.findViewById<CardView>(R.id.cardView).setOnClickListener(action1)
             timeSlotContainer.findViewById<ImageButton>(R.id.imageButton3).setOnClickListener(action2)
             timeSlotContainer.findViewById<ImageButton>(R.id.imageButton4).setOnClickListener(action3)
-            timeSlotContainer.findViewById<LinearLayout>(R.id.cardColor).setBackgroundColor(Color.parseColor(color))
         }
         fun unbind() {
             timeSlotContainer.setOnClickListener(null)

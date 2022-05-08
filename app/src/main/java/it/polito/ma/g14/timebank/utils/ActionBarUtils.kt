@@ -33,9 +33,10 @@ class Utils {
                     menu.findItem(R.id.app_bar_pencil).isVisible = false
                     menu.findItem(R.id.app_bar_delete).isVisible = false
                     menu.findItem(R.id.app_bar_cancel).isVisible = true
-                    val navHostFragment = (activity as FragmentActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
-                    val fragment = navHostFragment!!.childFragmentManager.fragments[0] as TimeSlotEditFragment
-                    menu.findItem(R.id.app_bar_add).isVisible = fragment.operationType=="add_time_slot"
+                    menu.findItem(R.id.app_bar_add).isVisible = true
+//                    val navHostFragment = (activity as FragmentActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
+//                    val fragment = navHostFragment!!.childFragmentManager.fragments[0] as TimeSlotEditFragment
+//                    menu.findItem(R.id.app_bar_add).isVisible = fragment.operationType=="add_time_slot"
                 }
                 R.id.timeSlotDetailsFragment -> {
                     menu.findItem(R.id.app_bar_pencil).isVisible = true
@@ -53,7 +54,7 @@ class Utils {
                     menu.findItem(R.id.app_bar_pencil).isVisible = false
                     menu.findItem(R.id.app_bar_delete).isVisible = false
                     menu.findItem(R.id.app_bar_cancel).isVisible = true
-                    menu.findItem(R.id.app_bar_add).isVisible = false
+                    menu.findItem(R.id.app_bar_add).isVisible = true
                 }
                 R.id.chooseSkillsFragment -> {
                     menu.findItem(R.id.app_bar_pencil).isVisible = false
@@ -79,7 +80,6 @@ class Utils {
                                     navController.popBackStack(R.id.timeSlotListFragment, false)
                                 }
                                 else{
-
                                     navController.popBackStack(R.id.timeSlotDetailsFragment, false)
                                 }
                             }
@@ -126,7 +126,9 @@ class Utils {
                             val navHostFragment = (activity as FragmentActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
                             val fragment = navHostFragment!!.childFragmentManager.fragments[0] as EditProfileFragment
                             fragment.cancelOperation = true
-                            //fragment.restoreProfile()
+                            navController.popBackStack(R.id.nav_profile, false)
+                        }
+                        R.id.app_bar_add -> {
                             navController.popBackStack(R.id.nav_profile, false)
                         }
                     }

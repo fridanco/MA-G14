@@ -6,20 +6,20 @@
         android:id="@+id/app_bar_pencil"
         android:icon="@android:drawable/ic_menu_edit"
         android:title="@string/app_bar_edit_profile"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
     <item
         android:id="@+id/app_bar_delete"
         android:icon="@android:drawable/ic_menu_delete"
         android:title="@string/app_bar_delete"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
     <item
         android:id="@+id/app_bar_cancel"
         android:icon="@android:drawable/ic_menu_close_clear_cancel"
         android:title="@string/app_bar_cancel"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
     <item
         android:id="@+id/app_bar_add"
         android:icon="@android:drawable/ic_menu_save"
         android:title="@string/app_bar_add"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 </menu>

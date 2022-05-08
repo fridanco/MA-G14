@@ -29,7 +29,13 @@
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
+        android:background="@color/white"
+        android:backgroundTint="#512DA8"
         android:clickable="true"
+        android:foregroundTint="@color/white"
         android:src="@android:drawable/ic_input_add"
-        app:fabSize="auto" />
+        android:textColor="@color/white"
+        android:tint="@color/white"
+        app:fabSize="auto"
+        app:rippleColor="@color/white" />
 </FrameLayout>
