@@ -48,8 +48,8 @@ class TimeSlotListFragment : Fragment() {
             resources.getString(R.color.purple),
             resources.getString(R.color.orange),
             resources.getString(R.color.red),
-            resources.getString(R.color.teal),
-            resources.getString(R.color.brown),
+            resources.getString(R.color.green),
+            resources.getString(R.color.eletric_blue),
         )
 
         rv.layoutManager = LinearLayoutManager(requireContext())
