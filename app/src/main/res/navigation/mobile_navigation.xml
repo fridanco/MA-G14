@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/timeSlotListFragment"
         android:name="it.polito.ma.g14.timebank.fragments.TimeSlotListFragment"
-        android:label="My advertisments"
+        android:label="My advertisements"
         tools:layout="@layout/fragment_time_slot_list" >
         <action
             android:id="@+id/action_timeSlotListFragment_to_timeSlotDetailsFragment"
