@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "23346206643",
+    "project_id": "mad2022-g14",
+    "storage_bucket": "mad2022-g14.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:23346206643:android:a085ca386287771cd1ddc6",
+        "android_client_info": {
+          "package_name": "it.polito.ma.g14.timebank"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "23346206643-a039m6s4d7kn9u8g7eg493vksqjh18ht.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZwsflcgPFfz67jZl2tqjatEf9y1ng1m0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "23346206643-a039m6s4d7kn9u8g7eg493vksqjh18ht.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
