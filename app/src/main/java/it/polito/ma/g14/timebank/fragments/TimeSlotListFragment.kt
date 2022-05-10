@@ -67,7 +67,7 @@ class TimeSlotListFragment : Fragment() {
                 emptyRv.isGone = true
                 val sdf_date = SimpleDateFormat("EEE, d MMM yyyy")
                 val sdf_time = SimpleDateFormat("HH:mm")
-                val cmp = compareByDescending<TimeSlot> { sdf_date.parse(it.date) }.thenByDescending { sdf_time.parse(it.from) }
+                val cmp = compareBy<TimeSlot> { sdf_date.parse(it.date) }.thenByDescending { sdf_time.parse(it.from) }
                 adapter.updateTimeSlots(it.sortedWith(cmp))
             }
         }
