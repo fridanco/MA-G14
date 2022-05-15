@@ -23,6 +23,12 @@ class Utils {
             val navController = activity.findNavController(R.id.nav_host_fragment_content_main)
             val currDestinationID = navController.currentDestination?.id
             when (currDestinationID) {
+                R.id.skillAdvertisementListFragment -> {
+                    menu.findItem(R.id.app_bar_pencil).isVisible = false
+                    menu.findItem(R.id.app_bar_delete).isVisible = false
+                    menu.findItem(R.id.app_bar_cancel).isVisible = false
+                    menu.findItem(R.id.app_bar_add).isVisible = false
+                }
                 R.id.timeSlotListFragment -> {
                     menu.findItem(R.id.app_bar_pencil).isVisible = false
                     menu.findItem(R.id.app_bar_delete).isVisible = false

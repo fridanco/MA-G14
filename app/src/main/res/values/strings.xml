@@ -95,6 +95,9 @@
     <string name="nav_drawer_name_placeholder">Full name</string>
     <string name="nav_drawer_email_placeholder">example@email.com</string>
     <string name="nav_drawer_numskills_placeholder">No skills selected</string>
+    <string name="skill_advertisements_no_advertisement">There are no posted advertisements</string>
+    <string name="skill_advertisement_num_ads"># of advertisements</string>
+    <string name="skill_advertisement_name">Skill name</string>
 
 
 </resources>
