@@ -12,6 +12,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.*
@@ -19,6 +20,7 @@ import com.google.android.material.navigation.NavigationView
 import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.databinding.ActivityMainBinding
 import it.polito.ma.g14.timebank.fragments.EditProfileFragment
+import it.polito.ma.g14.timebank.fragments.FirebaseVM
 import it.polito.ma.g14.timebank.fragments.ProfileVM
 import it.polito.ma.g14.timebank.fragments.TimeSlotEditFragment
 import it.polito.ma.g14.timebank.utils.Utils.ActionBarUtils.manageActionBarItemActions
@@ -29,7 +31,7 @@ import java.io.FileInputStream
 class MainActivity : AppCompatActivity() {
 
     private val vm by viewModels<ProfileVM>()
-
+    private val vm1 by viewModels<FirebaseVM>()
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
 
@@ -54,11 +56,16 @@ class MainActivity : AppCompatActivity() {
         val navViewHeaderEmail = navView.getHeaderView(0).findViewById<TextView>(R.id.nav_drawer_email)
         val navViewHeaderNumSkills = navView.getHeaderView(0).findViewById<TextView>(R.id.nav_drawer_numskills)
 
-        vm.profile.observe(this){
-            println(it)
-            navViewHeaderFullname.text = it.fullname
-            navViewHeaderEmail.text = it.email
+        vm1.profile.observe(this){
+
+            if ( it.isNotEmpty()){
+                println(it)
+                navViewHeaderFullname.text = it[0].fullname
+                navViewHeaderEmail.text = it[0].email
+            }
+
         }
+
 
         vm.skills.observe(this){
             if(it.isEmpty()){

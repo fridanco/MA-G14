@@ -15,7 +15,11 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
     private val _ads = MutableLiveData<List<Advertisement>>()
     val ads: LiveData<List<Advertisement>> = _ads
 
+    private val _profile  = MutableLiveData<List<User>>()
+    val profile : LiveData<List<User>> = _profile;
+
     private val skillAdvertisementListener: ListenerRegistration
+    private val profileUserListener : ListenerRegistration
 
     private val db: FirebaseFirestore
 
@@ -33,6 +37,18 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
                         skillAdvertisement.toObject(
                             SkillAdvertisement::class.java
                         )
+                    }
+                }
+            }
+        }
+
+        profileUserListener = db.collection("users").addSnapshotListener{result,exception ->
+            _profile.value = if (exception != null){
+                emptyList()
+            }
+            else{
+                result?.let { result.mapNotNull { user ->
+                    user.toObject(User::class.java)
                     }
                 }
             }
