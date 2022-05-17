@@ -1,5 +1,6 @@
 package it.polito.ma.g14.timebank.activities
 
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.Gravity
@@ -10,18 +11,21 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.*
+import com.firebase.ui.auth.AuthUI
+import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
+import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
 import com.google.android.material.navigation.NavigationView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.databinding.ActivityMainBinding
 import it.polito.ma.g14.timebank.fragments.EditProfileFragment
 import it.polito.ma.g14.timebank.fragments.FirebaseVM
-import it.polito.ma.g14.timebank.fragments.ProfileVM
 import it.polito.ma.g14.timebank.fragments.TimeSlotEditFragment
 import it.polito.ma.g14.timebank.utils.Utils.ActionBarUtils.manageActionBarItemActions
 import org.apache.commons.io.IOUtils
@@ -30,61 +34,75 @@ import java.io.FileInputStream
 
 class MainActivity : AppCompatActivity() {
 
-    private val vm by viewModels<ProfileVM>()
+    private lateinit var auth: FirebaseAuth
+
     private val vm1 by viewModels<FirebaseVM>()
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        vm.isProfileInitalized.observe(this){
-            if(it==0){
-                vm.initProfile()
-            }
-        }
+
+//        vm.isProfileInitalized.observe(this){
+//            if(it==0){
+//                vm.initProfile()
+//            }
+//        }
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        auth = Firebase.auth
+        val currentUser = auth.currentUser
+        if(currentUser==null){
+            startActivity(Intent(this, LoginActivity::class.java))
+            //loginPopup.showPopupWindow(findViewById(R.id.button5), signInLauncher, signInIntent)
+        }
 
         setSupportActionBar(binding.appBarMain.toolbar)
 
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
-        val navViewHeaderImage = navView.getHeaderView(0).findViewById<ImageView>(R.id.nav_drawer_profileimage)
-        val navViewHeaderFullname = navView.getHeaderView(0).findViewById<TextView>(R.id.nav_drawer_name)
-        val navViewHeaderEmail = navView.getHeaderView(0).findViewById<TextView>(R.id.nav_drawer_email)
-        val navViewHeaderNumSkills = navView.getHeaderView(0).findViewById<TextView>(R.id.nav_drawer_numskills)
+        val navViewHeaderImage =
+            navView.getHeaderView(0).findViewById<ImageView>(R.id.nav_drawer_profileimage)
+        val navViewHeaderFullname =
+            navView.getHeaderView(0).findViewById<TextView>(R.id.nav_drawer_name)
+        val navViewHeaderEmail =
+            navView.getHeaderView(0).findViewById<TextView>(R.id.nav_drawer_email)
+        val navViewHeaderNumSkills =
+            navView.getHeaderView(0).findViewById<TextView>(R.id.nav_drawer_numskills)
 
-        vm1.profile.observe(this){
+//        vm1.profile.observe(this){
+//
+//            if ( it.isNotEmpty()){
+//                println(it)
+//                navViewHeaderFullname.text = it[0].fullname
+//                navViewHeaderEmail.text = it[0].email
+//            }
+//
+//        }
 
-            if ( it.isNotEmpty()){
-                println(it)
-                navViewHeaderFullname.text = it[0].fullname
-                navViewHeaderEmail.text = it[0].email
-            }
 
-        }
-
-
-        vm.skills.observe(this){
-            if(it.isEmpty()){
-                navViewHeaderNumSkills.text = "No skills selected"
-            }
-            else{
-                navViewHeaderNumSkills.text = "${it.size} skills"
-            }
-        }
+//        vm.skills.observe(this){
+//            if(it.isEmpty()){
+//                navViewHeaderNumSkills.text = "No skills selected"
+//            }
+//            else{
+//                navViewHeaderNumSkills.text = "${it.size} skills"
+//            }
+//        }
 
         try {
-            val inputStream : FileInputStream = openFileInput(getString(R.string.profile_picture_filename))
+            val inputStream: FileInputStream =
+                openFileInput(getString(R.string.profile_picture_filename))
             val profilePicture = IOUtils.toByteArray(inputStream)
-            if(profilePicture?.isNotEmpty() == true){
+            if (profilePicture?.isNotEmpty() == true) {
                 val bmp = BitmapFactory.decodeByteArray(profilePicture, 0, profilePicture.size)
                 navViewHeaderImage.setImageBitmap(bmp)
             }
-        }
-        catch (e: Exception){
+        } catch (e: Exception) {
             val id = resources.getIdentifier("$packageName:drawable/user", null, null)
             navViewHeaderImage.setImageResource(id)
         }
@@ -101,6 +119,8 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+
     }
 
     override fun onBackPressed() {

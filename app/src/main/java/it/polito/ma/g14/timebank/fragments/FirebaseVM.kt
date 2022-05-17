@@ -62,9 +62,7 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
             }
     }
 
-    fun getAdvertisement(advertisementID: String){
-
-    }
+    fun getAdvertisement(advertisementID: String) = _ads.value?.find { it.id == advertisementID }
 
     fun postAdvertisement(advertisement: Advertisement){
         db.collection("advertisements").add(advertisement)
