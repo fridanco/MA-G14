@@ -5,7 +5,7 @@ import java.util.*
 
 class Advertisement {
     @DocumentId
-    var advertisement_id : String = ""
+    var id : String = ""
     var user_id : String = ""
     var title : String = ""
     var description : String = ""
