@@ -99,6 +99,7 @@
     <string name="skill_advertisements_no_advertisement">There are no posted advertisements</string>
     <string name="skill_advertisement_num_ads"># of advertisements</string>
     <string name="skill_advertisement_name">Skill name</string>
+    <string name="menu_logout">Logout</string>
 
 
 </resources>

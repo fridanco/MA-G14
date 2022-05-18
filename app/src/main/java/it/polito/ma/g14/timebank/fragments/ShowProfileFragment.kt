@@ -19,7 +19,7 @@ import java.io.FileInputStream
 
 class ShowProfileFragment : Fragment() {
 
-    val vm by viewModels<ProfileVM>()
+    val vm by viewModels<FirebaseVM>()
 
     var fullName :  String = "Peter Parker"
     var email : String = "peter.parker@stark.us"
@@ -93,9 +93,7 @@ class ShowProfileFragment : Fragment() {
 
         vm.profile.observe(viewLifecycleOwner){
             populateProfileText(it)
-        }
-        vm.skills.observe(viewLifecycleOwner){
-            populateProfileSkills(it)
+            populateProfileSkills(it.skills)
         }
 
     }
@@ -123,7 +121,7 @@ class ShowProfileFragment : Fragment() {
         h_et_skills = view?.findViewById<ChipGroup>(R.id.chipGroup2)
     }
 
-    private fun populateProfileText(profile: Profile) {
+    private fun populateProfileText(profile: User) {
         tv_fullname?.text = profile.fullname
         tv_nickname?.text = profile.nickname
         tv_email?.text = profile.email
@@ -157,7 +155,7 @@ class ShowProfileFragment : Fragment() {
         }
     }
 
-    private fun populateProfileSkills(skills: List<Skill>){
+    private fun populateProfileSkills(skills: List<String>){
         et_skills?.removeAllViews()
         h_et_skills?.removeAllViews()
 
@@ -171,7 +169,7 @@ class ShowProfileFragment : Fragment() {
             skills.forEach {
                 val inflater: LayoutInflater = layoutInflater
                 val skill: Chip = inflater.inflate(R.layout.skill_chip, null) as Chip
-                skill.text = it.skill
+                skill.text = it
                 skill.isCloseIconVisible = false
                 et_skills?.addView(skill)
                 h_et_skills?.addView(skill)

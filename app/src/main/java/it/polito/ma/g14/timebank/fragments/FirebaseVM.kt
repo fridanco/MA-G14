@@ -5,11 +5,16 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.SetOptions
+import com.google.firebase.ktx.Firebase
 
 class FirebaseVM(application:Application) : AndroidViewModel(application) {
+
+    private val _profile = MutableLiveData<User>()
+    val profile : LiveData<User> = _profile
 
     private val _skills = MutableLiveData<List<SkillAdvertisement>>()
     val skills: LiveData<List<SkillAdvertisement>> = _skills
@@ -20,32 +25,47 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
     private val _ads = MutableLiveData<List<Advertisement>>()
     val ads: LiveData<List<Advertisement>> = _ads
 
-    private val skillAdvertisementListener: ListenerRegistration
-    private val myAdvertisementsListener: ListenerRegistration
+    private lateinit var profileListener : ListenerRegistration
+    private lateinit var skillAdvertisementListener: ListenerRegistration
+    private lateinit var myAdvertisementsListener: ListenerRegistration
 
     private val db: FirebaseFirestore
 
     init {
         db = FirebaseFirestore.getInstance()
+    }
 
-        skillAdvertisementListener = db.collection("skillAdvertisements")
-        .addSnapshotListener { result, exception ->
-            _skills.value = if (exception != null) {
-                emptyList()
-            }
-            else{
-                result?.let {
-                    result.mapNotNull { skillAdvertisement ->
-                        skillAdvertisement.toObject(
-                            SkillAdvertisement::class.java
-                        )
+    fun initListeners(uid: String){
+        profileListener = db.collection("users").document(uid)
+            .addSnapshotListener{ result, exception ->
+                _profile.value = if (exception != null) {
+                    User()
+                }
+                else{
+                    result?.let {
+                        it.toObject(User::class.java)
                     }
                 }
             }
-        }
+
+        skillAdvertisementListener = db.collection("skillAdvertisements")
+            .addSnapshotListener { result, exception ->
+                _skills.value = if (exception != null) {
+                    emptyList()
+                }
+                else{
+                    result?.let {
+                        result.mapNotNull { skillAdvertisement ->
+                            skillAdvertisement.toObject(
+                                SkillAdvertisement::class.java
+                            )
+                        }
+                    }
+                }
+            }
 
         myAdvertisementsListener = db.collection("advertisements")
-            .whereEqualTo("user.id","abcdef")
+            .whereEqualTo("user.id",uid)
             .addSnapshotListener { result, exception ->
                 _myAdvertisements.value = if (exception != null) {
                     emptyList()
@@ -62,12 +82,20 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
             }
     }
 
+    fun destroyListeners(){
+        skillAdvertisementListener.remove();
+        profileListener.remove()
+        myAdvertisementsListener.remove()
+    }
+
+
     fun getAdvertisement(advertisementID: String) = _ads.value?.find { it.id == advertisementID }
 
     fun postAdvertisement(advertisement: Advertisement){
         db.collection("advertisements").add(advertisement)
             .addOnSuccessListener {
                 Log.d("Timebank FIREBASE", "Advertisement posted with ID: ${it.id}")
+
             }
             .addOnFailureListener { e ->
                 Log.w("Timebank FIREBASE", "Error adding advertisement", e)
@@ -97,6 +125,9 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
     }
 
     override fun onCleared() {
-        super.onCleared(); skillAdvertisementListener.remove();
+        super.onCleared();
+        skillAdvertisementListener.remove();
+        profileListener.remove()
+        myAdvertisementsListener.remove()
     }
 }

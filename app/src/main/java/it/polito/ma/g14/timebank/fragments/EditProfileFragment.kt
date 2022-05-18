@@ -42,7 +42,7 @@ import java.util.*
 
 class EditProfileFragment : Fragment() {
 
-    val vm by viewModels<ProfileVM>()
+    val vm by viewModels<FirebaseVM>()
 
     var imageFilepath : String = ""
 

@@ -18,6 +18,7 @@ import androidx.navigation.ui.*
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
+import com.google.android.gms.auth.api.Auth
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -36,20 +37,13 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
 
-    private val vm1 by viewModels<FirebaseVM>()
+    private val vm by viewModels<FirebaseVM>()
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-
-//        vm.isProfileInitalized.observe(this){
-//            if(it==0){
-//                vm.initProfile()
-//            }
-//        }
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -58,8 +52,12 @@ class MainActivity : AppCompatActivity() {
         val currentUser = auth.currentUser
         if(currentUser==null){
             startActivity(Intent(this, LoginActivity::class.java))
-            //loginPopup.showPopupWindow(findViewById(R.id.button5), signInLauncher, signInIntent)
         }
+        else{
+            vm.initListeners(currentUser.uid)
+        }
+
+        println(currentUser!!.uid)
 
         setSupportActionBar(binding.appBarMain.toolbar)
 
@@ -74,25 +72,19 @@ class MainActivity : AppCompatActivity() {
         val navViewHeaderNumSkills =
             navView.getHeaderView(0).findViewById<TextView>(R.id.nav_drawer_numskills)
 
-//        vm1.profile.observe(this){
-//
-//            if ( it.isNotEmpty()){
-//                println(it)
-//                navViewHeaderFullname.text = it[0].fullname
-//                navViewHeaderEmail.text = it[0].email
-//            }
-//
-//        }
-
-
-//        vm.skills.observe(this){
-//            if(it.isEmpty()){
-//                navViewHeaderNumSkills.text = "No skills selected"
-//            }
-//            else{
-//                navViewHeaderNumSkills.text = "${it.size} skills"
-//            }
-//        }
+        vm.profile.observe(this){
+            if(it==null){
+                return@observe;
+            }
+            navViewHeaderFullname.text = it.fullname
+            navViewHeaderEmail.text = it.email
+            if(it.skills.isEmpty()){
+                navViewHeaderNumSkills.text = "No skills selected"
+            }
+            else{
+                navViewHeaderNumSkills.text = "${it.skills.size} skills"
+            }
+        }
 
         try {
             val inputStream: FileInputStream =
@@ -114,11 +106,20 @@ class MainActivity : AppCompatActivity() {
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.skillAdvertisementListFragment, R.id.nav_profile
+                R.id.skillAdvertisementListFragment, R.id.nav_profile, R.id.nav_logout
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+        navView.menu.findItem(R.id.nav_logout).setOnMenuItemClickListener {
+            AuthUI.getInstance()
+                .signOut(this)
+                .addOnCompleteListener {
+                    vm.destroyListeners()
+                    startActivity(Intent(this, LoginActivity::class.java))
+                }
+            return@setOnMenuItemClickListener true
+        }
 
 
     }
