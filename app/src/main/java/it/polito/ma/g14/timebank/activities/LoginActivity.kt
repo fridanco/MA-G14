@@ -23,7 +23,7 @@ class LoginActivity : AppCompatActivity() {
 //
 //    private val REQ_ONE_TAP = 2  // Can be any integer unique to the Activity
 //    private var showOneTapUI = true
-    // See: https://developer.android.com/training/basics/intents/result
+//    See: https://developer.android.com/training/basics/intents/result
 
 
     private val signInLauncher = registerForActivityResult(

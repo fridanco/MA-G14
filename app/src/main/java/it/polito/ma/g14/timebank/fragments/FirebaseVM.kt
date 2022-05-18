@@ -88,6 +88,24 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
         myAdvertisementsListener.remove()
     }
 
+    fun updateProfile(fullname: String, nickname: String, email: String, location: String, description: String, skills: List<String>){
+        val user = User().apply {
+            this.fullname = fullname
+            this.nickname = nickname
+            this.email = email
+            this.location = location
+            this.description = description
+            this.skills = skills
+        }
+
+        db.collection("users").document(Firebase.auth.currentUser!!.uid)
+            .set(user)
+    }
+
+    fun updateProfileSkills(skills: List<String>, skillToRemove: String){
+        db.collection("users").document(Firebase.auth.currentUser!!.uid)
+            .update("skills",skills.toMutableList().remove(skillToRemove))
+    }
 
     fun getAdvertisement(advertisementID: String) = _ads.value?.find { it.id == advertisementID }
 

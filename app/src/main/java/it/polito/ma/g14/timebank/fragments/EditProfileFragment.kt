@@ -75,14 +75,11 @@ class EditProfileFragment : Fragment() {
     private var imgButton : ImageButton? = null
     private var imgButton2 : ImageButton? = null
 
-    var vmSkills = listOf<Skill>()
-
     var performProfileBackup = false
     var performSkillsBackup = false
     var cancelOperation = false
 
-    var profileBackup: Profile? = null
-    var skillsBackup = mutableListOf<Skill>()
+    var profileBackup: User? = null
     var profileImageBackup = byteArrayOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -150,24 +147,18 @@ class EditProfileFragment : Fragment() {
 
         vm.profile.observe(viewLifecycleOwner){
             if(performProfileBackup){
-                profileBackup = Profile().apply {
+                profileBackup = User().apply {
                     this.fullname = it.fullname
                     this.nickname = it.nickname
                     this.email = it.email
                     this.location = it.location
                     this.description = it.description
+                    this.skills = it.skills
                 }
                 performProfileBackup = false
             }
             populateProfileEditText(it)
-        }
-        vm.skills.observe(viewLifecycleOwner){
-            if(performSkillsBackup){
-                skillsBackup = it as MutableList<Skill>
-                performSkillsBackup = false
-            }
-            vmSkills = it
-            populateProfileSkills(it)
+            populateProfileSkills(it.skills)
         }
     }
 
@@ -175,18 +166,7 @@ class EditProfileFragment : Fragment() {
         if(cancelOperation){
             //Restore profile data
             profileBackup?.let {
-                vm.updateProfile(it.fullname,it.nickname,it.email,it.location,it.description)
-            }
-
-            //Restore skills
-            for(skill in vmSkills){
-                if(!skillsBackup.contains(skill)){
-                    vm.removeSkill(skill.skill)
-                    skillsBackup.remove(skill)
-                }
-            }
-            for(skill in skillsBackup){
-                vm.addSkill(skill.skill)
+                vm.updateProfile(it.fullname,it.nickname,it.email,it.location,it.description, it.skills)
             }
 
             //Restore profile image
@@ -221,7 +201,7 @@ class EditProfileFragment : Fragment() {
             requireContext().deleteFile("profile_picture")
         }
 
-        vm.updateProfile(fullName, nickName, email, location, description)
+        vm.updateProfile(fullName, nickName, email, location, description, skills)
 
         super.onDestroy()
     }
@@ -360,7 +340,7 @@ class EditProfileFragment : Fragment() {
         }
     }
 
-    private fun populateProfileEditText(profile: Profile){
+    private fun populateProfileEditText(profile: User){
 
         et_fullname?.text = profile.fullname.toEditable()
         et_nickname?.text = profile.nickname.toEditable()
@@ -376,7 +356,7 @@ class EditProfileFragment : Fragment() {
 
     }
 
-    private fun populateProfileSkills(skills: List<Skill>){
+    private fun populateProfileSkills(skills: List<String>){
         et_skills?.removeAllViews()
         h_et_skills?.removeAllViews()
         if(skills.size==0){
@@ -386,13 +366,13 @@ class EditProfileFragment : Fragment() {
         else {
             view?.findViewById<TextView>(R.id.textView10)?.isVisible = false
             view?.findViewById<TextView>(R.id.textView11)?.isVisible = false
-            skills.forEach { skillObj: Skill ->
+            skills.forEach {
                 val inflater: LayoutInflater = layoutInflater
                 val skill: Chip = inflater.inflate(R.layout.skill_chip, null) as Chip
-                skill.text = skillObj.skill
+                skill.text = it
                 skill.isCloseIconVisible = true
                 skill.setOnCloseIconClickListener {
-                    vm.removeSkill(skillObj.skill)
+                    vm.updateProfileSkills(skills, skill.text.toString())
                 }
                 et_skills?.addView(skill)
                 h_et_skills?.addView(skill)
@@ -450,7 +430,7 @@ class EditProfileFragment : Fragment() {
         }
 
         button_skills?.setOnClickListener {
-            vm.updateProfile(fullName, nickName, email, location, description)
+            vm.updateProfile(fullName, nickName, email, location, description, skills)
             view?.findNavController()?.navigate(R.id.action_edit_profile_to_chooseSkillsFragment)
         }
 
@@ -503,7 +483,7 @@ class EditProfileFragment : Fragment() {
             description = text.toString()
         }
         h_button_skills?.setOnClickListener {
-            vm.updateProfile(fullName, nickName, email, location, description)
+            vm.updateProfile(fullName, nickName, email, location, description, skills)
             view?.findNavController()?.navigate(R.id.action_edit_profile_to_chooseSkillsFragment)
         }
 
