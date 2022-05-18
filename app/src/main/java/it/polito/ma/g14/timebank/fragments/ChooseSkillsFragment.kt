@@ -14,18 +14,17 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.ma.g14.timebank.R
-import it.polito.ma.g14.timebank.models.Skill
 import it.polito.ma.g14.timebank.utils.SkillList
 import it.polito.ma.g14.timebank.utils.Utils
 
 class ChooseSkillsFragment : Fragment() {
 
-    val vm by viewModels<ProfileVM>()
+    val vm by viewModels<FirebaseVM>()
 
     var searchText : String = ""
 
     val skillList = SkillList().skill_list
-    var vmSkills = listOf<Skill>()
+    var vmSkills = listOf<String>()
 
     lateinit var adapter: SkillAdapter
 
@@ -63,9 +62,9 @@ class ChooseSkillsFragment : Fragment() {
             adapter = SkillAdapter(skillList)
             rv.adapter = adapter
 
-            vm.skills.observe(viewLifecycleOwner) {
-                vmSkills = it
-                adapter.updateSelectedSkills(it.map { it.skill } as MutableList<String>)
+            vm.profile.observe(viewLifecycleOwner){
+                vmSkills = it.skills
+                adapter.updateSelectedSkills(it.skills as MutableList<String>)
             }
         }
 
@@ -100,15 +99,7 @@ class ChooseSkillsFragment : Fragment() {
             return
         }
 
-        for(skill in vmSkills){
-            if(!adapter.checked_skills.contains(skill.skill)){
-                vm.removeSkill(skill.skill)
-                adapter.checked_skills.remove(skill.skill)
-            }
-        }
-        for(skill in adapter.checked_skills){
-            vm.addSkill(skill)
-        }
+        vm.updateProfileSkills(adapter.checked_skills)
 
         super.onDestroy()
     }

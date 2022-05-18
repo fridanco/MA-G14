@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.*
@@ -47,17 +48,6 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        auth = Firebase.auth
-        val currentUser = auth.currentUser
-        if(currentUser==null){
-            startActivity(Intent(this, LoginActivity::class.java))
-        }
-        else{
-            vm.initListeners(currentUser.uid)
-        }
-
-        println(currentUser!!.uid)
 
         setSupportActionBar(binding.appBarMain.toolbar)
 
@@ -115,8 +105,8 @@ class MainActivity : AppCompatActivity() {
             AuthUI.getInstance()
                 .signOut(this)
                 .addOnCompleteListener {
-                    vm.destroyListeners()
                     startActivity(Intent(this, LoginActivity::class.java))
+                    this.finish()
                 }
             return@setOnMenuItemClickListener true
         }

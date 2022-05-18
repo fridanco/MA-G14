@@ -28,8 +28,6 @@ import androidx.navigation.findNavController
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import it.polito.ma.g14.timebank.R
-import it.polito.ma.g14.timebank.models.Profile
-import it.polito.ma.g14.timebank.models.Skill
 import it.polito.ma.g14.timebank.utils.Utils
 import org.apache.commons.io.IOUtils
 import java.io.ByteArrayOutputStream
@@ -157,6 +155,7 @@ class EditProfileFragment : Fragment() {
                 }
                 performProfileBackup = false
             }
+            skills = it.skills as ArrayList<String>
             populateProfileEditText(it)
             populateProfileSkills(it.skills)
         }
@@ -372,7 +371,7 @@ class EditProfileFragment : Fragment() {
                 skill.text = it
                 skill.isCloseIconVisible = true
                 skill.setOnCloseIconClickListener {
-                    vm.updateProfileSkills(skills, skill.text.toString())
+                    vm.removeProfileSkill(skills, skill.text.toString())
                 }
                 et_skills?.addView(skill)
                 h_et_skills?.addView(skill)

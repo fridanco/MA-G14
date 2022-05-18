@@ -19,7 +19,7 @@ import java.io.FileInputStream
 
 class ShowProfileFragment : Fragment() {
 
-    val vm by viewModels<FirebaseVM>()
+    private val vm by viewModels<FirebaseVM>()
 
     var fullName :  String = "Peter Parker"
     var email : String = "peter.parker@stark.us"

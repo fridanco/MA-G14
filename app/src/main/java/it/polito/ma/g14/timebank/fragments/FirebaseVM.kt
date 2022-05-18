@@ -25,25 +25,26 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
     private val _ads = MutableLiveData<List<Advertisement>>()
     val ads: LiveData<List<Advertisement>> = _ads
 
-    private lateinit var profileListener : ListenerRegistration
-    private lateinit var skillAdvertisementListener: ListenerRegistration
-    private lateinit var myAdvertisementsListener: ListenerRegistration
+    private var profileListener : ListenerRegistration? = null
+    private var skillAdvertisementListener: ListenerRegistration? = null
+    private var myAdvertisementsListener: ListenerRegistration? = null
 
-    private val db: FirebaseFirestore
+    private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
 
     init {
-        db = FirebaseFirestore.getInstance()
-    }
+        val uid = Firebase.auth.uid
 
-    fun initListeners(uid: String){
-        profileListener = db.collection("users").document(uid)
+        profileListener = db.collection("users").document(uid!!)
             .addSnapshotListener{ result, exception ->
                 _profile.value = if (exception != null) {
                     User()
                 }
                 else{
-                    result?.let {
-                        it.toObject(User::class.java)
+                    if(result!=null){
+                        result.toObject(User::class.java)
+                    }
+                    else{
+                        throw Exception("Could not load user profile")
                     }
                 }
             }
@@ -54,12 +55,15 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
                     emptyList()
                 }
                 else{
-                    result?.let {
+                    if(result!=null){
                         result.mapNotNull { skillAdvertisement ->
                             skillAdvertisement.toObject(
                                 SkillAdvertisement::class.java
                             )
                         }
+                    }
+                    else{
+                        throw Exception("Could not load homepage skills")
                     }
                 }
             }
@@ -71,21 +75,24 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
                     emptyList()
                 }
                 else{
-                    result?.let {
+                    if(result!=null){
                         result.mapNotNull { advertisement ->
                             advertisement.toObject(
                                 Advertisement::class.java
                             )
                         }
                     }
+                    else{
+                        throw Exception("Could not retrieve user advertisements")
+                    }
                 }
             }
     }
 
     fun destroyListeners(){
-        skillAdvertisementListener.remove();
-        profileListener.remove()
-        myAdvertisementsListener.remove()
+        skillAdvertisementListener?.remove();
+        profileListener?.remove()
+        myAdvertisementsListener?.remove()
     }
 
     fun updateProfile(fullname: String, nickname: String, email: String, location: String, description: String, skills: List<String>){
@@ -102,9 +109,17 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
             .set(user)
     }
 
-    fun updateProfileSkills(skills: List<String>, skillToRemove: String){
+    fun updateProfileSkills(skills: List<String>){
         db.collection("users").document(Firebase.auth.currentUser!!.uid)
-            .update("skills",skills.toMutableList().remove(skillToRemove))
+            .update("skills",skills)
+    }
+
+    fun removeProfileSkill(skills: List<String>, skillToRemove: String){
+        val newSkills = skills as MutableList
+        newSkills.remove(skillToRemove)
+        println("OLD size: ${skills.size} vs NEW size: ${newSkills.size}")
+        db.collection("users").document(Firebase.auth.currentUser!!.uid)
+            .update("skills", newSkills)
     }
 
     fun getAdvertisement(advertisementID: String) = _ads.value?.find { it.id == advertisementID }
@@ -144,8 +159,8 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
 
     override fun onCleared() {
         super.onCleared();
-        skillAdvertisementListener.remove();
-        profileListener.remove()
-        myAdvertisementsListener.remove()
+        skillAdvertisementListener?.remove();
+        profileListener?.remove()
+        myAdvertisementsListener?.remove()
     }
 }
