@@ -10,6 +10,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.ktx.Firebase
+import it.polito.ma.g14.timebank.utils.SkillList
 
 class FirebaseVM(application:Application) : AndroidViewModel(application) {
 
@@ -26,7 +27,7 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
     val onlineAdvertisement: LiveData<Map<String, List<Advertisement>>> = _onlineAdvertisements
 
 
-
+    private var skillAdvertisementListener: ListenerRegistration? = null
     private var profileListener : ListenerRegistration? = null
     private var myAdvertisementsListener: ListenerRegistration? = null
 
@@ -50,6 +51,26 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
                 }
             }
 
+        skillAdvertisementListener = db.collection("skillAdvertisements")
+            .whereGreaterThan("numAdvertisements",0)
+            .addSnapshotListener { result, exception ->
+                _skills.value = if (exception != null) {
+                    emptyList()
+                }
+                else{
+                    if(result!=null){
+                        result.mapNotNull { skillAdvertisement ->
+                            skillAdvertisement.toObject(
+                                SkillAdvertisement::class.java
+                            )
+                        }
+                    }
+                    else{
+                        throw Exception("Could not load homepage skills")
+                    }
+                }
+            }
+
         db.collection("advertisements")
             .get()
             .addOnSuccessListener {
@@ -65,7 +86,7 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
             }
 
         myAdvertisementsListener = db.collection("advertisements")
-            .whereEqualTo("user.id",uid)
+            .whereEqualTo("uid",uid)
             .addSnapshotListener { result, exception ->
                 _myAdvertisements.value = if (exception != null) {
                     emptyList()
@@ -84,6 +105,15 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
                 }
             }
     }
+
+//    fun tmp(){
+//        val skills = SkillList().skill_list
+//        skills.forEach{
+//            db.collection("skillAdvertisements").add(
+//                mapOf("skill" to it.name, "numAdvertisements" to 0)
+//            )
+//        }
+//    }
 
     fun updateProfile(fullname: String, nickname: String, email: String, location: String, description: String, skills: List<String>){
         val user = User().apply {
@@ -116,6 +146,11 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
 //    fun getAdvertisementById(advertisementID: String) = _onlineAdvertisements.value?.find { it.id == advertisementID } as LiveData<*>
 
     fun addAdvertisement(advertisement: Advertisement){
+        advertisement.apply {
+            this.user = _profile.value!!
+            this.uid = Firebase.auth.currentUser!!.uid
+        }
+
         db.collection("advertisements").add(advertisement)
             .addOnSuccessListener {
                 Log.d("Timebank FIREBASE", "Advertisement posted with ID: ${it.id}")
@@ -127,7 +162,10 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
     }
 
     fun updateAdvertisement(advertisement: Advertisement){
-        advertisement.user_id = Firebase.auth.currentUser!!.uid
+        advertisement.apply{
+            this.user = _profile.value!!
+            this.uid = Firebase.auth.currentUser!!.uid
+        }
         db.collection("advertisements").document(advertisement.id)
             .set(advertisement, SetOptions.merge())
             .addOnSuccessListener {
@@ -151,6 +189,7 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
 
     override fun onCleared() {
         super.onCleared();
+        skillAdvertisementListener?.remove();
         profileListener?.remove()
         myAdvertisementsListener?.remove()
     }

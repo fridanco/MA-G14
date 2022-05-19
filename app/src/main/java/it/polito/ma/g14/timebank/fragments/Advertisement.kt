@@ -6,7 +6,8 @@ import java.util.*
 class Advertisement {
     @DocumentId
     var id : String = ""
-    var user_id : String = ""
+
+    var uid : String = ""
     var title : String = ""
     var description : String = ""
     var date : String = ""
@@ -14,4 +15,5 @@ class Advertisement {
     var to : String = ""
     var location : String = ""
     var skills : List<String> = emptyList()
+    var user : User = User()
 }
