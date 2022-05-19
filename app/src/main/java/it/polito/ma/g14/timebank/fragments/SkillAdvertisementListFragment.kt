@@ -13,6 +13,8 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.ma.g14.timebank.R
+import it.polito.ma.g14.timebank.models.FirebaseVM
+import it.polito.ma.g14.timebank.models.SkillAdvertisement
 import it.polito.ma.g14.timebank.utils.Utils
 
 class SkillAdvertisementListFragment : Fragment() {

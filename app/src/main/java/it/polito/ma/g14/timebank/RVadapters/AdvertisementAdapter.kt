@@ -1,4 +1,4 @@
-package it.polito.ma.g14.timebank.fragments
+package it.polito.ma.g14.timebank.RVadapters
 
 import android.content.res.ColorStateList
 import android.graphics.Color
@@ -14,6 +14,9 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.ma.g14.timebank.R
+import it.polito.ma.g14.timebank.models.Advertisement
+import it.polito.ma.g14.timebank.models.FirebaseVM
+import it.polito.ma.g14.timebank.models.SkillAdvertisement
 
 class AdvertisementAdapter(val view: View, val vm: FirebaseVM): RecyclerView.Adapter<AdvertisementAdapter.ItemViewHolder>() {
     var filter: Boolean = false
@@ -76,7 +79,7 @@ class AdvertisementAdapter(val view: View, val vm: FirebaseVM): RecyclerView.Ada
     fun updateAdvertisements(timeSlots: List<Advertisement>){
         colorIndex = 0
         data = timeSlots
-        val diffs = DiffUtil.calculateDiff(MyDiffCallback(displayData as List<SkillAdvertisement>, data as List<SkillAdvertisement>))
+        val diffs = DiffUtil.calculateDiff(MyDiffCallbackAdvertisements(displayData as List<Advertisement>,data))
         displayData = data as MutableList<Advertisement>
         diffs.dispatchUpdatesTo(this)
     }

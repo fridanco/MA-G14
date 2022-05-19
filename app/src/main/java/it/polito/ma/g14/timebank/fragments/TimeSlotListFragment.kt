@@ -16,6 +16,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import it.polito.ma.g14.timebank.R
+import it.polito.ma.g14.timebank.RVadapters.AdvertisementAdapter
+import it.polito.ma.g14.timebank.models.Advertisement
+import it.polito.ma.g14.timebank.models.FirebaseVM
 import it.polito.ma.g14.timebank.utils.Utils
 import java.text.SimpleDateFormat
 

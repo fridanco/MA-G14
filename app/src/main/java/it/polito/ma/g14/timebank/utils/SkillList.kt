@@ -1,6 +1,6 @@
 package it.polito.ma.g14.timebank.utils
 
-import it.polito.ma.g14.timebank.fragments.SkillEntry
+import it.polito.ma.g14.timebank.models.SkillEntry
 
 class SkillList {
 

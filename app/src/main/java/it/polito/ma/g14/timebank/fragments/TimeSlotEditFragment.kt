@@ -8,18 +8,15 @@ import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
-import android.widget.DatePicker
-import android.widget.EditText
-import android.widget.TextView
-import android.widget.TimePicker
+import android.widget.*
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import it.polito.ma.g14.timebank.R
-import it.polito.ma.g14.timebank.fragments.dialogs.DatePickerFragment
-import it.polito.ma.g14.timebank.fragments.dialogs.TimePickerFragment
+import it.polito.ma.g14.timebank.dialogs.DatePickerFragment
+import it.polito.ma.g14.timebank.dialogs.TimePickerFragment
+import it.polito.ma.g14.timebank.models.Advertisement
+import it.polito.ma.g14.timebank.models.FirebaseVM
 import it.polito.ma.g14.timebank.utils.Utils
 import java.text.SimpleDateFormat
 import java.util.*
@@ -35,6 +32,7 @@ class TimeSlotEditFragment() : Fragment() {
     private var et_from : TextView? = null
     private var et_to : TextView? = null
     private var et_location : TextView? = null
+    private var et_skills : LinearLayout? = null
 
     private var h_et_title : TextView? = null
     private var h_et_description : TextView? = null
@@ -42,6 +40,7 @@ class TimeSlotEditFragment() : Fragment() {
     private var h_et_from : TextView? = null
     private var h_et_to : TextView? = null
     private var h_et_location : TextView? = null
+    private var h_et_skills : LinearLayout? = null
 
     var advertisementID: String = ""
     var operationType: String = ""
@@ -53,6 +52,7 @@ class TimeSlotEditFragment() : Fragment() {
     var from = ""
     var to = ""
     var location = ""
+    var advertisementSkills = mutableListOf<String>()
 
     var cancelOperation = false
 
@@ -89,6 +89,7 @@ class TimeSlotEditFragment() : Fragment() {
         et_from = view.findViewById<EditText>(R.id.textView62)
         et_to = view.findViewById<EditText>(R.id.textView63)
         et_location = view.findViewById<EditText>(R.id.textView58)
+        et_skills = view.findViewById<LinearLayout>(R.id.editTimeslotSkillsContainer)
 
         h_et_title = view.findViewById<EditText>(R.id.textView42)
         h_et_description = view.findViewById<EditText>(R.id.textView44)
@@ -96,9 +97,10 @@ class TimeSlotEditFragment() : Fragment() {
         h_et_from = view.findViewById<EditText>(R.id.textView67)
         h_et_to = view.findViewById<EditText>(R.id.textView68)
         h_et_location = view.findViewById<EditText>(R.id.textView49)
+        h_et_skills = view.findViewById<LinearLayout>(R.id.editTimeslotSkillsContainer)
 
-        vm.myAdvertisements.observe(viewLifecycleOwner) {
-            val ad = it.find { it.id==advertisementID }
+        vm.myAdvertisements.observe(viewLifecycleOwner) { myAdvertisementsList ->
+            val ad = myAdvertisementsList.find { it.id==advertisementID }
             ad?.let {
                 title = it.title
                 description = it.description
@@ -118,9 +120,67 @@ class TimeSlotEditFragment() : Fragment() {
                 h_et_from?.text = it.from.toEditable()
                 h_et_to?.text = it.to.toEditable()
                 h_et_location?.text = it.location.toEditable()
+
+                val profileSkills = vm.profile.value?.skills
+                val adSkills = it.skills
+
+                val combinedSkills = mutableListOf<Pair<String, Boolean>>()
+                profileSkills?.let {
+                    combinedSkills.addAll(profileSkills.map { Pair(it, false) })
+                }
+                adSkills.forEach { skill ->
+                    val index = combinedSkills.indexOf(Pair(skill, false))
+                    if(index!=-1){
+                        combinedSkills[index] = Pair(skill, true)
+                    }
+                    else{
+                        combinedSkills.add(Pair(skill,true))
+                    }
+                    advertisementSkills.add(skill)
+                }
+
+                combinedSkills.sortBy { skillPair -> skillPair.first }
+
+                val inflater: LayoutInflater = layoutInflater
+                et_skills?.removeAllViews()
+                combinedSkills.forEach { skillPair ->
+                    val skillCard = inflater.inflate(R.layout.time_slot_edit_skill_entry, null)
+                    skillCard.findViewById<TextView>(R.id.textView72).text = skillPair.first
+                    skillCard.findViewById<CheckBox>(R.id.checkBox).isChecked = skillPair.second
+                    skillCard.findViewById<CheckBox>(R.id.checkBox).setOnCheckedChangeListener { _, isChecked  ->
+                        if(isChecked){
+                            advertisementSkills.add(skillPair.first)
+                        }
+                        else{
+                            advertisementSkills.remove(skillPair.first)
+                        }
+                    }
+                    et_skills?.addView(skillCard)
+                }
+
             }
         }
 
+        if(operationType=="add_time_slot") {
+            vm.profile.observe(viewLifecycleOwner) {
+                val inflater: LayoutInflater = layoutInflater
+                et_skills?.removeAllViews()
+                it.skills.forEach { skill ->
+                    val skillCard = inflater.inflate(R.layout.time_slot_edit_skill_entry, null)
+                    skillCard.findViewById<TextView>(R.id.textView72).text = skill
+                    skillCard.findViewById<CheckBox>(R.id.checkBox).isChecked = false
+                    skillCard.findViewById<CheckBox>(R.id.checkBox).setOnCheckedChangeListener { _, isChecked  ->
+                        if(isChecked){
+                            advertisementSkills.add(skill)
+                        }
+                        else{
+                            advertisementSkills.remove(skill)
+                        }
+                    }
+                    et_skills?.addView(skillCard)
+                }
+            }
+        }
 
         et_title?.doOnTextChanged { text, _, _, _ ->
             title = text.toString()
@@ -206,6 +266,7 @@ class TimeSlotEditFragment() : Fragment() {
                 it.from = from
                 it.to = to
                 it.location = location.capitalized()
+                it.skills = advertisementSkills
             }
             if(operationType=="edit_time_slot"){
                 advertisement.id = advertisementID

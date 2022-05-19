@@ -1,7 +1,6 @@
-package it.polito.ma.g14.timebank.fragments
+package it.polito.ma.g14.timebank.models
 
 import com.google.firebase.firestore.DocumentId
-import java.util.*
 
 class Advertisement {
     @DocumentId
@@ -15,5 +14,5 @@ class Advertisement {
     var to : String = ""
     var location : String = ""
     var skills : List<String> = emptyList()
-    var user : User = User()
+    var user : AdvertisementUser = AdvertisementUser()
 }

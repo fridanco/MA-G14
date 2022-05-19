@@ -12,6 +12,7 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.ma.g14.timebank.R
+import it.polito.ma.g14.timebank.models.SkillAdvertisement
 
 class SkillAdvertisementAdapter(val view: View): RecyclerView.Adapter<SkillAdvertisementAdapter.ItemViewHolder>() {
     var filter: Boolean = false

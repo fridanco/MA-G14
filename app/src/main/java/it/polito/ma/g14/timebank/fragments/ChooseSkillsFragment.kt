@@ -14,6 +14,8 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.ma.g14.timebank.R
+import it.polito.ma.g14.timebank.RVadapters.SkillAdapter
+import it.polito.ma.g14.timebank.models.FirebaseVM
 import it.polito.ma.g14.timebank.utils.SkillList
 import it.polito.ma.g14.timebank.utils.Utils
 

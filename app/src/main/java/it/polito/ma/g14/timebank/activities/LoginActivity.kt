@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
@@ -14,8 +13,7 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import it.polito.ma.g14.timebank.R
-import it.polito.ma.g14.timebank.fragments.FirebaseVM
-import it.polito.ma.g14.timebank.fragments.User
+import it.polito.ma.g14.timebank.models.User
 
 
 class LoginActivity : AppCompatActivity() {

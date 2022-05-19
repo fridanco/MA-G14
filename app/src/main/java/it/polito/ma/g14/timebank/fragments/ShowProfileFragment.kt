@@ -11,8 +11,8 @@ import androidx.fragment.app.viewModels
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import it.polito.ma.g14.timebank.R
-import it.polito.ma.g14.timebank.models.Profile
-import it.polito.ma.g14.timebank.models.Skill
+import it.polito.ma.g14.timebank.models.FirebaseVM
+import it.polito.ma.g14.timebank.models.User
 import it.polito.ma.g14.timebank.utils.Utils
 import org.apache.commons.io.IOUtils
 import java.io.FileInputStream

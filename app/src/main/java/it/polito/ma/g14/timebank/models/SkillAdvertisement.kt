@@ -1,4 +1,4 @@
-package it.polito.ma.g14.timebank.fragments
+package it.polito.ma.g14.timebank.models
 
 import android.graphics.Color
 import android.view.LayoutInflater

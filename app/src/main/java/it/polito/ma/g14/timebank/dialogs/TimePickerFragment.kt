@@ -1,4 +1,4 @@
-package it.polito.ma.g14.timebank.fragments.dialogs
+package it.polito.ma.g14.timebank.dialogs
 
 import android.app.Dialog
 import android.app.TimePickerDialog

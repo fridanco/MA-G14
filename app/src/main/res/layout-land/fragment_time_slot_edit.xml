@@ -123,4 +123,17 @@
         android:paddingBottom="12dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textColor="#000000" />
+
+    <TextView
+        android:id="@+id/textView73"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Select skills" />
+
+    <LinearLayout
+        android:id="@+id/editTimeslotSkillsContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingBottom="12dp"></LinearLayout>
 </LinearLayout>

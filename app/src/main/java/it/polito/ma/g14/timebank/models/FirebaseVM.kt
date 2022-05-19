@@ -1,4 +1,4 @@
-package it.polito.ma.g14.timebank.fragments
+package it.polito.ma.g14.timebank.models
 
 import android.app.Application
 import android.util.Log
@@ -11,7 +11,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.ktx.Firebase
-import it.polito.ma.g14.timebank.utils.SkillList
 
 class FirebaseVM(application:Application) : AndroidViewModel(application) {
 
@@ -78,7 +77,7 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
                 var adsMap = mutableMapOf<String, MutableList<Advertisement>>()
 
                 querySnapshot.mapNotNull { it.toObject(Advertisement::class.java) }.forEach { advertisement ->
-                    advertisement.user.skills.forEach{ skill ->
+                    advertisement.skills.forEach{ skill ->
                         adsMap.getOrPut(skill){
                             mutableListOf()
                         }.add(advertisement)
@@ -138,14 +137,18 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
 
     fun addAdvertisement(advertisement: Advertisement){
         advertisement.apply {
-            this.user = _profile.value!!
             this.uid = Firebase.auth.currentUser!!.uid
+            this.user.fullname = _profile.value!!.fullname
+            this.user.nickname = _profile.value!!.nickname
+            this.user.email = _profile.value!!.email
+            this.user.location = _profile.value!!.location
+            this.user.description = _profile.value!!.description
         }
 
         db.collection("advertisements").add(advertisement)
             .addOnSuccessListener {
                 Log.d("Timebank FIREBASE", "Advertisement posted with ID: ${it.id}")
-                for(skill in advertisement.user.skills){
+                for(skill in advertisement.skills){
                     db.collection("skillAdvertisements").document(skill)
                         .update("numAdvertisements",FieldValue.increment(1))
                 }
@@ -157,17 +160,36 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
 
     fun updateAdvertisement(advertisement: Advertisement){
         advertisement.apply{
-            this.user = _profile.value!!
             this.uid = Firebase.auth.currentUser!!.uid
+            this.user.fullname = _profile.value!!.fullname
+            this.user.nickname = _profile.value!!.nickname
+            this.user.email = _profile.value!!.email
+            this.user.location = _profile.value!!.location
+            this.user.description = _profile.value!!.description
         }
-        db.collection("advertisements").document(advertisement.id)
-            .set(advertisement, SetOptions.merge())
-            .addOnSuccessListener {
-                Log.d("Timebank FIREBASE", "Advertisement with ID: ${advertisement.id} updated")
+
+        db.runTransaction { transaction ->
+            val advertisementRef = db.collection("advertisements").document(advertisement.id)
+            val oldAdvertisement = transaction.get(advertisementRef).toObject(Advertisement::class.java)
+
+            transaction.set(advertisementRef, advertisement)
+
+            //Remove skills that were removed from the advertisement
+            var diff = oldAdvertisement?.skills?.filterNot { advertisement.skills.contains(it) }
+            diff?.forEach {
+                val skillRef = db.collection("skillAdvertisements").document(it)
+                transaction.update(skillRef, "numAdvertisements", FieldValue.increment(-1))
             }
-            .addOnFailureListener { e ->
-                Log.w("Timebank FIREBASE", "Error updating advertisement", e)
+
+            //Add skills that were added to the advertisement
+            oldAdvertisement?.skills?.let {
+                diff = advertisement.skills.filterNot { oldAdvertisement.skills.contains(it) }
+                diff?.forEach {
+                    val skillRef = db.collection("skillAdvertisements").document(it)
+                    transaction.update(skillRef, "numAdvertisements", FieldValue.increment(1))
+                }
             }
+        }
     }
 
     fun deleteAdvertisement(advertisementID: String){
@@ -175,7 +197,7 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
             val advertisementRef = db.collection("advertisements").document(advertisementID)
             val advertisement = transaction.get(advertisementRef).toObject(Advertisement::class.java)
             transaction.delete(advertisementRef)
-            advertisement?.user?.skills?.let {
+            advertisement?.skills?.let {
                 for(skill in it){
                     val skillRef = db.collection("skillAdvertisements").document(skill)
                     transaction.update(skillRef, "numAdvertisements", FieldValue.increment(-1))
