@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@id/skillAdvertisementListFragment">
+    app:startDestination="@id/advertisement_skills">
 
     <fragment
-        android:id="@+id/timeSlotListFragment"
+        android:id="@+id/advertisements"
         android:name="it.polito.ma.g14.timebank.fragments.TimeSlotListFragment"
         android:label="My advertisements"
         tools:layout="@layout/fragment_time_slot_list" >
@@ -24,6 +24,10 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right"/>
+        <argument
+            android:name="operationType"
+            app:argType="string"
+            android:defaultValue="my_advertisements" />
     </fragment>
     <fragment
         android:id="@+id/timeSlotDetailsFragment"
@@ -77,13 +81,13 @@
         android:label="Choose skills"
         tools:layout="@layout/fragment_choose_skills"/>
     <fragment
-        android:id="@+id/skillAdvertisementListFragment"
+        android:id="@+id/advertisement_skills"
         android:name="it.polito.ma.g14.timebank.fragments.SkillAdvertisementListFragment"
         android:label="Advertised skills"
         tools:layout="@layout/fragment_skill_advertisement_list" >
         <action
             android:id="@+id/action_skillAdvertisementListFragment_to_timeSlotListFragment"
-            app:destination="@id/timeSlotListFragment" />
+            app:destination="@id/advertisements" />
     </fragment>
 
 </navigation>

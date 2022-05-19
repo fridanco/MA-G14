@@ -1,9 +1,7 @@
 package it.polito.ma.g14.timebank.utils
 
 import android.app.Activity
-import android.content.ClipData
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentActivity
@@ -23,13 +21,13 @@ class Utils {
             val navController = activity.findNavController(R.id.nav_host_fragment_content_main)
             val currDestinationID = navController.currentDestination?.id
             when (currDestinationID) {
-                R.id.skillAdvertisementListFragment -> {
+                R.id.advertisement_skills -> {
                     menu.findItem(R.id.app_bar_pencil).isVisible = false
                     menu.findItem(R.id.app_bar_delete).isVisible = false
                     menu.findItem(R.id.app_bar_cancel).isVisible = false
                     menu.findItem(R.id.app_bar_add).isVisible = false
                 }
-                R.id.timeSlotListFragment -> {
+                R.id.advertisements -> {
                     menu.findItem(R.id.app_bar_pencil).isVisible = false
                     menu.findItem(R.id.app_bar_delete).isVisible = false
                     menu.findItem(R.id.app_bar_cancel).isVisible = false
@@ -83,21 +81,21 @@ class Utils {
                             fragment.cancelOperation = true
                             if(fragment.operationType=="edit_time_slot") {
                                 if(fragment.originFragment=="list_time_slot"){
-                                    navController.popBackStack(R.id.timeSlotListFragment, false)
+                                    navController.popBackStack(R.id.advertisements, false)
                                 }
                                 else{
                                     navController.popBackStack(R.id.timeSlotDetailsFragment, false)
                                 }
                             }
                             else{
-                                navController.popBackStack(R.id.timeSlotListFragment, false)
+                                navController.popBackStack(R.id.advertisements, false)
                             }
                         }
                         R.id.app_bar_add -> {
                             val navHostFragment = (activity as FragmentActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
                             val fragment = navHostFragment!!.childFragmentManager.fragments[0] as TimeSlotEditFragment
                             if(fragment.isFormValid()) {
-                                navController.popBackStack(R.id.timeSlotListFragment, false)
+                                navController.popBackStack(R.id.advertisements, false)
                             }
                         }
                     }
@@ -107,14 +105,14 @@ class Utils {
                         R.id.app_bar_pencil -> {
                             val navHostFragment = (activity as FragmentActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
                             val fragment = navHostFragment!!.childFragmentManager.fragments[0] as TimeSlotDetailsFragment
-                            val bundle = bundleOf("timeSlotID" to fragment.timeSlotID, "operationType" to "edit_time_slot")
+                            val bundle = bundleOf("timeSlotID" to fragment.advertisementID, "operationType" to "edit_time_slot")
                             navController.navigate(R.id.action_timeSlotDetailsFragment_to_timeSlotEditFragment, bundle)
                         }
                         R.id.app_bar_delete -> {
                             val navHostFragment = (activity as FragmentActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
                             val fragment = navHostFragment!!.childFragmentManager.fragments[0] as TimeSlotDetailsFragment
-                            fragment.deleteTimeSlot()
-                            navController.popBackStack(R.id.timeSlotListFragment, false)
+                            fragment.deleteAdvertisement()
+                            navController.popBackStack(R.id.advertisements, false)
                         }
                     }
                 }

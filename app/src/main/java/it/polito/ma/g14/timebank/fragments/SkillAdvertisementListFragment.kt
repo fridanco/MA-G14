@@ -1,7 +1,6 @@
 package it.polito.ma.g14.timebank.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
@@ -9,15 +8,12 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.ma.g14.timebank.R
-import it.polito.ma.g14.timebank.models.TimeSlot
-import it.polito.ma.g14.timebank.models.TimeSlotAdapter
 import it.polito.ma.g14.timebank.utils.Utils
-import java.text.SimpleDateFormat
 
 class SkillAdvertisementListFragment : Fragment() {
 

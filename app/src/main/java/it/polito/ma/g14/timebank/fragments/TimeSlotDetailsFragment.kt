@@ -14,9 +14,11 @@ import it.polito.ma.g14.timebank.utils.Utils
 
 class TimeSlotDetailsFragment() : Fragment() {
 
-    val vm by viewModels<TimeSlotVM>()
+    val vm by viewModels<FirebaseVM>()
 
-    var timeSlotID : Long = 0
+    var advertisementID : String = ""
+    var advertisementType : String = ""
+    var selectedSkill : String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +40,8 @@ class TimeSlotDetailsFragment() : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        timeSlotID = requireArguments().getLong("timeSlotID")
+        advertisementID = requireArguments().getString("advertisementID").toString()
+        advertisementType = requireArguments().getString("advertisementType").toString()
 
         val tv_title = view.findViewById<TextView>(R.id.textView4)
         val tv_description = view.findViewById<TextView>(R.id.textView5)
@@ -47,15 +50,33 @@ class TimeSlotDetailsFragment() : Fragment() {
         val tv_to = view.findViewById<TextView>(R.id.textView63)
         val tv_location = view.findViewById<TextView>(R.id.textView19)
 
-        vm.getTimeSlot(timeSlotID).observe(viewLifecycleOwner) {
-            tv_title.text = it.title
-            tv_description.text = it.description
-            tv_date.text = it.date
-            tv_from.text = it.from
-            tv_to.text = it.to
-            tv_location.text = it.location
+        if(advertisementType=="online_advertisements"){
+            selectedSkill = requireArguments().getString("selectedSkill").toString()
+            vm.onlineAdvertisement.observe(viewLifecycleOwner){ onlineAdvertisements ->
+                val ad = onlineAdvertisements[selectedSkill]?.find { it.id==advertisementID }
+                ad?.let {
+                    tv_title.text = it.title
+                    tv_description.text = it.description
+                    tv_date.text = it.date
+                    tv_from.text = it.from
+                    tv_to.text = it.to
+                    tv_location.text = it.location
+                }
+            }
         }
-
+        else{
+            vm.myAdvertisements.observe(viewLifecycleOwner){ myAdvertisements ->
+                val ad = myAdvertisements.find { it.id==advertisementID }
+                ad?.let {
+                    tv_title.text = it.title
+                    tv_description.text = it.description
+                    tv_date.text = it.date
+                    tv_from.text = it.from
+                    tv_to.text = it.to
+                    tv_location.text = it.location
+                }
+            }
+        }
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
@@ -63,7 +84,7 @@ class TimeSlotDetailsFragment() : Fragment() {
         Utils.manageActionBarItemsVisibility(requireActivity(), menu)
     }
 
-    fun deleteTimeSlot() {
-        vm.deleteTimeSlot(timeSlotID)
+    fun deleteAdvertisement() {
+        vm.deleteAdvertisement(advertisementID)
     }
 }

@@ -5,7 +5,11 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/timeSlotListFragment"
+            android:id="@+id/advertisement_skills"
+            android:icon="@drawable/ic_baseline_ads_click_24"
+            android:title="@string/menu_online_advertisements" />
+        <item
+            android:id="@+id/advertisements"
             android:icon="@drawable/ic_menu_camera"
             android:title="@string/menu_home" />
         <item

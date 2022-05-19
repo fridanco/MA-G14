@@ -11,6 +11,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
@@ -96,11 +97,12 @@ class MainActivity : AppCompatActivity() {
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.skillAdvertisementListFragment, R.id.nav_profile, R.id.nav_logout
+                R.id.advertisement_skills, R.id.advertisements, R.id.nav_profile, R.id.nav_logout
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
         navView.menu.findItem(R.id.nav_logout).setOnMenuItemClickListener {
             AuthUI.getInstance()
                 .signOut(this)
@@ -138,7 +140,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             R.id.timeSlotDetailsFragment -> {
-                navController.popBackStack(R.id.timeSlotListFragment, true)
+                navController.popBackStack(R.id.advertisements, true)
             }
         }
         super.onBackPressed()

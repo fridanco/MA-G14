@@ -22,11 +22,12 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
     private val _myAdvertisements = MutableLiveData<List<Advertisement>>()
     val myAdvertisements: LiveData<List<Advertisement>> = _myAdvertisements
 
-    private val _ads = MutableLiveData<List<Advertisement>>()
-    val ads: LiveData<List<Advertisement>> = _ads
+    private val _onlineAdvertisements = MutableLiveData<Map<String, List<Advertisement>>>()
+    val onlineAdvertisement: LiveData<Map<String, List<Advertisement>>> = _onlineAdvertisements
+
+
 
     private var profileListener : ListenerRegistration? = null
-    private var skillAdvertisementListener: ListenerRegistration? = null
     private var myAdvertisementsListener: ListenerRegistration? = null
 
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
@@ -49,23 +50,18 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
                 }
             }
 
-        skillAdvertisementListener = db.collection("skillAdvertisements")
-            .addSnapshotListener { result, exception ->
-                _skills.value = if (exception != null) {
-                    emptyList()
-                }
-                else{
-                    if(result!=null){
-                        result.mapNotNull { skillAdvertisement ->
-                            skillAdvertisement.toObject(
-                                SkillAdvertisement::class.java
-                            )
-                        }
-                    }
-                    else{
-                        throw Exception("Could not load homepage skills")
+        db.collection("advertisements")
+            .get()
+            .addOnSuccessListener {
+                var adsMap = mutableMapOf<String, MutableList<Advertisement>>()
+                it.mapNotNull { it.toObject(Advertisement::class.java) }.forEach { advertisement ->
+                    advertisement.skills.forEach{ skill ->
+                        adsMap.getOrPut(skill){
+                            mutableListOf()
+                        }.add(advertisement)
                     }
                 }
+                _onlineAdvertisements.value = adsMap
             }
 
         myAdvertisementsListener = db.collection("advertisements")
@@ -87,12 +83,6 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
                     }
                 }
             }
-    }
-
-    fun destroyListeners(){
-        skillAdvertisementListener?.remove();
-        profileListener?.remove()
-        myAdvertisementsListener?.remove()
     }
 
     fun updateProfile(fullname: String, nickname: String, email: String, location: String, description: String, skills: List<String>){
@@ -117,14 +107,15 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
     fun removeProfileSkill(skills: List<String>, skillToRemove: String){
         val newSkills = skills as MutableList
         newSkills.remove(skillToRemove)
-        println("OLD size: ${skills.size} vs NEW size: ${newSkills.size}")
         db.collection("users").document(Firebase.auth.currentUser!!.uid)
             .update("skills", newSkills)
     }
 
-    fun getAdvertisement(advertisementID: String) = _ads.value?.find { it.id == advertisementID }
 
-    fun postAdvertisement(advertisement: Advertisement){
+//    fun getAdvertisementsBySkill(skill: String) = _onlineAdvertisements.value?.filter { it.skills.contains(skill) }
+//    fun getAdvertisementById(advertisementID: String) = _onlineAdvertisements.value?.find { it.id == advertisementID } as LiveData<*>
+
+    fun addAdvertisement(advertisement: Advertisement){
         db.collection("advertisements").add(advertisement)
             .addOnSuccessListener {
                 Log.d("Timebank FIREBASE", "Advertisement posted with ID: ${it.id}")
@@ -136,6 +127,7 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
     }
 
     fun updateAdvertisement(advertisement: Advertisement){
+        advertisement.user_id = Firebase.auth.currentUser!!.uid
         db.collection("advertisements").document(advertisement.id)
             .set(advertisement, SetOptions.merge())
             .addOnSuccessListener {
@@ -159,7 +151,6 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
 
     override fun onCleared() {
         super.onCleared();
-        skillAdvertisementListener?.remove();
         profileListener?.remove()
         myAdvertisementsListener?.remove()
     }

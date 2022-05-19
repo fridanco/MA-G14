@@ -15,6 +15,8 @@ import android.widget.TimePicker
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.fragments.dialogs.DatePickerFragment
 import it.polito.ma.g14.timebank.fragments.dialogs.TimePickerFragment
@@ -25,7 +27,7 @@ import java.util.*
 
 class TimeSlotEditFragment() : Fragment() {
 
-    val vm by viewModels<TimeSlotVM>()
+    val vm by viewModels<FirebaseVM>()
 
     private var et_title : TextView? = null
     private var et_description : TextView? = null
@@ -41,7 +43,7 @@ class TimeSlotEditFragment() : Fragment() {
     private var h_et_to : TextView? = null
     private var h_et_location : TextView? = null
 
-    var timeSlotID: Long = 0
+    var advertisementID: String = ""
     var operationType: String = ""
     var originFragment: String = ""
 
@@ -76,9 +78,10 @@ class TimeSlotEditFragment() : Fragment() {
 
         cancelOperation = false
 
-        timeSlotID = requireArguments().getLong("timeSlotID")
+        advertisementID = requireArguments().getString("advertisementID").toString()
         operationType = requireArguments().getString("operationType").toString()
         originFragment = requireArguments().getString("originFragment") ?: "time_slot_details"
+
 
         et_title = view.findViewById<EditText>(R.id.textView51)
         et_description = view.findViewById<EditText>(R.id.textView53)
@@ -94,8 +97,9 @@ class TimeSlotEditFragment() : Fragment() {
         h_et_to = view.findViewById<EditText>(R.id.textView68)
         h_et_location = view.findViewById<EditText>(R.id.textView49)
 
-        if(operationType=="edit_time_slot") {
-            vm.getTimeSlot(timeSlotID).observe(viewLifecycleOwner) {
+        vm.myAdvertisements.observe(viewLifecycleOwner) {
+            val ad = it.find { it.id==advertisementID }
+            ad?.let {
                 title = it.title
                 description = it.description
                 date = it.date
@@ -116,6 +120,7 @@ class TimeSlotEditFragment() : Fragment() {
                 h_et_location?.text = it.location.toEditable()
             }
         }
+
 
         et_title?.doOnTextChanged { text, _, _, _ ->
             title = text.toString()
@@ -194,11 +199,20 @@ class TimeSlotEditFragment() : Fragment() {
 
     override fun onDestroy() {
         if(!cancelOperation){
+            val advertisement = Advertisement().also {
+                it.title = title.capitalized()
+                it.description = description.capitalized()
+                it.date = date
+                it.from = from
+                it.to = to
+                it.location = location.capitalized()
+            }
             if(operationType=="edit_time_slot"){
-                vm.editTimeSlot(timeSlotID, title.capitalized(), description.capitalized(), date, from, to, location.capitalized())
+                advertisement.id = advertisementID
+                vm.updateAdvertisement(advertisement)
             }
             else if(operationType=="add_time_slot"){
-                vm.addTimeSlot(title.capitalized(), description.capitalized(), date, from, to, location.capitalized())
+                vm.addAdvertisement(advertisement)
             }
         }
         super.onDestroy()
