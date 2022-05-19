@@ -74,31 +74,34 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
 
         db.collection("advertisements")
             .get()
-            .addOnSuccessListener {
+            .addOnSuccessListener { querySnapshot ->
                 var adsMap = mutableMapOf<String, MutableList<Advertisement>>()
-                it.mapNotNull { it.toObject(Advertisement::class.java) }.forEach { advertisement ->
-                    advertisement.skills.forEach{ skill ->
+
+                querySnapshot.mapNotNull { it.toObject(Advertisement::class.java) }.forEach { advertisement ->
+                    advertisement.user.skills.forEach{ skill ->
                         adsMap.getOrPut(skill){
                             mutableListOf()
                         }.add(advertisement)
                     }
                 }
+
                 _onlineAdvertisements.value = adsMap
             }
 
         myAdvertisementsListener = db.collection("advertisements")
             .whereEqualTo("uid",uid)
             .addSnapshotListener { result, exception ->
-                _myAdvertisements.value = if (exception != null) {
-                    emptyList()
+                if (exception != null) {
+                    _myAdvertisements.value = emptyList()
                 }
                 else{
                     if(result!=null){
-                        result.mapNotNull { advertisement ->
+                        val myAds = result.mapNotNull { advertisement ->
                             advertisement.toObject(
                                 Advertisement::class.java
                             )
                         }
+                        _myAdvertisements.value = myAds
                     }
                     else{
                         throw Exception("Could not retrieve user advertisements")

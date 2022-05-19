@@ -46,7 +46,7 @@ class SkillAdvertisementAdapter(val view: View): RecyclerView.Adapter<SkillAdver
         val skillAdvertisement = displayData[position]
 
         fun action1(view: View) {
-            val bundle = bundleOf("skillName" to skillAdvertisement.skill, "operationType" to "online_advertisements")
+            val bundle = bundleOf("selectedSkill" to skillAdvertisement.skill, "operationType" to "online_advertisements")
             view.findNavController().navigate(R.id.action_skillAdvertisementListFragment_to_timeSlotListFragment, bundle)
         }
 
