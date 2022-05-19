@@ -49,8 +49,6 @@ class LoginActivity : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
 
-        FirebaseFirestore.setLoggingEnabled(true)
-
         val auth = Firebase.auth
         val currentUser = auth.currentUser
         if(currentUser!=null){

@@ -6,6 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.SetOptions
@@ -106,15 +107,6 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
             }
     }
 
-//    fun tmp(){
-//        val skills = SkillList().skill_list
-//        skills.forEach{
-//            db.collection("skillAdvertisements").add(
-//                mapOf("skill" to it.name, "numAdvertisements" to 0)
-//            )
-//        }
-//    }
-
     fun updateProfile(fullname: String, nickname: String, email: String, location: String, description: String, skills: List<String>){
         val user = User().apply {
             this.fullname = fullname
@@ -141,10 +133,6 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
             .update("skills", newSkills)
     }
 
-
-//    fun getAdvertisementsBySkill(skill: String) = _onlineAdvertisements.value?.filter { it.skills.contains(skill) }
-//    fun getAdvertisementById(advertisementID: String) = _onlineAdvertisements.value?.find { it.id == advertisementID } as LiveData<*>
-
     fun addAdvertisement(advertisement: Advertisement){
         advertisement.apply {
             this.user = _profile.value!!
@@ -154,7 +142,10 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
         db.collection("advertisements").add(advertisement)
             .addOnSuccessListener {
                 Log.d("Timebank FIREBASE", "Advertisement posted with ID: ${it.id}")
-
+                for(skill in advertisement.user.skills){
+                    db.collection("skillAdvertisements").document(skill)
+                        .update("numAdvertisements",FieldValue.increment(1))
+                }
             }
             .addOnFailureListener { e ->
                 Log.w("Timebank FIREBASE", "Error adding advertisement", e)
@@ -177,14 +168,26 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
     }
 
     fun deleteAdvertisement(advertisementID: String){
-        db.collection("advertisements").document(advertisementID)
-            .delete()
-            .addOnSuccessListener {
-                Log.d("Timebank FIREBASE", "Advertisement with ID: ${advertisementID} deleted")
+        db.runTransaction { transaction ->
+            val advertisementRef = db.collection("advertisements").document(advertisementID)
+            val advertisement = transaction.get(advertisementRef).toObject(Advertisement::class.java)
+            transaction.delete(advertisementRef)
+            advertisement?.user?.skills?.let {
+                for(skill in it){
+                    val skillRef = db.collection("skillAdvertisements").document(skill)
+                    transaction.update(skillRef, "numAdvertisements", FieldValue.increment(-1))
+                }
             }
-            .addOnFailureListener { e ->
-                Log.w("Timebank FIREBASE", "Error deleting advertisement", e)
-            }
+            null
+        }
+        .addOnSuccessListener {
+            Log.d("Timebank FIREBASE", "Advertisement with ID: ${advertisementID} deleted & numAdvertisements decremented")
+
+        }
+        .addOnFailureListener { e ->
+            Log.w("Timebank FIREBASE", "Error deleting advertisement", e)
+        }
+
     }
 
     override fun onCleared() {
