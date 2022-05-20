@@ -1,6 +1,7 @@
 package it.polito.ma.g14.timebank.models
 
 import android.app.Application
+import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -121,6 +122,10 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
 
         db.collection("users").document(Firebase.auth.currentUser!!.uid)
             .set(user)
+    }
+
+    fun uploadProfileImage(bitmapImage: Bitmap){
+
     }
 
     fun updateProfileSkills(skills: List<String>){

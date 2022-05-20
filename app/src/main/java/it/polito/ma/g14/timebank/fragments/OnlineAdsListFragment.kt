@@ -71,8 +71,7 @@ class OnlineAdsListFragment : Fragment() {
         selectedSkill = requireArguments().getString("selectedSkill").toString()
 
         vm.onlineAdvertisement.observe(viewLifecycleOwner){ advertisementsMap ->
-            val loggedInUserUID = Firebase.auth.currentUser!!.uid
-            val ads: List<Advertisement> = advertisementsMap[selectedSkill]?.filter { it.uid!=loggedInUserUID } ?: listOf()
+            val ads: List<Advertisement> = advertisementsMap[selectedSkill] ?: listOf()
             if(ads.isEmpty()){
                 rv.isGone = true
                 emptyRv.isVisible = true

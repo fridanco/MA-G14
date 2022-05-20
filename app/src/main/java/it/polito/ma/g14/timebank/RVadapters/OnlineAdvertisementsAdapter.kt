@@ -13,6 +13,8 @@ import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.models.Advertisement
 import it.polito.ma.g14.timebank.models.FirebaseVM
@@ -28,7 +30,12 @@ class OnlineAdvertisementsAdapter(val view: View, val vm: FirebaseVM): RecyclerV
         private val advertisementContainer = v.findViewById<LinearLayout>(R.id.online_ad_card)
 
         fun bind(advertisement: Advertisement, color: String, action1: (v: View) -> Unit) {
-            advertisementContainer.findViewById<TextView>(R.id.textView74).text = "By ${advertisement.user.fullname}"
+            if(advertisement.uid!=Firebase.auth.currentUser!!.uid) {
+                advertisementContainer.findViewById<TextView>(R.id.textView74).text = "By ${advertisement.user.fullname}"
+            }
+            else{
+                advertisementContainer.findViewById<TextView>(R.id.textView74).text = "By You"
+            }
             advertisementContainer.findViewById<TextView>(R.id.textView4).text = advertisement.title
             advertisementContainer.findViewById<TextView>(R.id.textView5).text = advertisement.description
             advertisementContainer.findViewById<TextView>(R.id.textView6).text = advertisement.date
