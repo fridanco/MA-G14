@@ -9,7 +9,7 @@
     android:paddingTop="8dp"
     android:paddingEnd="16dp"
     android:paddingBottom="16dp"
-    tools:context=".fragments.TimeSlotEditFragment" >
+    tools:context=".fragments.MyAdEditFragment" >
 
     <TextView
         android:id="@+id/textView50"

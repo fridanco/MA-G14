@@ -22,7 +22,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class TimeSlotEditFragment() : Fragment() {
+class MyAdEditFragment() : Fragment() {
 
     val vm by viewModels<FirebaseVM>()
 
@@ -66,7 +66,7 @@ class TimeSlotEditFragment() : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_time_slot_edit, container, false)
+        val view = inflater.inflate(R.layout.fragment_my_ad_edit, container, false)
 
         requireActivity().invalidateOptionsMenu()
 
@@ -144,7 +144,7 @@ class TimeSlotEditFragment() : Fragment() {
                 val inflater: LayoutInflater = layoutInflater
                 et_skills?.removeAllViews()
                 combinedSkills.forEach { skillPair ->
-                    val skillCard = inflater.inflate(R.layout.time_slot_edit_skill_entry, null)
+                    val skillCard = inflater.inflate(R.layout.my_ad_skill_card, null)
                     skillCard.findViewById<TextView>(R.id.textView72).text = skillPair.first
                     skillCard.findViewById<CheckBox>(R.id.checkBox).isChecked = skillPair.second
                     skillCard.findViewById<CheckBox>(R.id.checkBox).setOnCheckedChangeListener { _, isChecked  ->
@@ -166,9 +166,9 @@ class TimeSlotEditFragment() : Fragment() {
                 val inflater: LayoutInflater = layoutInflater
                 et_skills?.removeAllViews()
                 it.skills.forEach { skill ->
-                    val skillCard = inflater.inflate(R.layout.time_slot_edit_skill_entry, null)
+                    val skillCard = inflater.inflate(R.layout.my_ad_skill_card, null)
                     skillCard.findViewById<TextView>(R.id.textView72).text = skill
-                    skillCard.findViewById<CheckBox>(R.id.checkBox).isChecked = false
+                    skillCard.findViewById<CheckBox>(R.id.checkBox).isChecked = true
                     skillCard.findViewById<CheckBox>(R.id.checkBox).setOnCheckedChangeListener { _, isChecked  ->
                         if(isChecked){
                             advertisementSkills.add(skill)

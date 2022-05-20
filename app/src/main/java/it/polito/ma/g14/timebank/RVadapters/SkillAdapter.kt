@@ -31,7 +31,7 @@ class SkillAdapter(val data: MutableList<SkillEntry>): RecyclerView.Adapter<Skil
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val vg = LayoutInflater
             .from(parent.context)
-            .inflate(R.layout.skills_entry,parent, false)
+            .inflate(R.layout.profile_skills_checkedtext,parent, false)
         return ItemViewHolder(vg)
     }
 

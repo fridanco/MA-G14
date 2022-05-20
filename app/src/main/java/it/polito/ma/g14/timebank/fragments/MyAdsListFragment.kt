@@ -16,17 +16,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import it.polito.ma.g14.timebank.R
-import it.polito.ma.g14.timebank.RVadapters.AdvertisementAdapter
+import it.polito.ma.g14.timebank.RVadapters.MyAdvertisementsAdapter
 import it.polito.ma.g14.timebank.models.Advertisement
 import it.polito.ma.g14.timebank.models.FirebaseVM
 import it.polito.ma.g14.timebank.utils.Utils
 import java.text.SimpleDateFormat
 
-class TimeSlotListFragment : Fragment() {
+class MyAdsListFragment : Fragment() {
 
     val vm by viewModels<FirebaseVM>()
 
-    lateinit var adapter: AdvertisementAdapter
+    lateinit var adapter: MyAdvertisementsAdapter
 
     var operationType: String = ""
     var selectedSkill: String = ""
@@ -41,7 +41,7 @@ class TimeSlotListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_time_slot_list, container, false)
+        val view = inflater.inflate(R.layout.fragment_my_ads_list, container, false)
 
         requireActivity().invalidateOptionsMenu()
 
@@ -66,54 +66,32 @@ class TimeSlotListFragment : Fragment() {
         )
 
         rv.layoutManager = LinearLayoutManager(requireContext())
-        val adapter = AdvertisementAdapter(view, vm)
+        val adapter = MyAdvertisementsAdapter(view, vm, requireContext())
         adapter.colorList = colorList as MutableList<String>
         rv.adapter = adapter
 
 
-        if(operationType=="online_advertisements"){
-            selectedSkill = requireArguments().getString("selectedSkill").toString()
-            vm.onlineAdvertisement.observe(viewLifecycleOwner){ advertisementsMap ->
-                val ads: List<Advertisement> = advertisementsMap[selectedSkill] ?: listOf()
-                if(ads.isEmpty()){
-                    rv.isGone = true
-                    emptyRv.isVisible = true
-                }
-                else {
-                    rv.isVisible = true
-                    emptyRv.isGone = true
-                    val sdf_date = SimpleDateFormat("EEE, d MMM yyyy")
-                    val sdf_time = SimpleDateFormat("HH:mm")
-                    val cmp = compareBy<Advertisement> { sdf_date.parse(it.date) }.thenByDescending { sdf_time.parse(it.from) }
-                    adapter.updateAdvertisements(ads.sortedWith(cmp))
-                }
+        vm.myAdvertisements.observe(viewLifecycleOwner) { it ->
+            if(it.isEmpty()){
+                rv.isGone = true
+                emptyRv.isVisible = true
             }
-        }
-        else{
-            vm.myAdvertisements.observe(viewLifecycleOwner) { it ->
-                if(it.isEmpty()){
-                    rv.isGone = true
-                    emptyRv.isVisible = true
-                }
-                else {
-                    rv.isVisible = true
-                    emptyRv.isGone = true
-                    val sdf_date = SimpleDateFormat("EEE, d MMM yyyy")
-                    val sdf_time = SimpleDateFormat("HH:mm")
-                    val cmp = compareBy<Advertisement> { sdf_date.parse(it.date) }.thenByDescending { sdf_time.parse(it.from) }
-                    adapter.updateAdvertisements(it.sortedWith(cmp))
-                }
+            else {
+                rv.isVisible = true
+                emptyRv.isGone = true
+                val sdf_date = SimpleDateFormat("EEE, d MMM yyyy")
+                val sdf_time = SimpleDateFormat("HH:mm")
+                val cmp = compareBy<Advertisement> { sdf_date.parse(it.date) }.thenByDescending { sdf_time.parse(it.from) }
+                adapter.updateAdvertisements(it.sortedWith(cmp))
             }
         }
 
-        if(operationType=="my_advertisements") {
-            val fab = view?.findViewById<FloatingActionButton>(R.id.floatingActionButton)
-            fab?.let {
-                it.setOnClickListener {
-                    val bundle = bundleOf("timeSlotID" to 0, "operationType" to "add_time_slot")
-                    view.findNavController()
-                        .navigate(R.id.action_timeSlotListFragment_to_timeSlotEditFragment, bundle)
-                }
+        val fab = view?.findViewById<FloatingActionButton>(R.id.floatingActionButton)
+        fab?.let {
+            it.setOnClickListener {
+                val bundle = bundleOf("timeSlotID" to 0, "operationType" to "add_time_slot")
+                view.findNavController()
+                    .navigate(R.id.action_timeSlotListFragment_to_timeSlotEditFragment, bundle)
             }
         }
     }

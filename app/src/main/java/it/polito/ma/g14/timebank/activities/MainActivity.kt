@@ -22,7 +22,7 @@ import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.databinding.ActivityMainBinding
 import it.polito.ma.g14.timebank.fragments.EditProfileFragment
 import it.polito.ma.g14.timebank.models.FirebaseVM
-import it.polito.ma.g14.timebank.fragments.TimeSlotEditFragment
+import it.polito.ma.g14.timebank.fragments.MyAdEditFragment
 import it.polito.ma.g14.timebank.utils.Utils.ActionBarUtils.manageActionBarItemActions
 import org.apache.commons.io.IOUtils
 import java.io.FileInputStream
@@ -123,7 +123,7 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.timeSlotEditFragment -> {
                 val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
-                val fragment = navHostFragment!!.childFragmentManager.fragments[0] as TimeSlotEditFragment
+                val fragment = navHostFragment!!.childFragmentManager.fragments[0] as MyAdEditFragment
                 if(!fragment.isFormValid() && !fragment.cancelOperation){
                     val toast = Toast.makeText(this, "Please fill in all the mandatory fields", Toast.LENGTH_LONG)
                     toast.setGravity(Gravity.CENTER, 0, 0)
@@ -154,7 +154,7 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.timeSlotEditFragment -> {
                 val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
-                val fragment = navHostFragment!!.childFragmentManager.fragments[0] as TimeSlotEditFragment
+                val fragment = navHostFragment!!.childFragmentManager.fragments[0] as MyAdEditFragment
                 if(!fragment.isFormValid() && !fragment.cancelOperation){
                     val toast = Toast.makeText(this, "Please fill in all the mandatory fields", Toast.LENGTH_LONG)
                     toast.setGravity(Gravity.CENTER, 0, 0)

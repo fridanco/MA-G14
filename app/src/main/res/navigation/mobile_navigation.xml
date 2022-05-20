@@ -7,9 +7,9 @@
 
     <fragment
         android:id="@+id/advertisements"
-        android:name="it.polito.ma.g14.timebank.fragments.TimeSlotListFragment"
+        android:name="it.polito.ma.g14.timebank.fragments.MyAdsListFragment"
         android:label="My advertisements"
-        tools:layout="@layout/fragment_time_slot_list" >
+        tools:layout="@layout/fragment_my_ads_list" >
         <action
             android:id="@+id/action_timeSlotListFragment_to_timeSlotDetailsFragment"
             app:destination="@id/timeSlotDetailsFragment"
@@ -31,9 +31,9 @@
     </fragment>
     <fragment
         android:id="@+id/timeSlotDetailsFragment"
-        android:name="it.polito.ma.g14.timebank.fragments.TimeSlotDetailsFragment"
+        android:name="it.polito.ma.g14.timebank.fragments.MyAdDetailsFragment"
         android:label="Time slot details"
-        tools:layout="@layout/fragment_time_slot_details" >
+        tools:layout="@layout/fragment_my_ad_details" >
         <action
             android:id="@+id/action_timeSlotDetailsFragment_to_timeSlotEditFragment"
             app:destination="@id/timeSlotEditFragment"
@@ -44,9 +44,9 @@
     </fragment>
     <fragment
         android:id="@+id/timeSlotEditFragment"
-        android:name="it.polito.ma.g14.timebank.fragments.TimeSlotEditFragment"
+        android:name="it.polito.ma.g14.timebank.fragments.MyAdEditFragment"
         android:label="Edit time slot"
-        tools:layout="@layout/fragment_time_slot_edit" />
+        tools:layout="@layout/fragment_my_ad_edit" />
 
     <fragment
         android:id="@+id/nav_profile"
@@ -86,8 +86,20 @@
         android:label="Advertised skills"
         tools:layout="@layout/fragment_skill_advertisement_list" >
         <action
-            android:id="@+id/action_skillAdvertisementListFragment_to_timeSlotListFragment"
-            app:destination="@id/advertisements" />
+            android:id="@+id/action_advertisement_skills_to_onlineAdsListFragment"
+            app:destination="@id/onlineAdsListFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/onlineAdsListFragment"
+        android:name="it.polito.ma.g14.timebank.fragments.OnlineAdsListFragment"
+        android:label="OnlineAdsListFragment" >
+        <action
+            android:id="@+id/action_onlineAdsListFragment_to_onlineAdDetailsFragment"
+            app:destination="@id/onlineAdDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/onlineAdDetailsFragment"
+        android:name="it.polito.ma.g14.timebank.fragments.OnlineAdDetailsFragment"
+        android:label="OnlineAdDetailsFragment" />
 
 </navigation>

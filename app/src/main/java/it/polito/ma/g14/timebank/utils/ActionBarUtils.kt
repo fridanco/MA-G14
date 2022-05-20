@@ -10,8 +10,8 @@ import androidx.navigation.fragment.NavHostFragment
 import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.fragments.ChooseSkillsFragment
 import it.polito.ma.g14.timebank.fragments.EditProfileFragment
-import it.polito.ma.g14.timebank.fragments.TimeSlotDetailsFragment
-import it.polito.ma.g14.timebank.fragments.TimeSlotEditFragment
+import it.polito.ma.g14.timebank.fragments.MyAdDetailsFragment
+import it.polito.ma.g14.timebank.fragments.MyAdEditFragment
 
 class Utils {
 
@@ -48,6 +48,18 @@ class Utils {
                     menu.findItem(R.id.app_bar_cancel).isVisible = false
                     menu.findItem(R.id.app_bar_add).isVisible = false
                 }
+                R.id.onlineAdsListFragment -> {
+                    menu.findItem(R.id.app_bar_pencil).isVisible = false
+                    menu.findItem(R.id.app_bar_delete).isVisible = false
+                    menu.findItem(R.id.app_bar_cancel).isVisible = false
+                    menu.findItem(R.id.app_bar_add).isVisible = false
+                }
+                R.id.onlineAdDetailsFragment -> {
+                    menu.findItem(R.id.app_bar_pencil).isVisible = false
+                    menu.findItem(R.id.app_bar_delete).isVisible = false
+                    menu.findItem(R.id.app_bar_cancel).isVisible = true
+                    menu.findItem(R.id.app_bar_add).isVisible = false
+                }
                 R.id.nav_profile -> {
                     menu.findItem(R.id.app_bar_pencil).isVisible = true
                     menu.findItem(R.id.app_bar_delete).isVisible = false
@@ -77,7 +89,7 @@ class Utils {
                     when(item.itemId){
                         R.id.app_bar_cancel -> {
                             val navHostFragment = (activity as FragmentActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
-                            val fragment = navHostFragment!!.childFragmentManager.fragments[0] as TimeSlotEditFragment
+                            val fragment = navHostFragment!!.childFragmentManager.fragments[0] as MyAdEditFragment
                             fragment.cancelOperation = true
                             if(fragment.operationType=="edit_time_slot") {
                                 if(fragment.originFragment=="list_time_slot"){
@@ -93,7 +105,7 @@ class Utils {
                         }
                         R.id.app_bar_add -> {
                             val navHostFragment = (activity as FragmentActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
-                            val fragment = navHostFragment!!.childFragmentManager.fragments[0] as TimeSlotEditFragment
+                            val fragment = navHostFragment!!.childFragmentManager.fragments[0] as MyAdEditFragment
                             if(fragment.isFormValid()) {
                                 navController.popBackStack(R.id.advertisements, false)
                             }
@@ -104,15 +116,22 @@ class Utils {
                     when(item.itemId){
                         R.id.app_bar_pencil -> {
                             val navHostFragment = (activity as FragmentActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
-                            val fragment = navHostFragment!!.childFragmentManager.fragments[0] as TimeSlotDetailsFragment
-                            val bundle = bundleOf("timeSlotID" to fragment.advertisementID, "operationType" to "edit_time_slot")
+                            val fragment = navHostFragment!!.childFragmentManager.fragments[0] as MyAdDetailsFragment
+                            val bundle = bundleOf("advertisementID" to fragment.advertisementID, "operationType" to "edit_time_slot")
                             navController.navigate(R.id.action_timeSlotDetailsFragment_to_timeSlotEditFragment, bundle)
                         }
                         R.id.app_bar_delete -> {
                             val navHostFragment = (activity as FragmentActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
-                            val fragment = navHostFragment!!.childFragmentManager.fragments[0] as TimeSlotDetailsFragment
+                            val fragment = navHostFragment!!.childFragmentManager.fragments[0] as MyAdDetailsFragment
                             fragment.deleteAdvertisement()
                             navController.popBackStack(R.id.advertisements, false)
+                        }
+                    }
+                }
+                R.id.onlineAdDetailsFragment -> {
+                    when(item.itemId){
+                        R.id.app_bar_cancel -> {
+                            navController.popBackStack(R.id.onlineAdsListFragment, false)
                         }
                     }
                 }

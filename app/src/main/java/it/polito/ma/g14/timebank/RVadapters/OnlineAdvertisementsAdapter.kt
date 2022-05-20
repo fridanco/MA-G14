@@ -16,9 +16,8 @@ import androidx.recyclerview.widget.RecyclerView
 import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.models.Advertisement
 import it.polito.ma.g14.timebank.models.FirebaseVM
-import it.polito.ma.g14.timebank.models.SkillAdvertisement
 
-class AdvertisementAdapter(val view: View, val vm: FirebaseVM): RecyclerView.Adapter<AdvertisementAdapter.ItemViewHolder>() {
+class OnlineAdvertisementsAdapter(val view: View, val vm: FirebaseVM): RecyclerView.Adapter<OnlineAdvertisementsAdapter.ItemViewHolder>() {
     var filter: Boolean = false
     var data = listOf<Advertisement>()
     var displayData = data.toMutableList()
@@ -26,9 +25,10 @@ class AdvertisementAdapter(val view: View, val vm: FirebaseVM): RecyclerView.Ada
     var colorIndex = 0
 
     class ItemViewHolder(v: View): RecyclerView.ViewHolder(v) {
-        private val advertisementContainer = v.findViewById<LinearLayout>(R.id.time_slot_container)
+        private val advertisementContainer = v.findViewById<LinearLayout>(R.id.online_ad_card)
 
-        fun bind(advertisement: Advertisement, color: String, action1: (v: View) -> Unit, action2: (v: View)->Unit, action3: (v: View)->Unit) {
+        fun bind(advertisement: Advertisement, color: String, action1: (v: View) -> Unit) {
+            advertisementContainer.findViewById<TextView>(R.id.textView74).text = "By ${advertisement.user.fullname}"
             advertisementContainer.findViewById<TextView>(R.id.textView4).text = advertisement.title
             advertisementContainer.findViewById<TextView>(R.id.textView5).text = advertisement.description
             advertisementContainer.findViewById<TextView>(R.id.textView6).text = advertisement.date
@@ -40,38 +40,26 @@ class AdvertisementAdapter(val view: View, val vm: FirebaseVM): RecyclerView.Ada
             advertisementContainer.findViewById<ImageButton>(R.id.imageButton4).backgroundTintList = ColorStateList.valueOf(
                 Color.parseColor(color))
             advertisementContainer.findViewById<CardView>(R.id.cardView).setOnClickListener(action1)
-            advertisementContainer.findViewById<ImageButton>(R.id.imageButton3).setOnClickListener(action2)
-            advertisementContainer.findViewById<ImageButton>(R.id.imageButton4).setOnClickListener(action3)
         }
         fun unbind() {
-            advertisementContainer.setOnClickListener(null)
+            advertisementContainer.findViewById<CardView>(R.id.cardView).setOnClickListener(null)
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val vg = LayoutInflater
             .from(parent.context)
-            .inflate(R.layout.time_slot_entry,parent, false)
+            .inflate(R.layout.online_ad_card,parent, false)
         return ItemViewHolder(vg)
     }
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val advertisement = displayData[position]
 
-        fun action1(view: View) {
+        holder.bind(advertisement, colorList[(colorIndex++)%colorList.size]) {
             val bundle = bundleOf("advertisementID" to advertisement.id)
-            view.findNavController().navigate(R.id.action_timeSlotListFragment_to_timeSlotDetailsFragment, bundle)
+            view.findNavController().navigate(R.id.action_onlineAdsListFragment_to_onlineAdDetailsFragment, bundle)
         }
-        fun action2(view: View) {
-            vm.deleteAdvertisement(advertisement.id)
-        }
-
-        fun action3(view: View) {
-            val bundle = bundleOf("advertisementID" to advertisement.id, "operationType" to "edit_time_slot", "originFragment" to "list_time_slot")
-            view.findNavController().navigate(R.id.action_timeSlotListFragment_to_timeSlotEditFragment, bundle)
-        }
-
-        holder.bind(advertisement, colorList[(colorIndex++)%colorList.size], {action1(view)}, {action2(view)}, {action3(view)})
     }
 
     override fun getItemCount(): Int = displayData.size
@@ -79,7 +67,7 @@ class AdvertisementAdapter(val view: View, val vm: FirebaseVM): RecyclerView.Ada
     fun updateAdvertisements(timeSlots: List<Advertisement>){
         colorIndex = 0
         data = timeSlots
-        val diffs = DiffUtil.calculateDiff(MyDiffCallbackAdvertisements(displayData as List<Advertisement>,data))
+        val diffs = DiffUtil.calculateDiff(MyDiffCallbackOnlineAdvertisements(displayData as List<Advertisement>,data))
         displayData = data as MutableList<Advertisement>
         diffs.dispatchUpdatesTo(this)
     }
@@ -93,13 +81,13 @@ class AdvertisementAdapter(val view: View, val vm: FirebaseVM): RecyclerView.Ada
 //            newData = data.filter { it.name.contains(text, ignoreCase = true) } as MutableList<TimeSlot>
 //        }
         newData = data as MutableList<Advertisement>
-        val diffs = DiffUtil.calculateDiff(MyDiffCallbackAdvertisements(displayData, newData))
+        val diffs = DiffUtil.calculateDiff(MyDiffCallbackOnlineAdvertisements(displayData, newData))
         displayData = newData
         diffs.dispatchUpdatesTo(this)
     }
 }
 
-class MyDiffCallbackAdvertisements(val old: List<Advertisement>, val new: List<Advertisement>): DiffUtil.Callback() {
+class MyDiffCallbackOnlineAdvertisements(val old: List<Advertisement>, val new: List<Advertisement>): DiffUtil.Callback() {
     override fun getOldListSize(): Int = old.size
 
     override fun getNewListSize(): Int = new.size
