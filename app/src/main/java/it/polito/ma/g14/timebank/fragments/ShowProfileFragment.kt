@@ -1,6 +1,5 @@
 package it.polito.ma.g14.timebank.fragments
 
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
@@ -8,14 +7,18 @@ import android.widget.*
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.models.FirebaseVM
 import it.polito.ma.g14.timebank.models.User
 import it.polito.ma.g14.timebank.utils.Utils
-import org.apache.commons.io.IOUtils
-import java.io.FileInputStream
 
 class ShowProfileFragment : Fragment() {
 
@@ -53,16 +56,16 @@ class ShowProfileFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_show_profile, container, false)
 
-        try {
-            val inputStream : FileInputStream = requireContext().openFileInput(getString(R.string.profile_picture_filename))
-            profilePicture = IOUtils.toByteArray(inputStream)
-            if(profilePicture?.size==0){
-                profilePicture = null
-            }
-        }
-        catch (e: Exception){
-            profilePicture=null
-        }
+//        try {
+//            val inputStream : FileInputStream = requireContext().openFileInput(getString(R.string.profile_picture_filename))
+//            profilePicture = IOUtils.toByteArray(inputStream)
+//            if(profilePicture?.size==0){
+//                profilePicture = null
+//            }
+//        }
+//        catch (e: Exception){
+//            profilePicture=null
+//        }
 
         requireActivity().invalidateOptionsMenu()
 
@@ -148,10 +151,35 @@ class ShowProfileFragment : Fragment() {
     }
 
     private fun populateProfilePicture(){
-        profilePicture?.let {
-            val bmp = BitmapFactory.decodeByteArray(it, 0, it.size)
-            iv_profilePicture?.setImageBitmap(bmp)
-            h_iv_profilePicture?.setImageBitmap(bmp)
+        vm.profileImageUpdated.observe(viewLifecycleOwner) {
+            val profileImageRef = vm.storageRef.child(Firebase.auth.currentUser!!.uid)
+
+            val circularProgressDrawable = CircularProgressDrawable(requireContext())
+            circularProgressDrawable.strokeWidth = 5f
+            circularProgressDrawable.centerRadius = 30f
+            circularProgressDrawable.start()
+
+            val options: RequestOptions = RequestOptions()
+                .placeholder(circularProgressDrawable)
+                .error(R.drawable.user)
+
+            iv_profilePicture?.let {
+                Glide.with(requireContext())
+                    .load(profileImageRef)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true)
+                    .apply(options)
+                    .into(it)
+            }
+
+            h_iv_profilePicture?.let {
+                Glide.with(requireContext())
+                    .load(profileImageRef)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true)
+                    .apply(options)
+                    .into(it)
+            }
         }
     }
 

@@ -1,7 +1,6 @@
 package it.polito.ma.g14.timebank.models
 
 import android.app.Application
-import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -10,13 +9,16 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
-import com.google.firebase.firestore.SetOptions
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 
 class FirebaseVM(application:Application) : AndroidViewModel(application) {
 
     private val _profile = MutableLiveData<User>()
     val profile : LiveData<User> = _profile
+
+    private val _profileImageUpdated = MutableLiveData<Int>(0)
+    val profileImageUpdated : LiveData<Int> = _profileImageUpdated
 
     private val _skills = MutableLiveData<List<SkillAdvertisement>>()
     val skills: LiveData<List<SkillAdvertisement>> = _skills
@@ -32,7 +34,8 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
     private var profileListener : ListenerRegistration? = null
     private var myAdvertisementsListener: ListenerRegistration? = null
 
-    private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
+    val db: FirebaseFirestore = FirebaseFirestore.getInstance()
+    val storageRef = Firebase.storage("gs://mad2022-g14.appspot.com").reference
 
     init {
         val uid = Firebase.auth.uid
@@ -124,8 +127,20 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
             .set(user)
     }
 
-    fun uploadProfileImage(bitmapImage: Bitmap){
+    fun uploadProfileImage(profileImage: ByteArray){
+        val profileImageRef = storageRef.child(Firebase.auth.currentUser!!.uid)
 
+        profileImageRef.putBytes(profileImage)
+            .addOnFailureListener {
+                Log.w("Timebank FBSTORAGE", "Profile image could not be uploaded")
+            }.addOnSuccessListener { taskSnapshot ->
+                setProfileImageUpdated()
+                Log.d("Timebank FBSTORAGE", "Profile image successfully uploaded")
+            }
+    }
+
+    fun setProfileImageUpdated(){
+        _profileImageUpdated.value = profileImageUpdated.value?.plus(1);
     }
 
     fun updateProfileSkills(skills: List<String>){

@@ -2,13 +2,11 @@ package it.polito.ma.g14.timebank.fragments
 
 import android.app.Activity.RESULT_OK
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
 import android.graphics.Matrix
-import androidx.exifinterface.media.ExifInterface
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -22,19 +20,24 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
+import androidx.exifinterface.media.ExifInterface
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.models.FirebaseVM
 import it.polito.ma.g14.timebank.models.User
 import it.polito.ma.g14.timebank.utils.Utils
-import org.apache.commons.io.IOUtils
 import java.io.ByteArrayOutputStream
 import java.io.File
-import java.io.FileInputStream
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -94,16 +97,16 @@ class EditProfileFragment : Fragment() {
         performProfileBackup = arguments?.getBoolean("performProfileBackup") ?: false
         performSkillsBackup = arguments?.getBoolean("performSkillsBackup") ?: false
 
-        try {
-            val inputStream : FileInputStream = requireContext().openFileInput(getString(R.string.profile_picture_filename))
-            profilePicture = IOUtils.toByteArray(inputStream)
-            if(profilePicture?.size==0){
-                profilePicture = null
-            }
-        }
-        catch (e: Exception){
-            profilePicture=null
-        }
+        //        try {
+//            val inputStream : FileInputStream = requireContext().openFileInput(getString(R.string.profile_picture_filename))
+//            profilePicture = IOUtils.toByteArray(inputStream)
+//            if(profilePicture?.size==0){
+//                profilePicture = null
+//            }
+//        }
+//        catch (e: Exception){
+//            profilePicture=null
+//        }
 
         activity?.invalidateOptionsMenu()
 
@@ -172,35 +175,40 @@ class EditProfileFragment : Fragment() {
 
             //Restore profile image
             if(profileImageBackup.isNotEmpty()){
-                try {
-                    profileImageBackup.let {
-                        requireContext().openFileOutput("profile_picture", Context.MODE_PRIVATE).use {
-                            it.write(profileImageBackup)
-                        }
-                    }
-                }
-                catch (e: Exception){
-                    requireContext().deleteFile("profile_picture")
-                }
+                vm.uploadProfileImage(profileImageBackup)
+//                try {
+//                    profileImageBackup.let {
+//                        requireContext().openFileOutput("profile_picture", Context.MODE_PRIVATE).use {
+//                            it.write(profileImageBackup)
+//                        }
+//                    }
+//                }
+//                catch (e: Exception){
+//                    requireContext().deleteFile("profile_picture")
+//                }
             }
 
             super.onDestroy()
             return
         }
 
-        try {
-            profilePicture?.let {
-                if (profilePicture?.size != 0) {
-                    requireContext().openFileOutput("profile_picture", Context.MODE_PRIVATE).use {
-                        it.write(profilePicture)
-                    }
-                }
-            }
+
+        profilePicture?.let {
+            vm.uploadProfileImage(it)
         }
-        catch (e: Exception){
-            profilePicture = null
-            requireContext().deleteFile("profile_picture")
-        }
+//        try {
+//            profilePicture?.let {
+//                if (profilePicture?.size != 0) {
+//                    requireContext().openFileOutput("profile_picture", Context.MODE_PRIVATE).use {
+//                        it.write(profilePicture)
+//                    }
+//                }
+//            }
+//        }
+//        catch (e: Exception){
+//            profilePicture = null
+//            requireContext().deleteFile("profile_picture")
+//        }
 
         vm.updateProfile(fullName, nickName, email, location, description, skills)
 
@@ -274,9 +282,15 @@ class EditProfileFragment : Fragment() {
                 }
                 val stream = ByteArrayOutputStream()
                 rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 20, stream)
+
                 profilePicture = stream.toByteArray()
+
+                profilePicture?.let{
+                    val bmp = BitmapFactory.decodeByteArray(it, 0, it.size)
+                    iv_profilePicture?.setImageBitmap(bmp)
+                    h_iv_profilePicture?.setImageBitmap(bmp)
+                }
             }
-            populateProfileImage()
         }
     }
 
@@ -306,8 +320,13 @@ class EditProfileFragment : Fragment() {
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 20, stream)
 
                 profilePicture = stream.toByteArray()
+
+                profilePicture?.let{
+                    val bmp = BitmapFactory.decodeByteArray(it, 0, it.size)
+                    iv_profilePicture?.setImageBitmap(bmp)
+                    h_iv_profilePicture?.setImageBitmap(bmp)
+                }
             }
-            populateProfileImage()
         }
     }
 
@@ -334,10 +353,35 @@ class EditProfileFragment : Fragment() {
     }
 
     private fun populateProfileImage(){
-        profilePicture?.let{
-            val bmp = BitmapFactory.decodeByteArray(it, 0, it.size)
-            iv_profilePicture?.setImageBitmap(bmp)
-            h_iv_profilePicture?.setImageBitmap(bmp)
+        vm.profileImageUpdated.observe(viewLifecycleOwner) {
+            val profileImageRef = vm.storageRef.child(Firebase.auth.currentUser!!.uid)
+
+            val circularProgressDrawable = CircularProgressDrawable(requireContext())
+            circularProgressDrawable.strokeWidth = 5f
+            circularProgressDrawable.centerRadius = 30f
+            circularProgressDrawable.start()
+
+            val options: RequestOptions = RequestOptions()
+                .placeholder(circularProgressDrawable)
+                .error(R.drawable.user)
+
+            iv_profilePicture?.let {
+                Glide.with(requireContext())
+                    .load(profileImageRef)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true)
+                    .apply(options)
+                    .into(it)
+            }
+
+            h_iv_profilePicture?.let {
+                Glide.with(requireContext())
+                    .load(profileImageRef)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true)
+                    .apply(options)
+                    .into(it)
+            }
         }
     }
 
