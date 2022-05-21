@@ -14,11 +14,27 @@
       },
       "oauth_client": [
         {
-          "client_id": "23346206643-06ffhmiu5j7sdne5p46n0puuqgr7sl51.apps.googleusercontent.com",
+          "client_id": "23346206643-1el00kagckdb3vq1na6dlmnj6g70on9e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "it.polito.ma.g14.timebank",
+            "certificate_hash": "aca8e9c172b78ff4b9cbd443e023b2b3917dde8b"
+          }
+        },
+        {
+          "client_id": "23346206643-ejsq52hlb01av10k0ci2ucek0tl37klu.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "it.polito.ma.g14.timebank",
             "certificate_hash": "2c7b49417a32277f5bd9319423f68d39b0d8800b"
+          }
+        },
+        {
+          "client_id": "23346206643-i24uohekkmkmbs9j0etdflcjkr1vk1kp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "it.polito.ma.g14.timebank",
+            "certificate_hash": "f5543f95b21bffc523f526f60499fb2e1876924c"
           }
         },
         {
