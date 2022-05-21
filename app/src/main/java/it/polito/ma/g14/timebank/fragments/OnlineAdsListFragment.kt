@@ -1,26 +1,23 @@
 package it.polito.ma.g14.timebank.fragments
 
+
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.ktx.app
 import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.RVadapters.OnlineAdvertisementsAdapter
 import it.polito.ma.g14.timebank.models.Advertisement
 import it.polito.ma.g14.timebank.models.FirebaseVM
 import it.polito.ma.g14.timebank.utils.Utils
 import java.text.SimpleDateFormat
+
 
 class OnlineAdsListFragment : Fragment() {
 
@@ -93,4 +90,46 @@ class OnlineAdsListFragment : Fragment() {
         super.onPrepareOptionsMenu(menu)
         Utils.manageActionBarItemsVisibility(requireActivity(), menu)
     }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.main, menu)
+
+        //val searchMenuItem: MenuItem = menu.findItem(R.id.action_search)
+        //val filterMenuItem: MenuItem = menu.findItem(R.id.action_filter)
+
+        val sortMenuItem: MenuItem = menu.findItem(R.id.app_bar_sort)
+
+        sortMenuItem.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
+            override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
+                sortMenuItem.isVisible = false
+                return true
+            }
+
+            override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
+                sortMenuItem.isVisible = true
+                return true
+            }
+        })
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val id: Int = item.itemId
+        return when (id) {
+            0 -> run {
+                Toast.makeText(requireContext(), "Item 1 Selected", Toast.LENGTH_LONG).show()
+                return true
+            }
+            1 -> run {
+                Toast.makeText(requireContext(), "Item 2 Selected", Toast.LENGTH_LONG).show()
+                return true
+            }
+            2 -> run {
+                Toast.makeText(requireContext(), "Item 3 Selected", Toast.LENGTH_LONG).show()
+                return true
+            }
+            else -> false
+        }
+    }
+
+
 }

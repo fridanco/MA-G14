@@ -11,7 +11,7 @@
         android:theme="@style/Theme.TimeBank">
         <activity
             android:name=".activities.LoginActivity"
-            android:exported="true" >
+            android:exported="true"
             android:label="@string/title_activity_main"
             android:theme="@style/Theme.TimeBank.NoActionBar">
             <intent-filter>
@@ -22,7 +22,7 @@
        <activity
             android:name=".activities.MainActivity"
             android:exported="false"
-           android:theme="@style/Theme.TimeBank.NoActionBar">>
+           android:theme="@style/Theme.TimeBank.NoActionBar">
         </activity>
 
         <provider

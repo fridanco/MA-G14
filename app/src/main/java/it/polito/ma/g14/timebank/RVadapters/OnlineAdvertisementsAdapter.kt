@@ -25,6 +25,7 @@ class OnlineAdvertisementsAdapter(val view: View, val vm: FirebaseVM): RecyclerV
     var displayData = data.toMutableList()
     var colorList = mutableListOf("#FFFFFF")
     var colorIndex = 0
+    var sort = 0
 
     class ItemViewHolder(v: View): RecyclerView.ViewHolder(v) {
         private val advertisementContainer = v.findViewById<LinearLayout>(R.id.online_ad_card)
@@ -74,8 +75,10 @@ class OnlineAdvertisementsAdapter(val view: View, val vm: FirebaseVM): RecyclerV
     fun updateAdvertisements(timeSlots: List<Advertisement>){
         colorIndex = 0
         data = timeSlots
+        sortList(data, sort)
         val diffs = DiffUtil.calculateDiff(MyDiffCallbackOnlineAdvertisements(displayData as List<Advertisement>,data))
         displayData = data as MutableList<Advertisement>
+
         diffs.dispatchUpdatesTo(this)
     }
 
@@ -87,10 +90,28 @@ class OnlineAdvertisementsAdapter(val view: View, val vm: FirebaseVM): RecyclerV
 //        else{
 //            newData = data.filter { it.name.contains(text, ignoreCase = true) } as MutableList<TimeSlot>
 //        }
-        newData = data as MutableList<Advertisement>
+//        newData = data as MutableList<Advertisement>
         val diffs = DiffUtil.calculateDiff(MyDiffCallbackOnlineAdvertisements(displayData, newData))
         displayData = newData
         diffs.dispatchUpdatesTo(this)
+    }
+
+    fun sortList(data: List<Advertisement>, field: Int){
+
+        var newData = data as MutableList<Advertisement>
+
+        when(field){
+            0 -> run { newData = newData.sortBy { it.title } as MutableList<Advertisement> }
+            1 -> run { newData = newData.sortBy { it.from } as MutableList<Advertisement> }
+            2 -> run { newData = newData.sortBy { it.title } as MutableList<Advertisement> }
+            else -> run {newData = newData.sortBy { it.title } as MutableList<Advertisement>}
+            //todo filter by rating (next lab)
+
+        }
+
+
+
+
     }
 }
 
