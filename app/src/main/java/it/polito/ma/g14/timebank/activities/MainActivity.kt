@@ -1,8 +1,11 @@
 package it.polito.ma.g14.timebank.activities
 
+import android.R.attr.src
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
@@ -18,14 +21,18 @@ import androidx.navigation.ui.*
 import com.firebase.ui.auth.AuthUI
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.databinding.ActivityMainBinding
 import it.polito.ma.g14.timebank.fragments.EditProfileFragment
-import it.polito.ma.g14.timebank.models.FirebaseVM
 import it.polito.ma.g14.timebank.fragments.MyAdEditFragment
+import it.polito.ma.g14.timebank.models.FirebaseVM
 import it.polito.ma.g14.timebank.utils.Utils.ActionBarUtils.manageActionBarItemActions
-import org.apache.commons.io.IOUtils
-import java.io.FileInputStream
+import java.io.ByteArrayOutputStream
+import java.io.InputStream
+import java.net.HttpURLConnection
+import java.net.URL
 
 
 class MainActivity : AppCompatActivity() {
@@ -70,17 +77,24 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        try {
-            val inputStream: FileInputStream =
-                openFileInput(getString(R.string.profile_picture_filename))
-            val profilePicture = IOUtils.toByteArray(inputStream)
-            if (profilePicture?.isNotEmpty() == true) {
-                val bmp = BitmapFactory.decodeByteArray(profilePicture, 0, profilePicture.size)
-                navViewHeaderImage.setImageBitmap(bmp)
-            }
-        } catch (e: Exception) {
-            val id = resources.getIdentifier("$packageName:drawable/user", null, null)
-            navViewHeaderImage.setImageResource(id)
+        vm.storageRef.child(Firebase.auth.currentUser!!.uid).downloadUrl.addOnSuccessListener {
+            val url = URL(it.toString())
+            val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
+            connection.setDoInput(true)
+            connection.connect()
+            val input: InputStream = connection.getInputStream()
+            val bitmap = BitmapFactory.decodeStream(input)
+            val stream = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+            vm.setProfileImageUpdated(stream.toByteArray())
+        }
+
+        val id = resources.getIdentifier("$packageName:drawable/user", null, null)
+        navViewHeaderImage.setImageResource(id)
+
+        vm.profileImage.observe(this){
+            val bmp = BitmapFactory.decodeByteArray(it, 0, it.size)
+            navViewHeaderImage.setImageBitmap(bmp)
         }
 
         val navController = findNavController(R.id.nav_host_fragment_content_main)

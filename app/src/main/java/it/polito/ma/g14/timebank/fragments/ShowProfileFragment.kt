@@ -1,5 +1,6 @@
 package it.polito.ma.g14.timebank.fragments
 
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
@@ -151,35 +152,11 @@ class ShowProfileFragment : Fragment() {
     }
 
     private fun populateProfilePicture(){
-        vm.profileImageUpdated.observe(viewLifecycleOwner) {
-            val profileImageRef = vm.storageRef.child(Firebase.auth.currentUser!!.uid)
 
-            val circularProgressDrawable = CircularProgressDrawable(requireContext())
-            circularProgressDrawable.strokeWidth = 5f
-            circularProgressDrawable.centerRadius = 30f
-            circularProgressDrawable.start()
-
-            val options: RequestOptions = RequestOptions()
-                .placeholder(circularProgressDrawable)
-                .error(R.drawable.user)
-
-            iv_profilePicture?.let {
-                Glide.with(requireContext())
-                    .load(profileImageRef)
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .skipMemoryCache(true)
-                    .apply(options)
-                    .into(it)
-            }
-
-            h_iv_profilePicture?.let {
-                Glide.with(requireContext())
-                    .load(profileImageRef)
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .skipMemoryCache(true)
-                    .apply(options)
-                    .into(it)
-            }
+        vm.profileImage.observe(viewLifecycleOwner){
+            val bmp = BitmapFactory.decodeByteArray(it, 0, it.size)
+            iv_profilePicture?.setImageBitmap(bmp)
+            h_iv_profilePicture?.setImageBitmap(bmp)
         }
     }
 

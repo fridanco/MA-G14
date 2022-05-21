@@ -17,8 +17,8 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
     private val _profile = MutableLiveData<User>()
     val profile : LiveData<User> = _profile
 
-    private val _profileImageUpdated = MutableLiveData<Int>(0)
-    val profileImageUpdated : LiveData<Int> = _profileImageUpdated
+    private val _profileImage = MutableLiveData<ByteArray>()
+    val profileImage : LiveData<ByteArray> = _profileImage
 
     private val _skills = MutableLiveData<List<SkillAdvertisement>>()
     val skills: LiveData<List<SkillAdvertisement>> = _skills
@@ -134,13 +134,14 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
             .addOnFailureListener {
                 Log.w("Timebank FBSTORAGE", "Profile image could not be uploaded")
             }.addOnSuccessListener { taskSnapshot ->
-                setProfileImageUpdated()
                 Log.d("Timebank FBSTORAGE", "Profile image successfully uploaded")
             }
+
+        setProfileImageUpdated(profileImage)
     }
 
-    fun setProfileImageUpdated(){
-        _profileImageUpdated.value = profileImageUpdated.value?.plus(1);
+    fun setProfileImageUpdated(profileImage: ByteArray) {
+        _profileImage.value = profileImage
     }
 
     fun updateProfileSkills(skills: List<String>){
