@@ -63,7 +63,12 @@ class MyAdDetailsFragment() : Fragment() {
             val ad = myAdvertisements.find { it.id==advertisementID }
             ad?.let {
                 tv_title.text = it.title
-                tv_description.text = it.description
+                if(it.description.isNotEmpty()) {
+                    tv_description.text = it.description
+                }
+                else{
+                    tv_description.text = "No description provided"
+                }
                 tv_date.text = it.date
                 tv_from.text = it.from
                 tv_to.text = it.to

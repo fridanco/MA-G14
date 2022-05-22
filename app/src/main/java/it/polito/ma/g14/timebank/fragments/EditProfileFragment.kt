@@ -227,9 +227,6 @@ class EditProfileFragment : Fragment() {
             return
         }
 
-
-
-
         profilePicture?.let {
             vm.uploadProfileImage(it)
         }
