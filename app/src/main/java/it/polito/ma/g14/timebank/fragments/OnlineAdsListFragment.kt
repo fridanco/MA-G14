@@ -72,7 +72,7 @@ class OnlineAdsListFragment : Fragment() {
 
         selectedSkill = requireArguments().getString("selectedSkill").toString()
 
-        vm.onlineAdvertisement.observe(viewLifecycleOwner){ advertisementsMap ->
+        vm.onlineAdvertisements.observe(viewLifecycleOwner){ advertisementsMap ->
             val ads: List<Advertisement> = advertisementsMap[selectedSkill] ?: listOf()
             if(ads.isEmpty()){
                 rv.isGone = true
@@ -97,28 +97,22 @@ class OnlineAdsListFragment : Fragment() {
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
+
+//        val sortMenuItem: MenuItem = menu.findItem(R.id.app_bar_sort)
+//
+//        sortMenuItem.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
+//            override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
+//                sortMenuItem.isVisible = false
+//                return true
+//            }
+//
+//            override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
+//                sortMenuItem.isVisible = true
+//                return true
+//            }
+//        })
+
         Utils.manageActionBarItemsVisibility(requireActivity(), menu)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.main, menu)
-
-        //val searchMenuItem: MenuItem = menu.findItem(R.id.action_search)
-        //val filterMenuItem: MenuItem = menu.findItem(R.id.action_filter)
-
-        val sortMenuItem: MenuItem = menu.findItem(R.id.app_bar_sort)
-
-        sortMenuItem.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
-            override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
-                sortMenuItem.isVisible = false
-                return true
-            }
-
-            override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
-                sortMenuItem.isVisible = true
-                return true
-            }
-        })
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

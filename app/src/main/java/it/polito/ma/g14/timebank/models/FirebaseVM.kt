@@ -35,7 +35,7 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
     val myAdvertisements: LiveData<List<Advertisement>> = _myAdvertisements
 
     private val _onlineAdvertisements = MutableLiveData<Map<String, List<Advertisement>>>()
-    val onlineAdvertisement: LiveData<Map<String, List<Advertisement>>> = _onlineAdvertisements
+    val onlineAdvertisements: LiveData<Map<String, List<Advertisement>>> = _onlineAdvertisements
 
     private var profileListener : ListenerRegistration? = null
     private var myAdvertisementsListener: ListenerRegistration? = null

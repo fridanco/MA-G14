@@ -81,7 +81,7 @@ class OnlineAdvertisementsAdapter(val view: View, val vm: FirebaseVM, val contex
         val advertisement = displayData[position]
 
         holder.bind(advertisement, context, vm, colorList[(colorIndex++)%colorList.size]) {
-            val bundle = bundleOf("advertisementID" to advertisement.id)
+            val bundle = bundleOf("advertisement" to advertisement)
             view.findNavController().navigate(R.id.action_onlineAdsListFragment_to_onlineAdDetailsFragment, bundle)
         }
     }

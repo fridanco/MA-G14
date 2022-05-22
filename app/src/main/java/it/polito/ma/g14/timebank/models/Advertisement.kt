@@ -1,8 +1,9 @@
 package it.polito.ma.g14.timebank.models
 
 import com.google.firebase.firestore.DocumentId
+import java.io.Serializable
 
-class Advertisement {
+class Advertisement : Serializable {
     @DocumentId
     var id : String = ""
 
