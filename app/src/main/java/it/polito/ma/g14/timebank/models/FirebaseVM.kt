@@ -130,18 +130,18 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
     fun uploadProfileImage(profileImage: ByteArray){
         val profileImageRef = storageRef.child(Firebase.auth.currentUser!!.uid)
 
+        _profileImage.value = profileImage.clone()
+
         profileImageRef.putBytes(profileImage)
             .addOnFailureListener {
                 Log.w("Timebank FBSTORAGE", "Profile image could not be uploaded")
             }.addOnSuccessListener { taskSnapshot ->
                 Log.d("Timebank FBSTORAGE", "Profile image successfully uploaded")
             }
-
-        setProfileImageUpdated(profileImage)
     }
 
     fun setProfileImageUpdated(profileImage: ByteArray) {
-        _profileImage.value = profileImage
+        _profileImage.value = profileImage.clone()
     }
 
     fun updateProfileSkills(skills: List<String>){

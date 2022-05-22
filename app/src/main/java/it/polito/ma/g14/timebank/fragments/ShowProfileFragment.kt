@@ -1,5 +1,6 @@
 package it.polito.ma.g14.timebank.fragments
 
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.*
@@ -57,17 +58,6 @@ class ShowProfileFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_show_profile, container, false)
 
-//        try {
-//            val inputStream : FileInputStream = requireContext().openFileInput(getString(R.string.profile_picture_filename))
-//            profilePicture = IOUtils.toByteArray(inputStream)
-//            if(profilePicture?.size==0){
-//                profilePicture = null
-//            }
-//        }
-//        catch (e: Exception){
-//            profilePicture=null
-//        }
-
         requireActivity().invalidateOptionsMenu()
 
         val sv = view?.findViewById<ScrollView>(R.id.scrollView2)
@@ -93,11 +83,15 @@ class ShowProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setViewsReferences()
-        populateProfilePicture()
 
         vm.profile.observe(viewLifecycleOwner){
             populateProfileText(it)
             populateProfileSkills(it.skills)
+        }
+
+        vm.profileImage.observe(viewLifecycleOwner){
+            val bmp = BitmapFactory.decodeByteArray(it, 0, it.size)
+            populateProfilePicture(bmp)
         }
 
     }
@@ -151,13 +145,9 @@ class ShowProfileFragment : Fragment() {
         }
     }
 
-    private fun populateProfilePicture(){
-
-        vm.profileImage.observe(viewLifecycleOwner){
-            val bmp = BitmapFactory.decodeByteArray(it, 0, it.size)
-            iv_profilePicture?.setImageBitmap(bmp)
-            h_iv_profilePicture?.setImageBitmap(bmp)
-        }
+    private fun populateProfilePicture(imageBitmap: Bitmap){
+        iv_profilePicture?.setImageBitmap(imageBitmap)
+        h_iv_profilePicture?.setImageBitmap(imageBitmap)
     }
 
     private fun populateProfileSkills(skills: List<String>){

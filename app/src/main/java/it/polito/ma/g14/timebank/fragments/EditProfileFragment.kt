@@ -45,7 +45,7 @@ import java.util.*
 
 class EditProfileFragment : Fragment() {
 
-    val vm by viewModels<FirebaseVM>()
+    private val vm by viewModels<FirebaseVM>()
 
     var imageFilepath : String = ""
 
@@ -97,17 +97,6 @@ class EditProfileFragment : Fragment() {
         performProfileBackup = arguments?.getBoolean("performProfileBackup") ?: false
         performSkillsBackup = arguments?.getBoolean("performSkillsBackup") ?: false
 
-        //        try {
-//            val inputStream : FileInputStream = requireContext().openFileInput(getString(R.string.profile_picture_filename))
-//            profilePicture = IOUtils.toByteArray(inputStream)
-//            if(profilePicture?.size==0){
-//                profilePicture = null
-//            }
-//        }
-//        catch (e: Exception){
-//            profilePicture=null
-//        }
-
         activity?.invalidateOptionsMenu()
 
         val sv = view?.findViewById<ScrollView>(R.id.scrollView)
@@ -144,7 +133,6 @@ class EditProfileFragment : Fragment() {
         }
 
         setEditTextReferences()
-        populateProfileImage()
         attachListeners()
         attachContextMenu()
 
@@ -163,6 +151,11 @@ class EditProfileFragment : Fragment() {
             skills = it.skills as ArrayList<String>
             populateProfileEditText(it)
             populateProfileSkills(it.skills)
+        }
+
+        vm.profileImage.observe(viewLifecycleOwner){
+            val bmp = BitmapFactory.decodeByteArray(it, 0, it.size)
+            populateProfileImage(bmp)
         }
     }
 
@@ -186,19 +179,6 @@ class EditProfileFragment : Fragment() {
         profilePicture?.let {
             vm.uploadProfileImage(it)
         }
-//        try {
-//            profilePicture?.let {
-//                if (profilePicture?.size != 0) {
-//                    requireContext().openFileOutput("profile_picture", Context.MODE_PRIVATE).use {
-//                        it.write(profilePicture)
-//                    }
-//                }
-//            }
-//        }
-//        catch (e: Exception){
-//            profilePicture = null
-//            requireContext().deleteFile("profile_picture")
-//        }
 
         vm.updateProfile(fullName, nickName, email, location, description, skills)
 
@@ -275,11 +255,7 @@ class EditProfileFragment : Fragment() {
 
                 profilePicture = stream.toByteArray()
 
-                profilePicture?.let{
-                    val bmp = BitmapFactory.decodeByteArray(it, 0, it.size)
-                    iv_profilePicture?.setImageBitmap(bmp)
-                    h_iv_profilePicture?.setImageBitmap(bmp)
-                }
+                vm.setProfileImageUpdated(stream.toByteArray())
             }
         }
     }
@@ -307,15 +283,11 @@ class EditProfileFragment : Fragment() {
                 }
 
                 val stream = ByteArrayOutputStream()
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 20, stream)
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
 
                 profilePicture = stream.toByteArray()
 
-                profilePicture?.let{
-                    val bmp = BitmapFactory.decodeByteArray(it, 0, it.size)
-                    iv_profilePicture?.setImageBitmap(bmp)
-                    h_iv_profilePicture?.setImageBitmap(bmp)
-                }
+                vm.setProfileImageUpdated(stream.toByteArray())
             }
         }
     }
@@ -342,12 +314,9 @@ class EditProfileFragment : Fragment() {
         h_iv_profilePicture = view?.findViewById<ImageView>(R.id.imageView2)
     }
 
-    private fun populateProfileImage(){
-        vm.profileImage.observe(viewLifecycleOwner){
-            val bmp = BitmapFactory.decodeByteArray(it, 0, it.size)
-            iv_profilePicture?.setImageBitmap(bmp)
-            h_iv_profilePicture?.setImageBitmap(bmp)
-        }
+    private fun populateProfileImage(imageBitmap: Bitmap){
+        iv_profilePicture?.setImageBitmap(imageBitmap)
+        h_iv_profilePicture?.setImageBitmap(imageBitmap)
     }
 
     private fun populateProfileEditText(profile: User){

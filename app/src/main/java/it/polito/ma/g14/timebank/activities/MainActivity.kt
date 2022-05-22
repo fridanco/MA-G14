@@ -30,6 +30,7 @@ import it.polito.ma.g14.timebank.fragments.EditProfileFragment
 import it.polito.ma.g14.timebank.fragments.MyAdEditFragment
 import it.polito.ma.g14.timebank.models.FirebaseVM
 import it.polito.ma.g14.timebank.utils.Utils.ActionBarUtils.manageActionBarItemActions
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
@@ -68,10 +69,30 @@ class MainActivity : AppCompatActivity() {
         val navViewHeaderNumSkills =
             navView.getHeaderView(0).findViewById<TextView>(R.id.nav_drawer_numskills)
 
-        vm.profile.observe(this){
-            if(it==null){
-                return@observe;
+
+        vm.storageRef.child(Firebase.auth.currentUser!!.uid).downloadUrl.addOnSuccessListener {
+            val url = URL(it.toString())
+            val coroutineScope = CoroutineScope(Dispatchers.IO)
+            coroutineScope.launch {
+                val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
+                connection.setDoInput(true)
+                connection.connect()
+                println(url)
+                val input: InputStream = connection.getInputStream()
+                val bitmap = BitmapFactory.decodeStream(input)
+                val stream = ByteArrayOutputStream()
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+                launch(Dispatchers.Main) {
+                    vm.setProfileImageUpdated(stream.toByteArray())
+                }
             }
+        }
+
+
+        val id = resources.getIdentifier("$packageName:drawable/user", null, null)
+        navViewHeaderImage.setImageResource(id)
+
+        vm.profile.observe(this){
             navViewHeaderFullname.text = it.fullname
             navViewHeaderEmail.text = it.email
             if(it.skills.isEmpty()){
@@ -82,28 +103,10 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        lifecycleScope.launch {
-            vm.storageRef.child(Firebase.auth.currentUser!!.uid).downloadUrl.addOnSuccessListener {
-                val url = URL(it.toString())
-                val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
-                connection.setDoInput(true)
-                connection.connect()
-                println(url)
-                val input: InputStream = connection.getInputStream()
-                val bitmap = BitmapFactory.decodeStream(input)
-                val stream = ByteArrayOutputStream()
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
-                vm.setProfileImageUpdated(stream.toByteArray())
-            }
-
-
-            val id = resources.getIdentifier("$packageName:drawable/user", null, null)
-            navViewHeaderImage.setImageResource(id)
+        vm.profileImage.observe(this) {
+            val bmp = BitmapFactory.decodeByteArray(it, 0, it.size)
+            navViewHeaderImage.setImageBitmap(bmp)
         }
-            vm.profileImage.observe(this) {
-                val bmp = BitmapFactory.decodeByteArray(it, 0, it.size)
-                navViewHeaderImage.setImageBitmap(bmp)
-            }
 
         val navController = findNavController(R.id.nav_host_fragment_content_main)
 
