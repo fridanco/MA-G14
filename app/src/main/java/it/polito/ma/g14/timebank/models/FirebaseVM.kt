@@ -1,6 +1,9 @@
 package it.polito.ma.g14.timebank.models
 
 import android.app.Application
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -11,14 +14,19 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.io.ByteArrayOutputStream
+import java.io.InputStream
+import java.net.HttpURLConnection
+import java.net.URL
+import java.util.*
 
 class FirebaseVM(application:Application) : AndroidViewModel(application) {
 
     private val _profile = MutableLiveData<User>()
     val profile : LiveData<User> = _profile
-
-    private val _profileImage = MutableLiveData<ByteArray>()
-    val profileImage : LiveData<ByteArray> = _profileImage
 
     private val _skills = MutableLiveData<List<SkillAdvertisement>>()
     val skills: LiveData<List<SkillAdvertisement>> = _skills
@@ -42,18 +50,32 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
 
         profileListener = db.collection("users").document(uid!!)
             .addSnapshotListener{ result, exception ->
-                _profile.value = if (exception != null) {
+                if (exception != null) {
                     User()
                 }
                 else{
-                    if(result!=null){
-                        result.toObject(User::class.java)
-                    }
-                    else{
-                        throw Exception("Could not load user profile")
-                    }
+                    result?.let {
+                        _profile.postValue(it.toObject(User::class.java))
+                    } ?: throw Exception("Could not load user profile")
                 }
             }
+
+//        storageRef.child(Firebase.auth.currentUser!!.uid).downloadUrl.addOnSuccessListener {
+//            val url = URL(it.toString())
+//            val coroutineScope = CoroutineScope(Dispatchers.IO)
+//            coroutineScope.launch {
+//                val inputStream = url.openStream()
+//                val bitmap = BitmapFactory.decodeStream(inputStream)
+//                val stream = ByteArrayOutputStream()
+//                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+//                val byteArray = stream.toByteArray()
+//                launch(Dispatchers.Main) {
+//                    _profile.value = _profile.value?.apply {
+//                        this.image = byteArray
+//                    }
+//                }
+//            }
+//        }
 
         skillAdvertisementListener = db.collection("skillAdvertisements")
             .whereGreaterThan("numAdvertisements",0)
@@ -78,7 +100,7 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
         db.collection("advertisements")
             .get()
             .addOnSuccessListener { querySnapshot ->
-                var adsMap = mutableMapOf<String, MutableList<Advertisement>>()
+                val adsMap = mutableMapOf<String, MutableList<Advertisement>>()
 
                 querySnapshot.mapNotNull { it.toObject(Advertisement::class.java) }.forEach { advertisement ->
                     advertisement.skills.forEach{ skill ->
@@ -130,18 +152,18 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
     fun uploadProfileImage(profileImage: ByteArray){
         val profileImageRef = storageRef.child(Firebase.auth.currentUser!!.uid)
 
-        _profileImage.value = profileImage.clone()
-
         profileImageRef.putBytes(profileImage)
             .addOnFailureListener {
                 Log.w("Timebank FBSTORAGE", "Profile image could not be uploaded")
             }.addOnSuccessListener { taskSnapshot ->
+                updateProfileImage()
                 Log.d("Timebank FBSTORAGE", "Profile image successfully uploaded")
             }
     }
 
-    fun setProfileImageUpdated(profileImage: ByteArray) {
-        _profileImage.value = profileImage.clone()
+    fun updateProfileImage(){
+        db.collection("users").document(Firebase.auth.currentUser!!.uid)
+            .update("imageTimestamp",Date().toString())
     }
 
     fun updateProfileSkills(skills: List<String>){

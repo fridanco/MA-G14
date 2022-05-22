@@ -11,5 +11,5 @@ class User {
     var location : String = ""
     var description : String = ""
     var skills : List<String> = emptyList()
-    //var advertisments : List<Advertisement> = emptyList()
+    var imageURL : String = ""
 }

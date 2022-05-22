@@ -1,11 +1,9 @@
 package it.polito.ma.g14.timebank.activities
 
-import android.R.attr.src
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
@@ -15,10 +13,13 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.*
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.FutureTarget
+import com.bumptech.glide.request.RequestOptions
 import com.firebase.ui.auth.AuthUI
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
@@ -30,13 +31,7 @@ import it.polito.ma.g14.timebank.fragments.EditProfileFragment
 import it.polito.ma.g14.timebank.fragments.MyAdEditFragment
 import it.polito.ma.g14.timebank.models.FirebaseVM
 import it.polito.ma.g14.timebank.utils.Utils.ActionBarUtils.manageActionBarItemActions
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
-import java.io.InputStream
-import java.net.HttpURLConnection
-import java.net.URL
 
 
 class MainActivity : AppCompatActivity() {
@@ -46,8 +41,6 @@ class MainActivity : AppCompatActivity() {
     private val vm by viewModels<FirebaseVM>()
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
-
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,28 +62,12 @@ class MainActivity : AppCompatActivity() {
         val navViewHeaderNumSkills =
             navView.getHeaderView(0).findViewById<TextView>(R.id.nav_drawer_numskills)
 
-
-        vm.storageRef.child(Firebase.auth.currentUser!!.uid).downloadUrl.addOnSuccessListener {
-            val url = URL(it.toString())
-            val coroutineScope = CoroutineScope(Dispatchers.IO)
-            coroutineScope.launch {
-                val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
-                connection.setDoInput(true)
-                connection.connect()
-                println(url)
-                val input: InputStream = connection.getInputStream()
-                val bitmap = BitmapFactory.decodeStream(input)
-                val stream = ByteArrayOutputStream()
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
-                launch(Dispatchers.Main) {
-                    vm.setProfileImageUpdated(stream.toByteArray())
-                }
-            }
-        }
-
-
         val id = resources.getIdentifier("$packageName:drawable/user", null, null)
         navViewHeaderImage.setImageResource(id)
+
+        val options: RequestOptions = RequestOptions()
+            .placeholder(R.drawable.user)
+            .error(R.drawable.user)
 
         vm.profile.observe(this){
             navViewHeaderFullname.text = it.fullname
@@ -101,11 +78,13 @@ class MainActivity : AppCompatActivity() {
             else{
                 navViewHeaderNumSkills.text = "${it.skills.size} skills"
             }
-        }
+            Glide.with(this)
+                .load(vm.storageRef.child(Firebase.auth.currentUser!!.uid))
+                .apply(options)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
+                .into(navViewHeaderImage)
 
-        vm.profileImage.observe(this) {
-            val bmp = BitmapFactory.decodeByteArray(it, 0, it.size)
-            navViewHeaderImage.setImageBitmap(bmp)
         }
 
         val navController = findNavController(R.id.nav_host_fragment_content_main)

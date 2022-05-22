@@ -2,6 +2,7 @@ package it.polito.ma.g14.timebank.fragments
 
 import android.app.Activity.RESULT_OK
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -36,8 +37,10 @@ import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.models.FirebaseVM
 import it.polito.ma.g14.timebank.models.User
 import it.polito.ma.g14.timebank.utils.Utils
+import org.apache.commons.io.IOUtils
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.FileInputStream
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -99,6 +102,17 @@ class EditProfileFragment : Fragment() {
 
         activity?.invalidateOptionsMenu()
 
+//        try {
+//            val inputStream : FileInputStream = requireContext().openFileInput(getString(R.string.profile_picture_filename))
+//            profilePicture = IOUtils.toByteArray(inputStream)
+//            if(profilePicture?.size==0){
+//                profilePicture = null
+//            }
+//        }
+//        catch (e: Exception){
+//            profilePicture=null
+//        }
+
         val sv = view?.findViewById<ScrollView>(R.id.scrollView)
         val frameLayout = view?.findViewById<FrameLayout>(R.id.frameLayout)
         val frameLayout2 = view?.findViewById<FrameLayout>(R.id.frameLayout2)
@@ -136,6 +150,33 @@ class EditProfileFragment : Fragment() {
         attachListeners()
         attachContextMenu()
 
+        //populateProfileImage()
+        val circularProgressDrawable = CircularProgressDrawable(requireContext())
+        circularProgressDrawable.strokeWidth = 5f
+        circularProgressDrawable.centerRadius = 30f
+        circularProgressDrawable.start()
+
+        val options: RequestOptions = RequestOptions()
+            .placeholder(circularProgressDrawable)
+            .error(R.drawable.user)
+
+        iv_profilePicture?.let { it1 ->
+            Glide.with(this)
+                .load(vm.storageRef.child(Firebase.auth.currentUser!!.uid))
+                .apply(options)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
+                .into(it1)
+        }
+        h_iv_profilePicture?.let { it2 ->
+            Glide.with(this)
+                .load(vm.storageRef.child(Firebase.auth.currentUser!!.uid))
+                .apply(options)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
+                .into(it2)
+        }
+
         vm.profile.observe(viewLifecycleOwner){
             if(performProfileBackup){
                 profileBackup = User().apply {
@@ -145,17 +186,15 @@ class EditProfileFragment : Fragment() {
                     this.location = it.location
                     this.description = it.description
                     this.skills = it.skills
+                    if(profilePicture!=null) {
+                        profileImageBackup = profilePicture as ByteArray
+                    }
                 }
                 performProfileBackup = false
             }
             skills = it.skills as ArrayList<String>
             populateProfileEditText(it)
             populateProfileSkills(it.skills)
-        }
-
-        vm.profileImage.observe(viewLifecycleOwner){
-            val bmp = BitmapFactory.decodeByteArray(it, 0, it.size)
-            populateProfileImage(bmp)
         }
     }
 
@@ -171,9 +210,24 @@ class EditProfileFragment : Fragment() {
                 vm.uploadProfileImage(profileImageBackup)
             }
 
+//            if(profileImageBackup.isNotEmpty()){
+//                try {
+//                    profileImageBackup.let {
+//                        requireContext().openFileOutput("profile_picture", Context.MODE_PRIVATE).use {
+//                            it.write(profileImageBackup)
+//                        }
+//                    }
+//                }
+//                catch (e: Exception){
+//                    requireContext().deleteFile("profile_picture")
+//                }
+//            }
+
             super.onDestroy()
             return
         }
+
+
 
 
         profilePicture?.let {
@@ -252,10 +306,8 @@ class EditProfileFragment : Fragment() {
                 }
                 val stream = ByteArrayOutputStream()
                 rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
-
                 profilePicture = stream.toByteArray()
-
-                vm.setProfileImageUpdated(stream.toByteArray())
+                populateProfileImage()
             }
         }
     }
@@ -287,7 +339,7 @@ class EditProfileFragment : Fragment() {
 
                 profilePicture = stream.toByteArray()
 
-                vm.setProfileImageUpdated(stream.toByteArray())
+                populateProfileImage()
             }
         }
     }
@@ -314,9 +366,12 @@ class EditProfileFragment : Fragment() {
         h_iv_profilePicture = view?.findViewById<ImageView>(R.id.imageView2)
     }
 
-    private fun populateProfileImage(imageBitmap: Bitmap){
-        iv_profilePicture?.setImageBitmap(imageBitmap)
-        h_iv_profilePicture?.setImageBitmap(imageBitmap)
+    private fun populateProfileImage(){
+        profilePicture?.let{
+            val bmp = BitmapFactory.decodeByteArray(it, 0, it.size)
+            iv_profilePicture?.setImageBitmap(bmp)
+            h_iv_profilePicture?.setImageBitmap(bmp)
+        }
     }
 
     private fun populateProfileEditText(profile: User){
@@ -338,7 +393,7 @@ class EditProfileFragment : Fragment() {
     private fun populateProfileSkills(skills: List<String>){
         et_skills?.removeAllViews()
         h_et_skills?.removeAllViews()
-        if(skills.size==0){
+        if(skills.isEmpty()){
             view?.findViewById<TextView>(R.id.textView10)?.isVisible = true
             view?.findViewById<TextView>(R.id.textView11)?.isVisible = true
         }
@@ -410,6 +465,7 @@ class EditProfileFragment : Fragment() {
 
         button_skills?.setOnClickListener {
             vm.updateProfile(fullName, nickName, email, location, description, skills)
+            profilePicture?.let { it1 -> vm.uploadProfileImage(it1) }
             view?.findNavController()?.navigate(R.id.action_edit_profile_to_chooseSkillsFragment)
         }
 

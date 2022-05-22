@@ -21,6 +21,8 @@ import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.models.FirebaseVM
 import it.polito.ma.g14.timebank.models.User
 import it.polito.ma.g14.timebank.utils.Utils
+import org.apache.commons.io.IOUtils
+import java.io.FileInputStream
 
 class ShowProfileFragment : Fragment() {
 
@@ -60,6 +62,17 @@ class ShowProfileFragment : Fragment() {
 
         requireActivity().invalidateOptionsMenu()
 
+//        try {
+//            val inputStream : FileInputStream = requireContext().openFileInput(getString(R.string.profile_picture_filename))
+//            profilePicture = IOUtils.toByteArray(inputStream)
+//            if(profilePicture?.size==0){
+//                profilePicture = null
+//            }
+//        }
+//        catch (e: Exception){
+//            profilePicture=null
+//        }
+
         val sv = view?.findViewById<ScrollView>(R.id.scrollView2)
         val frameLayout = view?.findViewById<FrameLayout>(R.id.frameLayout)
         sv?.let {
@@ -84,14 +97,36 @@ class ShowProfileFragment : Fragment() {
 
         setViewsReferences()
 
+        //populateProfilePicture()
+
+        val circularProgressDrawable = CircularProgressDrawable(requireContext())
+        circularProgressDrawable.strokeWidth = 5f
+        circularProgressDrawable.centerRadius = 30f
+        circularProgressDrawable.start()
+
+        val options: RequestOptions = RequestOptions()
+            .placeholder(circularProgressDrawable)
+            .error(R.drawable.user)
+
         vm.profile.observe(viewLifecycleOwner){
+            iv_profilePicture?.let { it1 ->
+                Glide.with(this)
+                    .load(vm.storageRef.child(Firebase.auth.currentUser!!.uid))
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true)
+                    .apply(options)
+                    .into(it1)
+            }
+            h_iv_profilePicture?.let { it2 ->
+                Glide.with(this)
+                    .load(vm.storageRef.child(Firebase.auth.currentUser!!.uid))
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true)
+                    .apply(options)
+                    .into(it2)
+            }
             populateProfileText(it)
             populateProfileSkills(it.skills)
-        }
-
-        vm.profileImage.observe(viewLifecycleOwner){
-            val bmp = BitmapFactory.decodeByteArray(it, 0, it.size)
-            populateProfilePicture(bmp)
         }
 
     }
@@ -145,9 +180,12 @@ class ShowProfileFragment : Fragment() {
         }
     }
 
-    private fun populateProfilePicture(imageBitmap: Bitmap){
-        iv_profilePicture?.setImageBitmap(imageBitmap)
-        h_iv_profilePicture?.setImageBitmap(imageBitmap)
+    private fun populateProfilePicture(){
+        profilePicture?.let {
+            val bmp = BitmapFactory.decodeByteArray(it, 0, it.size)
+            iv_profilePicture?.setImageBitmap(bmp)
+            h_iv_profilePicture?.setImageBitmap(bmp)
+        }
     }
 
     private fun populateProfileSkills(skills: List<String>){
