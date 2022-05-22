@@ -48,7 +48,9 @@
         app:icon="@drawable/googleg_standard_color_18"
         app:iconTint="@color/fui_transparent"
         app:iconTintMode="add"
+        style="?android:attr/borderlessButtonStyle"
         app:shapeAppearance="@style/TextAppearance.AppCompat.Large" />
+
 
     <TextView
         android:id="@+id/textView70"
