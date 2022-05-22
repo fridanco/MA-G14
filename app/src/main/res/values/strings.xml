@@ -101,6 +101,9 @@
     <string name="skill_advertisement_name">Skill name</string>
     <string name="menu_logout">Logout</string>
     <string name="menu_online_advertisements">Browse advertisements</string>
+    <string name="welcome_to_timebank">Welcome to TimeBank</string>
+    <string name="in_order_to_use_this_app_you_must_login_using_one_of_the_options_below">In order to use this app you must login using one of the options below.</string>
+    <string name="login_with_google">Login with Google</string>
 
 
 </resources>
