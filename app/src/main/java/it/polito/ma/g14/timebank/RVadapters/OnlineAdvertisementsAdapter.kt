@@ -117,16 +117,13 @@ class OnlineAdvertisementsAdapter(val view: View, val vm: FirebaseVM, val contex
         var newData = data as MutableList<Advertisement>
 
         when(field){
-            0 -> run { newData = newData.sortBy { it.title } as MutableList<Advertisement> }
-            1 -> run { newData = newData.sortBy { it.from } as MutableList<Advertisement> }
-            2 -> run { newData = newData.sortBy { it.title } as MutableList<Advertisement> }
-            else -> run {newData = newData.sortBy { it.title } as MutableList<Advertisement>}
+            0 -> { newData.sortBy { it.title } }
+            1 -> { newData.sortBy { it.from } }
+            2 -> { newData.sortBy { it.title } }
+            else -> { newData.sortBy { it.title } }
             //todo filter by rating (next lab)
 
         }
-
-
-
 
     }
 }

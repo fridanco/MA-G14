@@ -37,8 +37,6 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
     private val _onlineAdvertisements = MutableLiveData<Map<String, List<Advertisement>>>()
     val onlineAdvertisement: LiveData<Map<String, List<Advertisement>>> = _onlineAdvertisements
 
-
-    private var skillAdvertisementListener: ListenerRegistration? = null
     private var profileListener : ListenerRegistration? = null
     private var myAdvertisementsListener: ListenerRegistration? = null
 
@@ -60,42 +58,17 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
                 }
             }
 
-//        storageRef.child(Firebase.auth.currentUser!!.uid).downloadUrl.addOnSuccessListener {
-//            val url = URL(it.toString())
-//            val coroutineScope = CoroutineScope(Dispatchers.IO)
-//            coroutineScope.launch {
-//                val inputStream = url.openStream()
-//                val bitmap = BitmapFactory.decodeStream(inputStream)
-//                val stream = ByteArrayOutputStream()
-//                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
-//                val byteArray = stream.toByteArray()
-//                launch(Dispatchers.Main) {
-//                    _profile.value = _profile.value?.apply {
-//                        this.image = byteArray
-//                    }
-//                }
-//            }
-//        }
-
-        skillAdvertisementListener = db.collection("skillAdvertisements")
+        db.collection("skillAdvertisements")
             .whereGreaterThan("numAdvertisements",0)
-            .addSnapshotListener { result, exception ->
-                _skills.value = if (exception != null) {
-                    emptyList()
-                }
-                else{
-                    if(result!=null){
-                        result.mapNotNull { skillAdvertisement ->
-                            skillAdvertisement.toObject(
-                                SkillAdvertisement::class.java
-                            )
-                        }
-                    }
-                    else{
-                        throw Exception("Could not load homepage skills")
-                    }
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                _skills.value = querySnapshot.mapNotNull { skillAdvertisement ->
+                    skillAdvertisement.toObject(
+                        SkillAdvertisement::class.java
+                    )
                 }
             }
+
 
         db.collection("advertisements")
             .get()
@@ -178,6 +151,37 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
             .update("skills", newSkills)
     }
 
+    fun updateAdvertisementSkillsList(){
+        db.collection("skillAdvertisements")
+            .whereGreaterThan("numAdvertisements",0)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                _skills.value = querySnapshot.mapNotNull { skillAdvertisement ->
+                    skillAdvertisement.toObject(
+                        SkillAdvertisement::class.java
+                    )
+                }
+            }
+    }
+
+    fun updateAdvertisementList(){
+        db.collection("advertisements")
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                val adsMap = mutableMapOf<String, MutableList<Advertisement>>()
+
+                querySnapshot.mapNotNull { it.toObject(Advertisement::class.java) }.forEach { advertisement ->
+                    advertisement.skills.forEach{ skill ->
+                        adsMap.getOrPut(skill){
+                            mutableListOf()
+                        }.add(advertisement)
+                    }
+                }
+
+                _onlineAdvertisements.value = adsMap
+            }
+    }
+
     fun addAdvertisement(advertisement: Advertisement){
         advertisement.apply {
             this.uid = Firebase.auth.currentUser!!.uid
@@ -191,9 +195,15 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
         db.collection("advertisements").add(advertisement)
             .addOnSuccessListener {
                 Log.d("Timebank FIREBASE", "Advertisement posted with ID: ${it.id}")
-                for(skill in advertisement.skills){
-                    db.collection("skillAdvertisements").document(skill)
-                        .update("numAdvertisements",FieldValue.increment(1))
+                db.runTransaction { transaction ->
+                    for (skill in advertisement.skills) {
+                        val ref = db.collection("skillAdvertisements").document(skill)
+                        transaction.update(ref, "numAdvertisements", FieldValue.increment(1))
+                    }
+                }
+                .addOnSuccessListener{
+                    updateAdvertisementSkillsList()
+                    updateAdvertisementList()
                 }
             }
             .addOnFailureListener { e ->
@@ -233,6 +243,10 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
                 }
             }
         }
+        .addOnSuccessListener {
+            updateAdvertisementSkillsList()
+            updateAdvertisementList()
+        }
     }
 
     fun deleteAdvertisement(advertisementID: String){
@@ -250,7 +264,8 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
         }
         .addOnSuccessListener {
             Log.d("Timebank FIREBASE", "Advertisement with ID: ${advertisementID} deleted & numAdvertisements decremented")
-
+            updateAdvertisementSkillsList()
+            updateAdvertisementList()
         }
         .addOnFailureListener { e ->
             Log.w("Timebank FIREBASE", "Error deleting advertisement", e)
@@ -260,7 +275,6 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
 
     override fun onCleared() {
         super.onCleared();
-        skillAdvertisementListener?.remove();
         profileListener?.remove()
         myAdvertisementsListener?.remove()
     }

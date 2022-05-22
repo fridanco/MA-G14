@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.models.FirebaseVM
 import it.polito.ma.g14.timebank.models.SkillAdvertisement
@@ -20,6 +21,8 @@ import it.polito.ma.g14.timebank.utils.Utils
 class SkillAdvertisementListFragment : Fragment() {
 
     val vm by viewModels<FirebaseVM>()
+
+    lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +37,14 @@ class SkillAdvertisementListFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_skill_advertisement_list, container, false)
 
         requireActivity().invalidateOptionsMenu()
+
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        swipeRefreshLayout = view.findViewById<SwipeRefreshLayout>(R.id.swipeLayoutAdSkills)
 
         val rv = view.findViewById<RecyclerView>(R.id.recyclerViewSkillAdvertisementList)
         val emptyRv = view.findViewById<TextView>(R.id.textView66)
@@ -62,16 +73,22 @@ class SkillAdvertisementListFragment : Fragment() {
                 emptyRv.isGone = true
                 val cmp = compareBy<SkillAdvertisement> { it.skill }
                 adapter.updateSkillAdvertisements(it.sortedWith(cmp))
+                swipeRefreshLayout.isRefreshing = false
             }
         }
 
-        return view
+        swipeRefreshLayout.setOnRefreshListener {
+            vm.updateAdvertisementSkillsList()
+        }
     }
-
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
         Utils.manageActionBarItemsVisibility(requireActivity(), menu)
+    }
+
+    fun updateAdsSkillsList(){
+        vm.updateAdvertisementList()
     }
 
 }

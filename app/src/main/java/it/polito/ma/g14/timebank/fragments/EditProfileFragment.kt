@@ -305,7 +305,7 @@ class EditProfileFragment : Fragment() {
                     else -> rotatedBitmap = bitmap
                 }
                 val stream = ByteArrayOutputStream()
-                rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+                rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 20, stream)
                 profilePicture = stream.toByteArray()
                 populateProfileImage()
             }
@@ -335,7 +335,7 @@ class EditProfileFragment : Fragment() {
                 }
 
                 val stream = ByteArrayOutputStream()
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 20, stream)
 
                 profilePicture = stream.toByteArray()
 

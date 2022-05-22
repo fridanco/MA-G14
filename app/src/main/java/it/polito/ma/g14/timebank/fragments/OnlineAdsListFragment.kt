@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.RVadapters.OnlineAdvertisementsAdapter
 import it.polito.ma.g14.timebank.models.Advertisement
@@ -27,6 +28,8 @@ class OnlineAdsListFragment : Fragment() {
 
     var selectedSkill: String = ""
 
+    lateinit var swipeRefreshLayout: SwipeRefreshLayout
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -37,7 +40,7 @@ class OnlineAdsListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_my_ads_list, container, false)
+        val view = inflater.inflate(R.layout.fragment_online_ads_list, container, false)
 
         requireActivity().invalidateOptionsMenu()
 
@@ -46,6 +49,8 @@ class OnlineAdsListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        swipeRefreshLayout = view.findViewById<SwipeRefreshLayout>(R.id.swipeLayoutAds)
 
         val rv = view.findViewById<RecyclerView>(R.id.timeSlotRecyclerView)
         val emptyRv = view.findViewById<TextView>(R.id.textView60)
@@ -81,8 +86,12 @@ class OnlineAdsListFragment : Fragment() {
                 val cmp = compareBy<Advertisement> { sdf_date.parse(it.date) }.thenByDescending { sdf_time.parse(it.from) }
                 adapter.updateAdvertisements(ads.sortedWith(cmp))
             }
+            swipeRefreshLayout.isRefreshing = false
         }
 
+        swipeRefreshLayout.setOnRefreshListener {
+            vm.updateAdvertisementList()
+        }
 
     }
 
@@ -131,5 +140,8 @@ class OnlineAdsListFragment : Fragment() {
         }
     }
 
+    fun updateAdsList(){
+        vm.updateAdvertisementList()
+    }
 
 }

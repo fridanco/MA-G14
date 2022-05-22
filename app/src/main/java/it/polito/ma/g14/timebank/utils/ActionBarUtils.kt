@@ -24,6 +24,7 @@ class Utils {
                     menu.findItem(R.id.app_bar_cancel).isVisible = false
                     menu.findItem(R.id.app_bar_add).isVisible = false
                     menu.findItem(R.id.app_bar_sort).isVisible = false
+                    menu.findItem(R.id.app_bar_refresh).isVisible = true
                 }
                 R.id.advertisements -> {
                     menu.findItem(R.id.app_bar_pencil).isVisible = false
@@ -31,6 +32,7 @@ class Utils {
                     menu.findItem(R.id.app_bar_cancel).isVisible = false
                     menu.findItem(R.id.app_bar_add).isVisible = false
                     menu.findItem(R.id.app_bar_sort).isVisible = true
+                    menu.findItem(R.id.app_bar_refresh).isVisible = false
                 }
                 R.id.timeSlotEditFragment -> {
                     menu.findItem(R.id.app_bar_pencil).isVisible = false
@@ -38,6 +40,7 @@ class Utils {
                     menu.findItem(R.id.app_bar_cancel).isVisible = true
                     menu.findItem(R.id.app_bar_add).isVisible = true
                     menu.findItem(R.id.app_bar_sort).isVisible = false
+                    menu.findItem(R.id.app_bar_refresh).isVisible = false
 //                    val navHostFragment = (activity as FragmentActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
 //                    val fragment = navHostFragment!!.childFragmentManager.fragments[0] as TimeSlotEditFragment
 //                    menu.findItem(R.id.app_bar_add).isVisible = fragment.operationType=="add_time_slot"
@@ -48,6 +51,7 @@ class Utils {
                     menu.findItem(R.id.app_bar_cancel).isVisible = false
                     menu.findItem(R.id.app_bar_add).isVisible = false
                     menu.findItem(R.id.app_bar_sort).isVisible = false
+                    menu.findItem(R.id.app_bar_refresh).isVisible = false
                 }
                 R.id.onlineAdsListFragment -> {
                     menu.findItem(R.id.app_bar_pencil).isVisible = false
@@ -55,6 +59,7 @@ class Utils {
                     menu.findItem(R.id.app_bar_cancel).isVisible = false
                     menu.findItem(R.id.app_bar_add).isVisible = false
                     menu.findItem(R.id.app_bar_sort).isVisible = true
+                    menu.findItem(R.id.app_bar_refresh).isVisible = true
                 }
                 R.id.onlineAdDetailsFragment -> {
                     menu.findItem(R.id.app_bar_pencil).isVisible = false
@@ -62,6 +67,7 @@ class Utils {
                     menu.findItem(R.id.app_bar_cancel).isVisible = true
                     menu.findItem(R.id.app_bar_add).isVisible = false
                     menu.findItem(R.id.app_bar_sort).isVisible = false
+                    menu.findItem(R.id.app_bar_refresh).isVisible = false
                 }
                 R.id.nav_profile -> {
                     menu.findItem(R.id.app_bar_pencil).isVisible = true
@@ -69,6 +75,7 @@ class Utils {
                     menu.findItem(R.id.app_bar_cancel).isVisible = false
                     menu.findItem(R.id.app_bar_add).isVisible = false
                     menu.findItem(R.id.app_bar_sort).isVisible = false
+                    menu.findItem(R.id.app_bar_refresh).isVisible = false
                 }
                 R.id.edit_profile -> {
                     menu.findItem(R.id.app_bar_pencil).isVisible = false
@@ -76,6 +83,7 @@ class Utils {
                     menu.findItem(R.id.app_bar_cancel).isVisible = true
                     menu.findItem(R.id.app_bar_add).isVisible = true
                     menu.findItem(R.id.app_bar_sort).isVisible = false
+                    menu.findItem(R.id.app_bar_refresh).isVisible = false
                 }
                 R.id.chooseSkillsFragment -> {
                     menu.findItem(R.id.app_bar_pencil).isVisible = false
@@ -83,6 +91,7 @@ class Utils {
                     menu.findItem(R.id.app_bar_cancel).isVisible = true
                     menu.findItem(R.id.app_bar_add).isVisible = false
                     menu.findItem(R.id.app_bar_sort).isVisible = false
+                    menu.findItem(R.id.app_bar_refresh).isVisible = false
                 }
             }
         }
@@ -172,7 +181,22 @@ class Utils {
                         }
                     }
                 }
-
+                R.id.advertisement_skills -> {
+                    when(item.itemId){
+                        R.id.app_bar_refresh -> {
+                            val navHostFragment = (activity as FragmentActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
+                            val fragment = navHostFragment!!.childFragmentManager.fragments[0] as SkillAdvertisementListFragment
+                            fragment.updateAdsSkillsList()
+                            fragment.swipeRefreshLayout.isRefreshing = true
+                        }
+                    }
+                }
+                R.id.onlineAdsListFragment -> {
+                    val navHostFragment = (activity as FragmentActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
+                    val fragment = navHostFragment!!.childFragmentManager.fragments[0] as OnlineAdsListFragment
+                    fragment.updateAdsList()
+                    fragment.swipeRefreshLayout.isRefreshing = true
+                }
             }
         }
     }
