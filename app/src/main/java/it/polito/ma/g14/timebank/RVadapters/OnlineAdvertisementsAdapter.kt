@@ -39,7 +39,7 @@ class OnlineAdvertisementsAdapter(val view: View, val vm: FirebaseVM, val contex
         fun bind(advertisement: Advertisement, context: Context, vm: FirebaseVM, color: String, action1: (v: View) -> Unit) {
             val userIcon = advertisementContainer.findViewById<ImageView>(R.id.imageView6)
 
-            val profileImageRef = vm.storageRef.child(Firebase.auth.currentUser!!.uid)
+            val profileImageRef = vm.storageRef.child(advertisement.uid)
 
             val options: RequestOptions = RequestOptions()
                 .placeholder(R.drawable.user)

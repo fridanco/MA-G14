@@ -135,7 +135,8 @@ class ShowProfileFragment : Fragment() {
                     isImageDownloaded = true
                     requireActivity().invalidateOptionsMenu()
                 } catch (ex: Exception) {
-                    throw ex
+                    isImageDownloaded = true
+                    requireActivity().invalidateOptionsMenu()
                 }
             }
 

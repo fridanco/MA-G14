@@ -9,7 +9,8 @@
     android:layout_height="wrap_content"
     android:backgroundTint="#EAEAEA"
     android:foregroundTint="#E6E6E6"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingTop="8dp">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
@@ -20,9 +21,9 @@
         android:layout_marginEnd="12dp"
         android:layout_marginBottom="4dp"
         android:clickable="true"
+        android:focusable="true"
         app:cardCornerRadius="10dp"
-        app:contentPadding="8dp"
-        android:focusable="true">
+        app:contentPadding="8dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -66,6 +67,7 @@
                             android:id="@+id/textView5"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:paddingTop="6dp"
                             android:paddingBottom="6dp"
                             android:text="@string/timeslot_service_description_list"
                             android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
@@ -75,8 +77,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:drawablePadding="2dp"
-                            android:paddingTop="8dp"
-                            android:paddingBottom="8dp"
+                            android:paddingTop="6dp"
+                            android:paddingBottom="6dp"
                             android:text="@string/timeslot_location_list"
                             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                             android:textSize="16sp"
@@ -95,6 +97,9 @@
                             android:id="@+id/imageButton4"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal|top"
+                            android:background="#00FFFFFF"
+                            android:paddingBottom="12dp"
                             app:srcCompat="@android:drawable/ic_menu_edit"
                             tools:ignore="SpeakableTextPresentCheck" />
 
@@ -102,6 +107,9 @@
                             android:id="@+id/imageButton3"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_gravity="bottom|center_horizontal"
+                            android:background="#00FFFFFF"
+                            android:paddingTop="12dp"
                             app:srcCompat="@android:drawable/ic_menu_delete"
                             tools:ignore="SpeakableTextPresentCheck" />
                     </LinearLayout>
@@ -112,7 +120,8 @@
                     android:id="@+id/divider5"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="?android:attr/listDivider" />
+                    android:background="?android:attr/listDivider"
+                    android:backgroundTint="#00FFFFFF" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -126,8 +135,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="12dp"
                         android:drawablePadding="2dp"
-                        android:paddingTop="8dp"
-                        android:paddingBottom="8dp"
+                        android:paddingTop="6dp"
                         android:text="@string/timeslot_date_list"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                         android:textSize="16sp"
@@ -138,8 +146,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:drawablePadding="2dp"
-                        android:paddingTop="8dp"
-                        android:paddingBottom="8dp"
+                        android:paddingTop="6dp"
                         android:text="@string/timeslot_from_to_list"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                         android:textSize="16sp"
@@ -151,13 +158,15 @@
                     android:id="@+id/divider2"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="?android:attr/listDivider" />
+                    android:background="?android:attr/listDivider"
+                    android:backgroundTint="#00FFFFFF" />
 
                 <com.google.android.material.chip.ChipGroup
                     android:id="@+id/chipGroupMyAd"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:paddingBottom="8dp">
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp">
 
                 </com.google.android.material.chip.ChipGroup>
 
