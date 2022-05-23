@@ -1,11 +1,7 @@
 package it.polito.ma.g14.timebank.fragments
 
-import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.TextView
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
@@ -21,9 +17,14 @@ import it.polito.ma.g14.timebank.utils.Utils
 
 class SkillAdvertisementListFragment : Fragment() {
 
+
     val vm by viewModels<FirebaseVM>()
 
     lateinit var swipeRefreshLayout: SwipeRefreshLayout
+
+    lateinit var adapter : SkillAdvertisementAdapter
+
+    var sortByKey = "skill_asc"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,7 +63,7 @@ class SkillAdvertisementListFragment : Fragment() {
         )
 
         rv.layoutManager = LinearLayoutManager(requireContext())
-        val adapter = SkillAdvertisementAdapter(view)
+        adapter = SkillAdvertisementAdapter(view, requireContext(), sortByKey)
         adapter.colorList = colorList as MutableList<String>
         rv.adapter = adapter
 
@@ -91,7 +92,17 @@ class SkillAdvertisementListFragment : Fragment() {
     }
 
     fun updateAdsSkillsList(){
-        vm.updateAdvertisementList()
+        vm.updateAdvertisementSkillsList()
+    }
+
+    fun sortAdvertisements(sortBy: String){
+        sortByKey = sortBy
+        adapter.addSort(sortBy)
+    }
+
+
+    fun searchSkills(query: String){
+        adapter.addFilter(query)
     }
 
 }

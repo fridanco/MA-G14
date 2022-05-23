@@ -145,7 +145,13 @@ class MyAdEditFragment() : Fragment() {
                                 advertisementSkills.add(skill)
                             }
                             else{
-                                advertisementSkills.remove(skill)
+                                if(advertisementSkills.size>1) {
+                                    advertisementSkills.remove(skill)
+                                }
+                                else{
+                                    skillCard.findViewById<CheckBox>(R.id.checkBox).isChecked = true
+                                    Toast.makeText(requireContext(), "At least 1 skill must be selected", Toast.LENGTH_SHORT).show()
+                                }
                             }
                         }
                         et_skills?.addView(skillCard)
@@ -174,7 +180,13 @@ class MyAdEditFragment() : Fragment() {
                             advertisementSkills.add(skill)
                         }
                         else{
-                            advertisementSkills.remove(skill)
+                            if(advertisementSkills.size>1) {
+                                advertisementSkills.remove(skill)
+                            }
+                            else{
+                                skillCard.findViewById<CheckBox>(R.id.checkBox).isChecked = true
+                                Toast.makeText(requireContext(), "At least 1 skill must be selected", Toast.LENGTH_SHORT).show()
+                            }
                         }
                     }
                     et_skills?.addView(skillCard)
@@ -196,7 +208,13 @@ class MyAdEditFragment() : Fragment() {
                             advertisementSkills.add(skill)
                         }
                         else{
-                            advertisementSkills.remove(skill)
+                            if(advertisementSkills.size>1) {
+                                advertisementSkills.remove(skill)
+                            }
+                            else{
+                                skillCard.findViewById<CheckBox>(R.id.checkBox).isChecked = true
+                                Toast.makeText(requireContext(), "At least 1 skill must be selected", Toast.LENGTH_SHORT).show()
+                            }
                         }
                     }
                     et_skills?.addView(skillCard)
@@ -297,7 +315,16 @@ class MyAdEditFragment() : Fragment() {
             else if(operationType=="add_time_slot"){
                 vm.addAdvertisement(advertisement)
             }
+            Toast.makeText(requireContext(), "Changes discarded", Toast.LENGTH_SHORT).show()
         }
+
+        if(operationType=="edit_time_slot"){
+            Toast.makeText(requireContext(), "Advertisement correctly edited", Toast.LENGTH_SHORT).show()
+        }
+        else if(operationType=="add_time_slot"){
+            Toast.makeText(requireContext(), "Advertisement posted", Toast.LENGTH_SHORT).show()
+        }
+
         super.onDestroy()
     }
 
@@ -307,7 +334,6 @@ class MyAdEditFragment() : Fragment() {
     }
 
     fun isFormValid() : Boolean {
-        //TODO: add check for skills & error field
         if(title.trim().isEmpty()){
             et_title?.error = "Title cannot be empty"
             h_et_title?.error = "Title cannot be empty"
@@ -343,6 +369,9 @@ class MyAdEditFragment() : Fragment() {
             h_et_location?.error = "Location cannot be empty"
         }
 
+        if(advertisementSkills.isEmpty()){
+            return false
+        }
         if(et_title?.error != null || et_description?.error != null || et_date?.error != null || et_from?.error != null || et_to?.error != null || et_location?.error != null ||
             h_et_title?.error != null || h_et_description?.error != null || h_et_date?.error != null || h_et_to?.error != null || h_et_to?.error != null || h_et_location?.error != null){
             return false

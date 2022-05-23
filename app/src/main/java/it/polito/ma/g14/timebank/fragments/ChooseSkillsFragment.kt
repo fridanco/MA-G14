@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
@@ -69,25 +70,6 @@ class ChooseSkillsFragment : Fragment() {
                 adapter.updateSelectedSkills(it.skills as MutableList<String>)
             }
         }
-
-        val searchView = view.findViewById<SearchView>(R.id.searchBar)
-
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-
-            override fun onQueryTextChange(qString: String): Boolean {
-                if (qString == "") {
-                    onQueryTextSubmit("")
-                }
-                searchText = qString
-                return true
-            }
-            override fun onQueryTextSubmit(qString: String): Boolean {
-                adapter.addFilter(qString)
-                view.findViewById<SearchView>(R.id.searchBar)?.clearFocus()
-                return true
-            }
-
-        })
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
@@ -103,7 +85,13 @@ class ChooseSkillsFragment : Fragment() {
 
         vm.updateProfileSkills(adapter.checked_skills)
 
+        Toast.makeText(requireContext(), "Skills updated", Toast.LENGTH_SHORT).show()
+
         super.onDestroy()
+    }
+
+    fun searchSkills(query: String){
+        adapter.addFilter(query)
     }
 
 }

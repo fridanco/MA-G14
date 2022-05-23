@@ -135,7 +135,7 @@
         android:id="@+id/textView71"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Select skills" />
+        android:text="@string/time_slot_edit_skills_label" />
 
     <ScrollView
         android:layout_width="match_parent"

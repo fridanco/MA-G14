@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
@@ -19,8 +20,14 @@ import com.google.android.material.chip.ChipGroup
 import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.models.Advertisement
 import it.polito.ma.g14.timebank.models.FirebaseVM
+import java.text.SimpleDateFormat
 
-class MyAdvertisementsAdapter(val view: View, val vm: FirebaseVM, val context: Context): RecyclerView.Adapter<MyAdvertisementsAdapter.ItemViewHolder>() {
+class MyAdvertisementsAdapter(
+    val view: View,
+    val vm: FirebaseVM,
+    val context: Context,
+    val sortByKey: String
+): RecyclerView.Adapter<MyAdvertisementsAdapter.ItemViewHolder>() {
     var filter: Boolean = false
     var data = listOf<Advertisement>()
     var displayData = data.toMutableList()
@@ -96,6 +103,7 @@ class MyAdvertisementsAdapter(val view: View, val vm: FirebaseVM, val context: C
     fun updateAdvertisements(timeSlots: List<Advertisement>){
         colorIndex = 0
         data = timeSlots
+        val newData = performSort(sortByKey)
         val diffs = DiffUtil.calculateDiff(MyDiffCallbackMyAdvertisements(displayData as List<Advertisement>,data))
         displayData = data as MutableList<Advertisement>
         diffs.dispatchUpdatesTo(this)
@@ -103,16 +111,57 @@ class MyAdvertisementsAdapter(val view: View, val vm: FirebaseVM, val context: C
 
     fun addFilter(text: String) {
         var newData = mutableListOf<Advertisement>()
-//        if(text.isEmpty() || text.isBlank()){
-//            newData = data
-//        }
-//        else{
-//            newData = data.filter { it.name.contains(text, ignoreCase = true) } as MutableList<TimeSlot>
-//        }
-        newData = data as MutableList<Advertisement>
+        if(text.isEmpty() || text.isBlank()){
+            newData = data as MutableList<Advertisement>
+        }
+        else{
+            newData = data.filter {ad ->
+
+                if(ad.title.contains(text, ignoreCase = true) ||
+                    ad.location.contains(text, ignoreCase = true) ||
+                    ad.description.contains(text, ignoreCase = true)){
+                    return@filter true
+                }
+                return@filter false
+
+            } as MutableList<Advertisement>
+        }
         val diffs = DiffUtil.calculateDiff(MyDiffCallbackMyAdvertisements(displayData, newData))
         displayData = newData
         diffs.dispatchUpdatesTo(this)
+    }
+
+    fun addSort(sortBy: String){
+        data = displayData.toList()
+        val newData = performSort(sortBy)
+        val diffs = DiffUtil.calculateDiff(MyDiffCallbackOnlineAdvertisements(displayData, newData))
+        displayData = newData as MutableList<Advertisement>
+        diffs.dispatchUpdatesTo(this)
+    }
+
+    fun performSort(sortBy: String) : List<Advertisement>{
+        val newData = data as MutableList<Advertisement>
+        when(sortBy){
+            "title_asc" -> { newData.sortBy { it.title }; Toast.makeText(context, "Sorted by title A-Z", Toast.LENGTH_SHORT).show() }
+            "title_desc" -> { newData.sortByDescending { it.title }; Toast.makeText(context, "Sorted by title Z-A", Toast.LENGTH_SHORT).show() }
+            "location_asc" -> { newData.sortBy { it.location }; Toast.makeText(context, "Sorted by location A-Z", Toast.LENGTH_SHORT).show()}
+            "location_desc" -> { newData.sortByDescending { it.location }; Toast.makeText(context, "Sorted by location Z-A", Toast.LENGTH_SHORT).show() }
+            "date_desc" -> {
+                val sdf_date = SimpleDateFormat("EEE, d MMM yyyy")
+                val sdf_time = SimpleDateFormat("HH:mm")
+                val cmp = compareByDescending<Advertisement> { sdf_date.parse(it.date) }.thenByDescending { sdf_time.parse(it.from) }
+                newData.sortedWith(cmp)
+                Toast.makeText(context, "Sorted by most recent", Toast.LENGTH_SHORT).show()
+            }
+            "date_asc" -> {
+                val sdf_date = SimpleDateFormat("EEE, d MMM yyyy")
+                val sdf_time = SimpleDateFormat("HH:mm")
+                val cmp = compareBy<Advertisement> { sdf_date.parse(it.date) }.thenBy { sdf_time.parse(it.from) }
+                newData.sortedWith(cmp)
+                Toast.makeText(context, "Sorted by oldest", Toast.LENGTH_SHORT).show()
+            }
+        }
+        return newData
     }
 }
 

@@ -207,6 +207,8 @@ class EditProfileFragment : Fragment() {
                 vm.updateProfile(it.fullname,it.nickname,it.email,it.location,it.description, it.skills, byteArray)
             }
 
+            Toast.makeText(requireContext(), "Changes discarded", Toast.LENGTH_SHORT).show()
+
             super.onDestroy()
             return
         }
@@ -217,6 +219,7 @@ class EditProfileFragment : Fragment() {
         }
 
         vm.updateProfile(fullName, nickName, email, location, description, skills, byteArray)
+        Toast.makeText(requireContext(), "Profile updated", Toast.LENGTH_SHORT).show()
 
         super.onDestroy()
     }
