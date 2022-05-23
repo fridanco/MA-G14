@@ -85,8 +85,7 @@ class EditProfileFragment : Fragment() {
     var performSkillsBackup = false
     var cancelOperation = false
 
-    var profileBackup: User? = null
-    var profileImageBackup = byteArrayOf()
+    lateinit var profileBackup: User
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -96,9 +95,6 @@ class EditProfileFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_edit_profile, container, false)
-
-        performProfileBackup = arguments?.getBoolean("performProfileBackup") ?: false
-        performSkillsBackup = arguments?.getBoolean("performSkillsBackup") ?: false
 
         activity?.invalidateOptionsMenu()
 
@@ -112,6 +108,8 @@ class EditProfileFragment : Fragment() {
 //        catch (e: Exception){
 //            profilePicture=null
 //        }
+
+        //TODO: Set email field as disabled
 
         val sv = view?.findViewById<ScrollView>(R.id.scrollView)
         val frameLayout = view?.findViewById<FrameLayout>(R.id.frameLayout)
@@ -142,9 +140,7 @@ class EditProfileFragment : Fragment() {
 
         cancelOperation = false
 
-        if(performProfileBackup && profilePicture!=null){
-            profileImageBackup = profilePicture as ByteArray
-        }
+        profileBackup = arguments?.getSerializable("profileBackup") as User
 
         setEditTextReferences()
         attachListeners()
@@ -186,9 +182,6 @@ class EditProfileFragment : Fragment() {
                     this.location = it.location
                     this.description = it.description
                     this.skills = it.skills
-                    if(profilePicture!=null) {
-                        profileImageBackup = profilePicture as ByteArray
-                    }
                 }
                 performProfileBackup = false
             }
@@ -201,37 +194,29 @@ class EditProfileFragment : Fragment() {
     override fun onDestroy() {
         if(cancelOperation){
             //Restore profile data
-            profileBackup?.let {
-                vm.updateProfile(it.fullname,it.nickname,it.email,it.location,it.description, it.skills)
-            }
+            profileBackup.let {
+                val inputStream : FileInputStream
+                var byteArray = byteArrayOf()
+                try {
+                    inputStream = requireContext().openFileInput(getString(R.string.profile_picture_filename))
+                    byteArray = IOUtils.toByteArray(inputStream)
+                }
+                catch (e: Exception){
 
-            //Restore profile image
-            if(profileImageBackup.isNotEmpty()){
-                vm.uploadProfileImage(profileImageBackup)
+                }
+                vm.updateProfile(it.fullname,it.nickname,it.email,it.location,it.description, it.skills, byteArray)
             }
-
-//            if(profileImageBackup.isNotEmpty()){
-//                try {
-//                    profileImageBackup.let {
-//                        requireContext().openFileOutput("profile_picture", Context.MODE_PRIVATE).use {
-//                            it.write(profileImageBackup)
-//                        }
-//                    }
-//                }
-//                catch (e: Exception){
-//                    requireContext().deleteFile("profile_picture")
-//                }
-//            }
 
             super.onDestroy()
             return
         }
 
+        var byteArray = byteArrayOf()
         profilePicture?.let {
-            vm.uploadProfileImage(it)
+            byteArray = it
         }
 
-        vm.updateProfile(fullName, nickName, email, location, description, skills)
+        vm.updateProfile(fullName, nickName, email, location, description, skills, byteArray)
 
         super.onDestroy()
     }
@@ -461,8 +446,10 @@ class EditProfileFragment : Fragment() {
         }
 
         button_skills?.setOnClickListener {
-            vm.updateProfile(fullName, nickName, email, location, description, skills)
-            profilePicture?.let { it1 -> vm.uploadProfileImage(it1) }
+            var byteArray = byteArrayOf()
+            profilePicture?.let { byteArray=it }
+            vm.updateProfile(fullName, nickName, email, location, description, skills, byteArray)
+
             view?.findNavController()?.navigate(R.id.action_edit_profile_to_chooseSkillsFragment)
         }
 
@@ -515,7 +502,10 @@ class EditProfileFragment : Fragment() {
             description = text.toString()
         }
         h_button_skills?.setOnClickListener {
-            vm.updateProfile(fullName, nickName, email, location, description, skills)
+            var byteArray = byteArrayOf()
+            profilePicture?.let { byteArray=it }
+            vm.updateProfile(fullName, nickName, email, location, description, skills, byteArray)
+
             view?.findNavController()?.navigate(R.id.action_edit_profile_to_chooseSkillsFragment)
         }
 

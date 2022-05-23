@@ -70,7 +70,9 @@ class Utils {
                     menu.findItem(R.id.app_bar_refresh).isVisible = false
                 }
                 R.id.nav_profile -> {
-                    menu.findItem(R.id.app_bar_pencil).isVisible = true
+                    val navHostFragment = (activity as FragmentActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
+                    val fragment = navHostFragment!!.childFragmentManager.fragments[0] as ShowProfileFragment
+                    menu.findItem(R.id.app_bar_pencil).isVisible = fragment.isImageDownloaded
                     menu.findItem(R.id.app_bar_delete).isVisible = false
                     menu.findItem(R.id.app_bar_cancel).isVisible = false
                     menu.findItem(R.id.app_bar_add).isVisible = false
@@ -153,7 +155,10 @@ class Utils {
                 R.id.nav_profile -> {
                     when(item.itemId){
                         R.id.app_bar_pencil -> {
-                            val bundle = bundleOf("performProfileBackup" to true, "performSkillsBackup" to true)
+                            val navHostFragment = (activity as FragmentActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
+                            val fragment = navHostFragment!!.childFragmentManager.fragments[0] as ShowProfileFragment
+                            val profileBackup = fragment.performProfileBackup()
+                            val bundle = bundleOf("profileBackup" to profileBackup)
                             navController.navigate(R.id.action_nav_profile_to_edit_profile, bundle)
                         }
                     }

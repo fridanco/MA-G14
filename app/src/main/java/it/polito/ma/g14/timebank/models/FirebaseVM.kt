@@ -108,7 +108,7 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
             }
     }
 
-    fun updateProfile(fullname: String, nickname: String, email: String, location: String, description: String, skills: List<String>){
+    fun updateProfile(fullname: String, nickname: String, email: String, location: String, description: String, skills: List<String>, profileImage: ByteArray){
         val user = User().apply {
             this.fullname = fullname
             this.nickname = nickname
@@ -118,20 +118,22 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
             this.skills = skills
         }
 
-        db.collection("users").document(Firebase.auth.currentUser!!.uid)
-            .set(user)
+        if(profileImage.isNotEmpty()){
+            val profileImageRef = storageRef.child(Firebase.auth.currentUser!!.uid)
+
+            profileImageRef.putBytes(profileImage)
+                .addOnFailureListener {
+                    Log.w("Timebank FBSTORAGE", "Profile image could not be uploaded")
+                }.addOnSuccessListener { taskSnapshot ->
+                    db.collection("users").document(Firebase.auth.currentUser!!.uid)
+                        .set(user)
+                    Log.d("Timebank FBSTORAGE", "Profile image successfully uploaded")
+                }
+        }
     }
 
     fun uploadProfileImage(profileImage: ByteArray){
-        val profileImageRef = storageRef.child(Firebase.auth.currentUser!!.uid)
 
-        profileImageRef.putBytes(profileImage)
-            .addOnFailureListener {
-                Log.w("Timebank FBSTORAGE", "Profile image could not be uploaded")
-            }.addOnSuccessListener { taskSnapshot ->
-                updateProfileImage()
-                Log.d("Timebank FBSTORAGE", "Profile image successfully uploaded")
-            }
     }
 
     fun updateProfileImage(){

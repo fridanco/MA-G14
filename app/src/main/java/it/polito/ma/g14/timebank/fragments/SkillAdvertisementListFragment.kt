@@ -73,8 +73,8 @@ class SkillAdvertisementListFragment : Fragment() {
                 emptyRv.isGone = true
                 val cmp = compareBy<SkillAdvertisement> { it.skill }
                 adapter.updateSkillAdvertisements(it.sortedWith(cmp))
-                swipeRefreshLayout.isRefreshing = false
             }
+            swipeRefreshLayout.isRefreshing = false
         }
 
         swipeRefreshLayout.setOnRefreshListener {

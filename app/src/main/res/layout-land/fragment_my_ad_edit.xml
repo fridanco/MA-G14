@@ -130,10 +130,16 @@
         android:layout_height="wrap_content"
         android:text="Select skills" />
 
-    <LinearLayout
-        android:id="@+id/editTimeslotSkillsContainer"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingBottom="12dp"></LinearLayout>
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/editTimeslotSkillsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="12dp"></LinearLayout>
+    </ScrollView>
+
 </LinearLayout>

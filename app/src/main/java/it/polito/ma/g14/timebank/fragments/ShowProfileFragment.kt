@@ -1,5 +1,6 @@
 package it.polito.ma.g14.timebank.fragments
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -12,6 +13,8 @@ import androidx.fragment.app.viewModels
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
@@ -21,7 +24,11 @@ import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.models.FirebaseVM
 import it.polito.ma.g14.timebank.models.User
 import it.polito.ma.g14.timebank.utils.Utils
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.apache.commons.io.IOUtils
+import java.io.ByteArrayOutputStream
 import java.io.FileInputStream
 
 class ShowProfileFragment : Fragment() {
@@ -50,6 +57,8 @@ class ShowProfileFragment : Fragment() {
     private var h_tv_description : TextView? = null
     private var h_et_skills : ChipGroup? = null
     private var h_iv_profilePicture : ImageView? = null
+
+    var isImageDownloaded = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -109,6 +118,27 @@ class ShowProfileFragment : Fragment() {
             .error(R.drawable.user)
 
         vm.profile.observe(viewLifecycleOwner){
+            val coroutineScope = CoroutineScope(Dispatchers.IO)
+            coroutineScope.launch {
+                try {
+                    val bitmap = Glide.with(requireContext())
+                        .asBitmap()
+                        .load(vm.storageRef.child(Firebase.auth.currentUser!!.uid))
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .skipMemoryCache(true)
+                        .apply(options)
+                        .submit()
+                        .get()
+                    val stream = ByteArrayOutputStream()
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+                    profilePicture = stream.toByteArray()
+                    isImageDownloaded = true
+                    requireActivity().invalidateOptionsMenu()
+                } catch (ex: Exception) {
+                    throw ex
+                }
+            }
+
             iv_profilePicture?.let { it1 ->
                 Glide.with(this)
                     .load(vm.storageRef.child(Firebase.auth.currentUser!!.uid))
@@ -125,6 +155,14 @@ class ShowProfileFragment : Fragment() {
                     .apply(options)
                     .into(it2)
             }
+
+            fullName = it.fullname
+            email = it.email
+            nickName = it.nickname
+            location = it.location
+            skills = it.skills as ArrayList<String>
+            description = it.description
+
             populateProfileText(it)
             populateProfileSkills(it.skills)
         }
@@ -209,4 +247,25 @@ class ShowProfileFragment : Fragment() {
             }
         }
     }
+
+    fun performProfileBackup() : User{
+        if(profilePicture?.isNotEmpty() == true) {
+            requireContext().openFileOutput("profile_picture", Context.MODE_PRIVATE).use {
+                it.write(profilePicture)
+            }
+        }
+        val userEmail = email
+        val userLocation = location
+        val userDescription = description
+        val skills = skills
+        return User().apply {
+            this.fullname=fullName
+            this.nickname=nickName
+            this.email=userEmail
+            this.location=userLocation
+            this.description=userDescription
+            this.skills=skills
+        }
+    }
+
 }

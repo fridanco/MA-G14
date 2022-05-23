@@ -9,6 +9,8 @@ import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.cardview.widget.CardView
+import androidx.core.view.allViews
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -124,40 +126,59 @@ class MyAdEditFragment() : Fragment() {
                 val profileSkills = vm.profile.value?.skills
                 val adSkills = it.skills
 
-                val combinedSkills = mutableListOf<Pair<String, Boolean>>()
-                profileSkills?.let {
-                    combinedSkills.addAll(profileSkills.map { Pair(it, false) })
-                }
-                adSkills.forEach { skill ->
-                    val index = combinedSkills.indexOf(Pair(skill, false))
-                    if(index!=-1){
-                        combinedSkills[index] = Pair(skill, true)
+                val displayedSkills = mutableListOf<String>()
+                et_skills?.allViews?.forEach { skillView ->
+                    if(skillView is CardView) {
+                        displayedSkills.add(skillView.findViewById<TextView>(R.id.textView72).text.toString())
                     }
-                    else{
-                        combinedSkills.add(Pair(skill,true))
-                    }
-                    advertisementSkills.add(skill)
                 }
-
-                combinedSkills.sortBy { skillPair -> skillPair.first }
 
                 val inflater: LayoutInflater = layoutInflater
-                et_skills?.removeAllViews()
-                combinedSkills.forEach { skillPair ->
+                adSkills.forEach { skill ->
+                    if(!displayedSkills.contains(skill)){
+                        val skillCard = inflater.inflate(R.layout.my_ad_skill_card, null)
+                        skillCard.findViewById<TextView>(R.id.textView72).text = skill
+                        skillCard.findViewById<CheckBox>(R.id.checkBox).isChecked = true
+                        advertisementSkills.add(skill)
+                        skillCard.findViewById<CheckBox>(R.id.checkBox).setOnCheckedChangeListener { _, isChecked  ->
+                            if(isChecked){
+                                advertisementSkills.add(skill)
+                            }
+                            else{
+                                advertisementSkills.remove(skill)
+                            }
+                        }
+                        et_skills?.addView(skillCard)
+                    }
+                }
+
+            }
+        }
+
+        vm.profile.observe(viewLifecycleOwner){ userProfile ->
+            val displayedSkills = mutableListOf<String>()
+            et_skills?.allViews?.forEach { skillView ->
+                if(skillView is CardView) {
+                    displayedSkills.add(skillView.findViewById<TextView>(R.id.textView72).text.toString())
+                }
+            }
+
+            val inflater: LayoutInflater = layoutInflater
+            userProfile.skills.forEach { skill ->
+                if(!displayedSkills.contains(skill)){
                     val skillCard = inflater.inflate(R.layout.my_ad_skill_card, null)
-                    skillCard.findViewById<TextView>(R.id.textView72).text = skillPair.first
-                    skillCard.findViewById<CheckBox>(R.id.checkBox).isChecked = skillPair.second
+                    skillCard.findViewById<TextView>(R.id.textView72).text = skill
+                    skillCard.findViewById<CheckBox>(R.id.checkBox).isChecked = false
                     skillCard.findViewById<CheckBox>(R.id.checkBox).setOnCheckedChangeListener { _, isChecked  ->
                         if(isChecked){
-                            advertisementSkills.add(skillPair.first)
+                            advertisementSkills.add(skill)
                         }
                         else{
-                            advertisementSkills.remove(skillPair.first)
+                            advertisementSkills.remove(skill)
                         }
                     }
                     et_skills?.addView(skillCard)
                 }
-
             }
         }
 

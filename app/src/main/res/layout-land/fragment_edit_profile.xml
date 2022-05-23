@@ -100,9 +100,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
                 android:autofillHints=""
+                android:editable="false"
                 android:ems="10"
                 android:hint="@string/profile_edit_email_placeholder"
-                android:inputType="textEmailAddress"
+                android:inputType="none"
                 android:minHeight="48dp"
                 tools:ignore="TextContrastCheck" />
 
