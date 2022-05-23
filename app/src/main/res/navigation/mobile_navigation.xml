@@ -83,7 +83,7 @@
     <fragment
         android:id="@+id/advertisement_skills"
         android:name="it.polito.ma.g14.timebank.fragments.SkillAdvertisementListFragment"
-        android:label="Advertisement categories"
+        android:label="Timebank"
         tools:layout="@layout/fragment_skill_advertisement_list">
         <action
             android:id="@+id/action_advertisement_skills_to_onlineAdsListFragment"
