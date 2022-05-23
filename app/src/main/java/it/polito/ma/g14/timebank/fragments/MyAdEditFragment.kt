@@ -190,6 +190,7 @@ class MyAdEditFragment() : Fragment() {
                     val skillCard = inflater.inflate(R.layout.my_ad_skill_card, null)
                     skillCard.findViewById<TextView>(R.id.textView72).text = skill
                     skillCard.findViewById<CheckBox>(R.id.checkBox).isChecked = true
+                    advertisementSkills.add(skill)
                     skillCard.findViewById<CheckBox>(R.id.checkBox).setOnCheckedChangeListener { _, isChecked  ->
                         if(isChecked){
                             advertisementSkills.add(skill)

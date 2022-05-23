@@ -1,5 +1,6 @@
 package it.polito.ma.g14.timebank.fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -33,6 +34,8 @@ class SkillAdvertisementListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        vm.updateAdvertisementSkillsList()
+
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_skill_advertisement_list, container, false)
 

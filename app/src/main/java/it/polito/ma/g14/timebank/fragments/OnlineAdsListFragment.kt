@@ -39,6 +39,8 @@ class OnlineAdsListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        vm.updateAdvertisementList()
+
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_online_ads_list, container, false)
 

@@ -58,33 +58,33 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
                 }
             }
 
-        db.collection("skillAdvertisements")
-            .whereGreaterThan("numAdvertisements",0)
-            .get()
-            .addOnSuccessListener { querySnapshot ->
-                _skills.value = querySnapshot.mapNotNull { skillAdvertisement ->
-                    skillAdvertisement.toObject(
-                        SkillAdvertisement::class.java
-                    )
-                }
-            }
-
-
-        db.collection("advertisements")
-            .get()
-            .addOnSuccessListener { querySnapshot ->
-                val adsMap = mutableMapOf<String, MutableList<Advertisement>>()
-
-                querySnapshot.mapNotNull { it.toObject(Advertisement::class.java) }.forEach { advertisement ->
-                    advertisement.skills.forEach{ skill ->
-                        adsMap.getOrPut(skill){
-                            mutableListOf()
-                        }.add(advertisement)
-                    }
-                }
-
-                _onlineAdvertisements.value = adsMap
-            }
+//        db.collection("skillAdvertisements")
+//            .whereGreaterThan("numAdvertisements",0)
+//            .get()
+//            .addOnSuccessListener { querySnapshot ->
+//                _skills.value = querySnapshot.mapNotNull { skillAdvertisement ->
+//                    skillAdvertisement.toObject(
+//                        SkillAdvertisement::class.java
+//                    )
+//                }
+//            }
+//
+//
+//        db.collection("advertisements")
+//            .get()
+//            .addOnSuccessListener { querySnapshot ->
+//                val adsMap = mutableMapOf<String, MutableList<Advertisement>>()
+//
+//                querySnapshot.mapNotNull { it.toObject(Advertisement::class.java) }.forEach { advertisement ->
+//                    advertisement.skills.forEach{ skill ->
+//                        adsMap.getOrPut(skill){
+//                            mutableListOf()
+//                        }.add(advertisement)
+//                    }
+//                }
+//
+//                _onlineAdvertisements.value = adsMap
+//            }
 
         myAdvertisementsListener = db.collection("advertisements")
             .whereEqualTo("uid",uid)
