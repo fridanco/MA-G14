@@ -14,13 +14,9 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.ma.g14.timebank.R
-import it.polito.ma.g14.timebank.RVadapters.MyDiffCallbackOnlineAdvertisements
-import it.polito.ma.g14.timebank.models.Advertisement
-import it.polito.ma.g14.timebank.models.Skill
 import it.polito.ma.g14.timebank.models.SkillAdvertisement
-import java.text.SimpleDateFormat
 
-class SkillAdvertisementAdapter(val view: View, val context: Context, val sortByKey: String): RecyclerView.Adapter<SkillAdvertisementAdapter.ItemViewHolder>() {
+class SkillAdvertisementAdapter(val view: View, val context: Context): RecyclerView.Adapter<SkillAdvertisementAdapter.ItemViewHolder>() {
     var filter: Boolean = false
     var data = listOf<SkillAdvertisement>()
     var displayData = data.toMutableList()
@@ -45,7 +41,7 @@ class SkillAdvertisementAdapter(val view: View, val context: Context, val sortBy
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val vg = LayoutInflater
             .from(parent.context)
-            .inflate(R.layout.skill_advertisement_entry,parent, false)
+            .inflate(R.layout.online_ad_skill_card,parent, false)
         return ItemViewHolder(vg)
     }
 
@@ -62,22 +58,25 @@ class SkillAdvertisementAdapter(val view: View, val context: Context, val sortBy
 
     override fun getItemCount(): Int = displayData.size
 
-    fun updateSkillAdvertisements(skillAdvertisements: List<SkillAdvertisement>){
+    fun updateSkillAdvertisements(skillAdvertisements: List<SkillAdvertisement>, sortBy: String){
         colorIndex = 0
-        data = skillAdvertisements
-        val newData = performSort(sortByKey)
+        data = skillAdvertisements.toList()
+        val newData = performSort(sortBy, false)
         val diffs = DiffUtil.calculateDiff(MyDiffCallback(displayData, newData))
-        displayData = data as MutableList<SkillAdvertisement>
+        displayData = newData.toMutableList()
         diffs.dispatchUpdatesTo(this)
     }
 
     fun addFilter(text: String) {
-        var newData = mutableListOf<SkillAdvertisement>()
+        if(displayData.isEmpty()){
+            return
+        }
+        val newData: MutableList<SkillAdvertisement>
         if(text.isEmpty() || text.isBlank()){
-            newData = data as MutableList<SkillAdvertisement>
+            newData = displayData.toMutableList()
         }
         else{
-            newData = data.filter { it.skill.contains(text, ignoreCase = true) } as MutableList<SkillAdvertisement>
+            newData = displayData.filter { it.skill.contains(text, ignoreCase = true) }.toMutableList()
         }
         val diffs = DiffUtil.calculateDiff(MyDiffCallback(displayData, newData))
         displayData = newData
@@ -85,20 +84,31 @@ class SkillAdvertisementAdapter(val view: View, val context: Context, val sortBy
     }
 
     fun addSort(sortBy: String){
+        if(displayData.isEmpty()){
+            return
+        }
         data = displayData.toList()
         val newData = performSort(sortBy)
         val diffs = DiffUtil.calculateDiff(MyDiffCallback(displayData, newData))
-        displayData = newData as MutableList<SkillAdvertisement>
+        displayData = newData.toMutableList()
         diffs.dispatchUpdatesTo(this)
     }
 
-    fun performSort(sortBy: String) : List<SkillAdvertisement>{
-        val newData = data as MutableList<SkillAdvertisement>
+    fun performSort(sortBy: String, showToast: Boolean = true) : List<SkillAdvertisement>{
+        val newData = data.toMutableList()
         when(sortBy){
-            "skill_asc" -> { newData.sortBy { it.skill }; Toast.makeText(context, "Sorted by skill A-Z", Toast.LENGTH_SHORT).show() }
-            "skill_desc" -> { newData.sortByDescending { it.skill }; Toast.makeText(context, "Sorted by skill Z-A", Toast.LENGTH_SHORT).show() }
-            "numAd_asc" -> { newData.sortBy { it.numAdvertisements }; Toast.makeText(context, "Sorted by least number of ads", Toast.LENGTH_SHORT).show() }
-            "numAd_desc" -> { newData.sortByDescending { it.numAdvertisements }; Toast.makeText(context, "Sorted by most number of ads", Toast.LENGTH_SHORT).show() }
+            "skill_asc" -> { newData.sortBy { it.skill }; 
+                if(showToast) Toast.makeText(context, "Sorted by skill A-Z", Toast.LENGTH_SHORT).show()
+            }
+            "skill_desc" -> { newData.sortByDescending { it.skill }; 
+                if(showToast) Toast.makeText(context, "Sorted by skill Z-A", Toast.LENGTH_SHORT).show()
+            }
+            "numAd_asc" -> { newData.sortBy { it.numAdvertisements }; 
+                if(showToast) Toast.makeText(context, "Sorted by least number of ads", Toast.LENGTH_SHORT).show()
+            }
+            "numAd_desc" -> { newData.sortByDescending { it.numAdvertisements }; 
+                if(showToast) Toast.makeText(context, "Sorted by most number of ads", Toast.LENGTH_SHORT).show()
+            }
         }
         return newData
     }

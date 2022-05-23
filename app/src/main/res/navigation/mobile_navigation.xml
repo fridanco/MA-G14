@@ -3,23 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@id/advertisement_skills">
+    app:startDestination="@id/onlineAdvertisementSkills">
 
     <fragment
-        android:id="@+id/advertisements"
+        android:id="@+id/myAdvertisements"
         android:name="it.polito.ma.g14.timebank.fragments.MyAdsListFragment"
         android:label="My advertisements"
         tools:layout="@layout/fragment_my_ads_list" >
         <action
             android:id="@+id/action_timeSlotListFragment_to_timeSlotDetailsFragment"
-            app:destination="@id/timeSlotDetailsFragment"
+            app:destination="@id/myAdvertisementDetails"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right"/>
         <action
             android:id="@+id/action_timeSlotListFragment_to_timeSlotEditFragment"
-            app:destination="@id/timeSlotEditFragment"
+            app:destination="@id/myAdvertisementEdit"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
@@ -30,32 +30,32 @@
             android:defaultValue="my_advertisements" />
     </fragment>
     <fragment
-        android:id="@+id/timeSlotDetailsFragment"
+        android:id="@+id/myAdvertisementDetails"
         android:name="it.polito.ma.g14.timebank.fragments.MyAdDetailsFragment"
         android:label="Advertisement details"
         tools:layout="@layout/fragment_my_ad_details">
         <action
             android:id="@+id/action_timeSlotDetailsFragment_to_timeSlotEditFragment"
-            app:destination="@id/timeSlotEditFragment"
+            app:destination="@id/myAdvertisementEdit"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right" />
     </fragment>
     <fragment
-        android:id="@+id/timeSlotEditFragment"
+        android:id="@+id/myAdvertisementEdit"
         android:name="it.polito.ma.g14.timebank.fragments.MyAdEditFragment"
         android:label="Edit advertisement"
         tools:layout="@layout/fragment_my_ad_edit" />
 
     <fragment
-        android:id="@+id/nav_profile"
+        android:id="@+id/myProfile"
         android:name="it.polito.ma.g14.timebank.fragments.ShowProfileFragment"
         android:label="My profile"
         tools:layout="@layout/fragment_show_profile">
         <action
             android:id="@+id/action_nav_profile_to_edit_profile"
-            app:destination="@id/edit_profile"
+            app:destination="@id/myProfileEdit"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
@@ -63,25 +63,25 @@
     </fragment>
 
     <fragment
-        android:id="@+id/edit_profile"
+        android:id="@+id/myProfileEdit"
         android:name="it.polito.ma.g14.timebank.fragments.EditProfileFragment"
         android:label="Edit profile"
         tools:layout="@layout/fragment_edit_profile" >
         <action
             android:id="@+id/action_edit_profile_to_chooseSkillsFragment"
-            app:destination="@id/chooseSkillsFragment"
+            app:destination="@id/myProfileSkills"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right" />
     </fragment>
     <fragment
-        android:id="@+id/chooseSkillsFragment"
+        android:id="@+id/myProfileSkills"
         android:name="it.polito.ma.g14.timebank.fragments.ChooseSkillsFragment"
         android:label="Choose skills"
         tools:layout="@layout/fragment_choose_skills"/>
     <fragment
-        android:id="@+id/advertisement_skills"
+        android:id="@+id/onlineAdvertisementSkills"
         android:name="it.polito.ma.g14.timebank.fragments.SkillAdvertisementListFragment"
         android:label="Timebank"
         tools:layout="@layout/fragment_skill_advertisement_list">

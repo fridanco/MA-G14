@@ -72,7 +72,12 @@ class OnlineAdDetailsFragment() : Fragment() {
         tv_to.text = advertisement.to
         tv_location.text = advertisement.location
         tv_fullname.text = "By ${advertisement.user.fullname}"
-        tv_user_description.text = advertisement.user.description
+        if(advertisement.user.description.isNotEmpty()) {
+            tv_user_description.text = advertisement.user.description
+        }
+        else{
+            tv_user_description.text = "No description provided"
+        }
 
         val profileImageRef = vm.storageRef.child(advertisement.uid)
 

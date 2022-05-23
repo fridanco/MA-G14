@@ -14,8 +14,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
@@ -28,9 +26,7 @@ import it.polito.ma.g14.timebank.utils.Utils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.apache.commons.io.IOUtils
 import java.io.ByteArrayOutputStream
-import java.io.FileInputStream
 
 class ShowProfileFragment : Fragment() {
 
@@ -241,7 +237,7 @@ class ShowProfileFragment : Fragment() {
 
             skills.forEach {
                 val inflater: LayoutInflater = layoutInflater
-                val skill: Chip = inflater.inflate(R.layout.skill_chip, null) as Chip
+                val skill: Chip = inflater.inflate(R.layout.profile_skill_chip, null) as Chip
                 skill.text = it
                 skill.isCloseIconVisible = false
                 et_skills?.addView(skill)

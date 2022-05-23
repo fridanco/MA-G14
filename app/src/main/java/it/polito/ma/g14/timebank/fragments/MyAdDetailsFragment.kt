@@ -63,12 +63,8 @@ class MyAdDetailsFragment() : Fragment() {
             val ad = myAdvertisements.find { it.id==advertisementID }
             ad?.let {
                 tv_title.text = it.title
-                if(it.description.isNotEmpty()) {
-                    tv_description.text = it.description
-                }
-                else{
-                    tv_description.text = "No description provided"
-                }
+                tv_description.text = it.description
+                tv_description.text = "No description provided"
                 tv_date.text = it.date
                 tv_from.text = it.from
                 tv_to.text = it.to
@@ -77,7 +73,7 @@ class MyAdDetailsFragment() : Fragment() {
                 skillContainer.removeAllViews()
                 it.skills.forEach { skillName ->
                     val inflater: LayoutInflater = layoutInflater
-                    val skill: Chip = inflater.inflate(R.layout.skill_chip, null) as Chip
+                    val skill: Chip = inflater.inflate(R.layout.profile_skill_chip, null) as Chip
                     skill.text = skillName
                     skill.isCloseIconVisible = false
                     skillContainer.addView(skill)

@@ -45,7 +45,7 @@
     <string name="profile_picture_content_description">Your profile picture</string>
     <string name="change_profile_picture_content_description">Change your profile picture</string>
 
-    <string name="time_slot_edit_title_label">Advertisment title<font color='#FF0000'>*</font></string>
+    <string name="time_slot_edit_title_label">Advertisement title<font color='#FF0000'>*</font></string>
     <string name="time_slot_edit_description_label">Description<font color='#FF0000'>*</font></string>
     <string name="time_slot_edit_dateTime_label">Date<font color='#FF0000'>*</font></string>
     <string name="time_slot_edit_from_label">From<font color='#FF0000'>*</font></string>
@@ -65,7 +65,7 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
-    <string name="menu_home">My advertisments</string>
+    <string name="menu_home">My advertisements</string>
     <string name="menu_profile">My profile</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -73,12 +73,12 @@
     <string name="app_bar_delete">Delete</string>
     <string name="app_bar_cancel">Cancel</string>
     <string name="app_bar_add">Add</string>
-    <string name="edit_timeslot_advertisment_title_placeholder">Advertisment title</string>
+    <string name="edit_timeslot_advertisment_title_placeholder">Advertisement title</string>
     <string name="edit_timeslot_service_description_placeholder">Service description</string>
     <string name="edit_timeslot_date_and_time_placeholder">Date and time</string>
     <string name="edit_timeslot_duration_placeholder">5h 30min</string>
     <string name="edit_timeslot_location_address_placeholder">Location address</string>
-    <string name="timeslot_advertisment_title_placeholder">Advertisment title</string>
+    <string name="timeslot_advertisment_title_placeholder">Advertisement title</string>
     <string name="timeslot_service_description_label">Service description</string>
     <string name="timeslot_service_description_placeholder">Service description</string>
     <string name="timeslot_date_label">Date</string>
@@ -89,10 +89,10 @@
     <string name="timeslot_to_placeholder">To time</string>
     <string name="timeslot_location_label">Location</string>
     <string name="timeslot_location_placeholder">Location address</string>
-    <string name="timeslot_advertisment_title_list">Advertisment title</string>
+    <string name="timeslot_advertisment_title_list">Advertisement title</string>
     <string name="timeslot_service_description_list">Service description</string>
     <string name="timeslot_date_list">Thu, 26 June, 2022</string>
-    <string name="timeslot_from_to_list">08:00 - 14:30</string>
+    <string name="timeslot_from_to_list">08:00 – 14:30</string>
     <string name="timeslot_location_list">Location address</string>
     <string name="nav_drawer_name_placeholder">Full name</string>
     <string name="nav_drawer_email_placeholder">example@email.com</string>
@@ -106,6 +106,7 @@
     <string name="in_order_to_use_this_app_you_must_login_using_one_of_the_options_below">In order to use this app you must login using your Google account</string>
     <string name="login_with_google">Login with Google</string>
     <string name="you_have_not_selected_any_skill_yet_please_update_your_profile_with_atleast_one_skill">You have not selected any skill yet. Please update your profile with atleast one skill</string>
+    <string name="click_here_to_go_to_your_profile"><font color='#0000EE'><u>Click here to go to your profile</u></font></string>
 
 
 </resources>

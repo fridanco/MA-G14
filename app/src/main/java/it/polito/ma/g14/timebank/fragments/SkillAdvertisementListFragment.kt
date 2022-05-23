@@ -1,14 +1,12 @@
 package it.polito.ma.g14.timebank.fragments
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.view.*
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.view.isGone
@@ -20,9 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.models.FirebaseVM
-import it.polito.ma.g14.timebank.models.SkillAdvertisement
 import it.polito.ma.g14.timebank.utils.Utils
-import org.w3c.dom.Text
 
 class SkillAdvertisementListFragment : Fragment() {
 
@@ -78,7 +74,7 @@ class SkillAdvertisementListFragment : Fragment() {
         )
 
         rv.layoutManager = LinearLayoutManager(requireContext())
-        adapter = SkillAdvertisementAdapter(view, requireContext(), sortByKey)
+        adapter = SkillAdvertisementAdapter(view, requireContext())
         adapter.colorList = colorList as MutableList<String>
         rv.adapter = adapter
 
@@ -96,8 +92,7 @@ class SkillAdvertisementListFragment : Fragment() {
                 rv.isVisible = true
                 emptyRv.isGone = true
                 subtitleName.text = "Click on the ad for the skill you prefer"
-                val cmp = compareBy<SkillAdvertisement> { it.skill }
-                adapter.updateSkillAdvertisements(it.sortedWith(cmp))
+                adapter.updateSkillAdvertisements(it, sortByKey)
             }
             swipeRefreshLayout.isRefreshing = false
         }

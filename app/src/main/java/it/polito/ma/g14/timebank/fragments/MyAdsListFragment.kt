@@ -17,10 +17,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.RVadapters.MyAdvertisementsAdapter
-import it.polito.ma.g14.timebank.models.Advertisement
 import it.polito.ma.g14.timebank.models.FirebaseVM
 import it.polito.ma.g14.timebank.utils.Utils
-import java.text.SimpleDateFormat
 
 class MyAdsListFragment : Fragment() {
 
@@ -32,7 +30,7 @@ class MyAdsListFragment : Fragment() {
     var operationType: String = ""
     var selectedSkill: String = ""
 
-    var sortByKey = "title_asc"
+    var sortByKey = "date_desc"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,7 +67,7 @@ class MyAdsListFragment : Fragment() {
         )
 
         rv.layoutManager = LinearLayoutManager(requireContext())
-        adapter = MyAdvertisementsAdapter(view, vm, requireContext(), sortByKey)
+        adapter = MyAdvertisementsAdapter(view, vm, requireContext())
         adapter.colorList = colorList as MutableList<String>
         rv.adapter = adapter
 
@@ -82,14 +80,14 @@ class MyAdsListFragment : Fragment() {
             else {
                 rv.isVisible = true
                 emptyRv.isGone = true
-                val sdf_date = SimpleDateFormat("EEE, d MMM yyyy")
-                val sdf_time = SimpleDateFormat("HH:mm")
-                val cmp = compareBy<Advertisement> { sdf_date.parse(it.date) }.thenByDescending { sdf_time.parse(it.from) }
-                adapter.updateAdvertisements(it.sortedWith(cmp))
+//                val sdf_date = SimpleDateFormat("EEE, d MMM yyyy")
+//                val sdf_time = SimpleDateFormat("HH:mm")
+//                val cmp = compareBy<Advertisement> { sdf_date.parse(it.date) }.thenByDescending { sdf_time.parse(it.from) }
+                adapter.updateAdvertisements(it, sortByKey)
             }
         }
 
-        val fab = view?.findViewById<FloatingActionButton>(R.id.floatingActionButton)
+        val fab = view.findViewById<FloatingActionButton>(R.id.floatingActionButton)
         fab?.let {
             it.setOnClickListener {
                 val bundle = bundleOf("timeSlotID" to 0, "operationType" to "add_time_slot")

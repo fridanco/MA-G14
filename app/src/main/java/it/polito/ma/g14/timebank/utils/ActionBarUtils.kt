@@ -18,7 +18,7 @@ class Utils {
             val navController = activity.findNavController(R.id.nav_host_fragment_content_main)
             val currDestinationID = navController.currentDestination?.id
             when (currDestinationID) {
-                R.id.advertisement_skills -> {
+                R.id.onlineAdvertisementSkills -> {
                     menu.findItem(R.id.app_bar_search).isVisible = true
                     menu.findItem(R.id.app_bar_pencil).isVisible = false
                     menu.findItem(R.id.app_bar_delete).isVisible = false
@@ -42,7 +42,7 @@ class Utils {
                     menu.findItem(R.id.numAd_asc).isVisible = true
                     menu.findItem(R.id.numAd_desc).isVisible = true
                 }
-                R.id.advertisements -> {
+                R.id.myAdvertisements -> {
                     menu.findItem(R.id.app_bar_search).isVisible = true
                     menu.findItem(R.id.app_bar_pencil).isVisible = false
                     menu.findItem(R.id.app_bar_delete).isVisible = false
@@ -53,8 +53,8 @@ class Utils {
                     
                     menu.findItem(R.id.title_asc).isVisible = true
                     menu.findItem(R.id.title_desc).isVisible = true
-                    menu.findItem(R.id.creator_asc).isVisible = true
-                    menu.findItem(R.id.creator_desc).isVisible = true
+                    menu.findItem(R.id.creator_asc).isVisible = false
+                    menu.findItem(R.id.creator_desc).isVisible = false
                     menu.findItem(R.id.location_asc).isVisible = true
                     menu.findItem(R.id.location_desc).isVisible = true
                     menu.findItem(R.id.date_asc).isVisible = true
@@ -66,7 +66,7 @@ class Utils {
                     menu.findItem(R.id.numAd_asc).isVisible = false
                     menu.findItem(R.id.numAd_desc).isVisible = false
                 }
-                R.id.timeSlotEditFragment -> {
+                R.id.myAdvertisementEdit -> {
                     menu.findItem(R.id.app_bar_search).isVisible = false
                     menu.findItem(R.id.app_bar_pencil).isVisible = false
                     menu.findItem(R.id.app_bar_delete).isVisible = false
@@ -78,7 +78,7 @@ class Utils {
 //                    val fragment = navHostFragment!!.childFragmentManager.fragments[0] as TimeSlotEditFragment
 //                    menu.findItem(R.id.app_bar_add).isVisible = fragment.operationType=="add_time_slot"
                 }
-                R.id.timeSlotDetailsFragment -> {
+                R.id.myAdvertisementDetails -> {
                     menu.findItem(R.id.app_bar_search).isVisible = false
                     menu.findItem(R.id.app_bar_pencil).isVisible = true
                     menu.findItem(R.id.app_bar_delete).isVisible = true
@@ -120,7 +120,7 @@ class Utils {
                     menu.findItem(R.id.app_bar_sort).isVisible = false
                     menu.findItem(R.id.app_bar_refresh).isVisible = false
                 }
-                R.id.nav_profile -> {
+                R.id.myProfile -> {
                     val navHostFragment = (activity as FragmentActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
                     val fragment = navHostFragment!!.childFragmentManager.fragments[0] as ShowProfileFragment
                     menu.findItem(R.id.app_bar_pencil).isVisible = fragment.isImageDownloaded
@@ -131,7 +131,7 @@ class Utils {
                     menu.findItem(R.id.app_bar_sort).isVisible = false
                     menu.findItem(R.id.app_bar_refresh).isVisible = false
                 }
-                R.id.edit_profile -> {
+                R.id.myProfileEdit -> {
                     menu.findItem(R.id.app_bar_search).isVisible = false
                     menu.findItem(R.id.app_bar_pencil).isVisible = false
                     menu.findItem(R.id.app_bar_delete).isVisible = false
@@ -140,7 +140,7 @@ class Utils {
                     menu.findItem(R.id.app_bar_sort).isVisible = false
                     menu.findItem(R.id.app_bar_refresh).isVisible = false
                 }
-                R.id.chooseSkillsFragment -> {
+                R.id.myProfileSkills -> {
                     menu.findItem(R.id.app_bar_search).isVisible = true
                     menu.findItem(R.id.app_bar_pencil).isVisible = false
                     menu.findItem(R.id.app_bar_delete).isVisible = false
@@ -156,7 +156,7 @@ class Utils {
             val navController = activity.findNavController(R.id.nav_host_fragment_content_main)
             val currDestinationID = navController.currentDestination?.id
             when(currDestinationID){
-                R.id.timeSlotEditFragment -> {
+                R.id.myAdvertisementEdit -> {
                     when(item.itemId){
                         R.id.app_bar_cancel -> {
                             val navHostFragment = (activity as FragmentActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
@@ -164,26 +164,26 @@ class Utils {
                             fragment.cancelOperation = true
                             if(fragment.operationType=="edit_time_slot") {
                                 if(fragment.originFragment=="list_time_slot"){
-                                    navController.popBackStack(R.id.advertisements, false)
+                                    navController.popBackStack(R.id.myAdvertisements, false)
                                 }
                                 else{
-                                    navController.popBackStack(R.id.timeSlotDetailsFragment, false)
+                                    navController.popBackStack(R.id.myAdvertisementDetails, false)
                                 }
                             }
                             else{
-                                navController.popBackStack(R.id.advertisements, false)
+                                navController.popBackStack(R.id.myAdvertisements, false)
                             }
                         }
                         R.id.app_bar_add -> {
                             val navHostFragment = (activity as FragmentActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
                             val fragment = navHostFragment!!.childFragmentManager.fragments[0] as MyAdEditFragment
                             if(fragment.isFormValid()) {
-                                navController.popBackStack(R.id.advertisements, false)
+                                navController.popBackStack(R.id.myAdvertisements, false)
                             }
                         }
                     }
                 }
-                R.id.timeSlotDetailsFragment -> {
+                R.id.myAdvertisementDetails -> {
                     when(item.itemId){
                         R.id.app_bar_pencil -> {
                             val navHostFragment = (activity as FragmentActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
@@ -195,7 +195,7 @@ class Utils {
                             val navHostFragment = (activity as FragmentActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
                             val fragment = navHostFragment!!.childFragmentManager.fragments[0] as MyAdDetailsFragment
                             fragment.deleteAdvertisement()
-                            navController.popBackStack(R.id.advertisements, false)
+                            navController.popBackStack(R.id.myAdvertisements, false)
                         }
                     }
                 }
@@ -206,7 +206,7 @@ class Utils {
                         }
                     }
                 }
-                R.id.advertisements -> {
+                R.id.myAdvertisements -> {
                     val navHostFragment = (activity as FragmentActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
                     val fragment = navHostFragment!!.childFragmentManager.fragments[0] as MyAdsListFragment
                     when(item.itemId) {
@@ -236,7 +236,7 @@ class Utils {
                         }
                     }
                 }
-                R.id.nav_profile -> {
+                R.id.myProfile -> {
                     when(item.itemId){
                         R.id.app_bar_pencil -> {
                             val navHostFragment = (activity as FragmentActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
@@ -247,33 +247,33 @@ class Utils {
                         }
                     }
                 }
-                R.id.edit_profile -> {
+                R.id.myProfileEdit -> {
                     when(item.itemId){
                         R.id.app_bar_cancel -> {
                             val navHostFragment = (activity as FragmentActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
                             val fragment = navHostFragment!!.childFragmentManager.fragments[0] as EditProfileFragment
                             fragment.cancelOperation = true
-                            navController.popBackStack(R.id.nav_profile, false)
+                            navController.popBackStack(R.id.myProfile, false)
                         }
                         R.id.app_bar_add -> {
-                            navController.popBackStack(R.id.nav_profile, false)
+                            navController.popBackStack(R.id.myProfile, false)
                         }
                     }
                 }
-                R.id.chooseSkillsFragment -> {
+                R.id.myProfileSkills -> {
                     when(item.itemId){
                         R.id.app_bar_add -> {
-                            navController.popBackStack(R.id.edit_profile, false)
+                            navController.popBackStack(R.id.myProfileEdit, false)
                         }
                         R.id.app_bar_cancel -> {
                             val navHostFragment = (activity as FragmentActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
                             val fragment = navHostFragment!!.childFragmentManager.fragments[0] as ChooseSkillsFragment
                             fragment.cancelOperation = true
-                            navController.popBackStack(R.id.edit_profile, false)
+                            navController.popBackStack(R.id.myProfileEdit, false)
                         }
                     }
                 }
-                R.id.advertisement_skills -> {
+                R.id.onlineAdvertisementSkills -> {
                     val navHostFragment = (activity as FragmentActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
                     val fragment = navHostFragment!!.childFragmentManager.fragments[0] as SkillAdvertisementListFragment
                     when(item.itemId){

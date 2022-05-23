@@ -16,6 +16,7 @@ import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.dialogs.DatePickerFragment
 import it.polito.ma.g14.timebank.dialogs.TimePickerFragment
@@ -86,6 +87,9 @@ class MyAdEditFragment() : Fragment() {
         operationType = requireArguments().getString("operationType").toString()
         originFragment = requireArguments().getString("originFragment") ?: "time_slot_details"
 
+        view.findViewById<TextView>(R.id.textView78).setOnClickListener {
+            findNavController().navigate(R.id.myProfile)
+        }
 
         et_title = view.findViewById<EditText>(R.id.textView51)
         et_description = view.findViewById<EditText>(R.id.textView53)
@@ -109,6 +113,7 @@ class MyAdEditFragment() : Fragment() {
                 et_skills?.removeAllViews()
                 if(it.skills.isNotEmpty()){
                     view.findViewById<TextView>(R.id.textView79).isGone = true
+                    view.findViewById<TextView>(R.id.textView78).isGone = true
                     it.skills.forEach { skill ->
                         val skillCard = inflater.inflate(R.layout.my_ad_skill_card, null)
                         skillCard.findViewById<TextView>(R.id.textView72).text = skill
@@ -133,6 +138,7 @@ class MyAdEditFragment() : Fragment() {
                 }
                 else{
                     view.findViewById<TextView>(R.id.textView79).isVisible = true
+                    view.findViewById<TextView>(R.id.textView78).isVisible = true
                 }
             }
         }

@@ -1,26 +1,21 @@
 package it.polito.ma.g14.timebank.activities
 
-import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
-import android.widget.SearchView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.FragmentActivity
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.*
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.FutureTarget
 import com.bumptech.glide.request.RequestOptions
 import com.firebase.ui.auth.AuthUI
 import com.google.android.material.navigation.NavigationView
@@ -28,12 +23,10 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import it.polito.ma.g14.timebank.R
-import it.polito.ma.g14.timebank.RVadapters.SkillAdapter
 import it.polito.ma.g14.timebank.databinding.ActivityMainBinding
 import it.polito.ma.g14.timebank.fragments.*
 import it.polito.ma.g14.timebank.models.FirebaseVM
 import it.polito.ma.g14.timebank.utils.Utils.ActionBarUtils.manageActionBarItemActions
-import java.io.ByteArrayOutputStream
 
 
 class MainActivity : AppCompatActivity() {
@@ -96,7 +89,7 @@ class MainActivity : AppCompatActivity() {
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.advertisement_skills, R.id.advertisements, R.id.nav_profile, R.id.nav_logout
+                R.id.onlineAdvertisementSkills, R.id.myAdvertisements, R.id.myProfile, R.id.nav_logout
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -117,7 +110,7 @@ class MainActivity : AppCompatActivity() {
     override fun onBackPressed() {
         val navController = this.findNavController(R.id.nav_host_fragment_content_main)
         when(navController.currentDestination?.id) {
-            R.id.edit_profile -> {
+            R.id.myProfileEdit -> {
                 val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
                 val fragment = navHostFragment!!.childFragmentManager.fragments[0] as EditProfileFragment
                 if(!fragment.isFormValid() && !fragment.cancelOperation){
@@ -127,7 +120,7 @@ class MainActivity : AppCompatActivity() {
                     return;
                 }
             }
-            R.id.timeSlotEditFragment -> {
+            R.id.myAdvertisementEdit -> {
                 val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
                 val fragment = navHostFragment!!.childFragmentManager.fragments[0] as MyAdEditFragment
                 if(!fragment.isFormValid() && !fragment.cancelOperation){
@@ -137,8 +130,8 @@ class MainActivity : AppCompatActivity() {
                     return;
                 }
             }
-            R.id.timeSlotDetailsFragment -> {
-                navController.popBackStack(R.id.advertisements, true)
+            R.id.myAdvertisementDetails -> {
+                navController.popBackStack(R.id.myAdvertisements, true)
             }
         }
         super.onBackPressed()
@@ -148,7 +141,7 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
 
         when(navController.currentDestination?.id) {
-            R.id.edit_profile -> {
+            R.id.myProfileEdit -> {
                 val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
                 val fragment = navHostFragment!!.childFragmentManager.fragments[0] as EditProfileFragment
                 if(!fragment.isFormValid() && !fragment.cancelOperation){
@@ -158,7 +151,7 @@ class MainActivity : AppCompatActivity() {
                     return false;
                 }
             }
-            R.id.timeSlotEditFragment -> {
+            R.id.myAdvertisementEdit -> {
                 val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
                 val fragment = navHostFragment!!.childFragmentManager.fragments[0] as MyAdEditFragment
                 if(!fragment.isFormValid() && !fragment.cancelOperation){
@@ -202,6 +195,7 @@ class MainActivity : AppCompatActivity() {
             override fun onQueryTextChange(newText: String?): Boolean {
                 if(newText?.isEmpty() == true){
                     dispatchSearchbarQuery("")
+                    return false
                 }
                 return true
             }
@@ -220,7 +214,7 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
         when(navController.currentDestination?.id){
-            R.id.advertisement_skills ->{
+            R.id.onlineAdvertisementSkills ->{
                 val fragment = navHostFragment!!.childFragmentManager.fragments[0] as SkillAdvertisementListFragment
                 fragment.searchSkills(query)
             }
@@ -228,11 +222,11 @@ class MainActivity : AppCompatActivity() {
                 val fragment = navHostFragment!!.childFragmentManager.fragments[0] as OnlineAdsListFragment
                 fragment.searchAdvertisements(query)
             }
-            R.id.advertisements -> {
+            R.id.myAdvertisements -> {
                 val fragment = navHostFragment!!.childFragmentManager.fragments[0] as MyAdsListFragment
                 fragment.searchAdvertisements(query)
             }
-            R.id.chooseSkillsFragment -> {
+            R.id.myProfileSkills -> {
                 val fragment = navHostFragment!!.childFragmentManager.fragments[0] as ChooseSkillsFragment
                 fragment.searchSkills(query)
             }

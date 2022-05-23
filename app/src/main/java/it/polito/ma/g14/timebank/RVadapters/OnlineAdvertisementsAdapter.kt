@@ -88,20 +88,23 @@ class OnlineAdvertisementsAdapter(val view: View, val vm: FirebaseVM, val contex
 
     fun updateAdvertisements(advertisements: List<Advertisement>, sortBy: String){
         colorIndex = 0
-        data = advertisements as MutableList
-        val newData = performSort(sortBy)
+        data = advertisements.toList()
+        val newData = performSort(sortBy, false)
         val diffs = DiffUtil.calculateDiff(MyDiffCallbackOnlineAdvertisements(displayData,newData))
-        displayData = newData as MutableList<Advertisement>
+        displayData = newData.toMutableList()
         diffs.dispatchUpdatesTo(this)
     }
 
     fun addFilter(text: String) {
+        if(displayData.isEmpty()){
+            return
+        }
         var newData = mutableListOf<Advertisement>()
         if(text.isEmpty() || text.isBlank()){
-            newData = data as MutableList<Advertisement>
+            newData = displayData.toMutableList()
         }
         else{
-            newData = data.filter {ad ->
+            newData = displayData.filter {ad ->
 
                 if(ad.title.contains(text, ignoreCase = true) ||
                     ad.location.contains(text, ignoreCase = true) ||
@@ -118,35 +121,54 @@ class OnlineAdvertisementsAdapter(val view: View, val vm: FirebaseVM, val contex
     }
 
     fun addSort(sortBy: String){
+        if(displayData.isEmpty()){
+            return
+        }
         data = displayData.toList()
         val newData = performSort(sortBy)
         val diffs = DiffUtil.calculateDiff(MyDiffCallbackOnlineAdvertisements(displayData, newData))
-        displayData = newData as MutableList<Advertisement>
+        displayData = newData.toMutableList()
         diffs.dispatchUpdatesTo(this)
     }
 
-    fun performSort(sortBy: String) : List<Advertisement>{
-        val newData = data as MutableList<Advertisement>
+    fun performSort(sortBy: String, showToast: Boolean = true) : List<Advertisement>{
+        val newData = data.toMutableList()
         when(sortBy){
-            "title_asc" -> { newData.sortBy { it.title }; Toast.makeText(context, "Sorted by title A-Z", Toast.LENGTH_SHORT).show() }
-            "title_desc" -> { newData.sortByDescending { it.title }; Toast.makeText(context, "Sorted by title Z-A", Toast.LENGTH_SHORT).show() }
-            "creator_asc" -> { newData.sortBy { it.user.fullname }; Toast.makeText(context, "Sorted by creator A-Z", Toast.LENGTH_SHORT).show() }
-            "creator_desc" -> { newData.sortByDescending { it.user.fullname }; Toast.makeText(context, "Sorted by creator Z-A", Toast.LENGTH_SHORT).show() }
-            "location_asc" -> { newData.sortBy { it.location }; Toast.makeText(context, "Sorted by location A-Z", Toast.LENGTH_SHORT).show()}
-            "location_desc" -> { newData.sortByDescending { it.location }; Toast.makeText(context, "Sorted by location Z-A", Toast.LENGTH_SHORT).show() }
+            "title_asc" -> { newData.sortBy { it.title }
+                if(showToast) Toast.makeText(context, "Sorted by title A-Z", Toast.LENGTH_SHORT).show()
+            }
+            "title_desc" -> { newData.sortByDescending { it.title }
+                if(showToast) Toast.makeText(context, "Sorted by title Z-A", Toast.LENGTH_SHORT).show()
+            }
+            "creator_asc" -> { newData.sortBy { it.user.fullname }
+                if(showToast) Toast.makeText(context, "Sorted by creator A-Z", Toast.LENGTH_SHORT).show()
+            }
+            "creator_desc" -> { newData.sortByDescending { it.user.fullname }
+                if(showToast) Toast.makeText(context, "Sorted by creator Z-A", Toast.LENGTH_SHORT).show()
+            }
+            "location_asc" -> { newData.sortBy { it.location }
+                if(showToast) Toast.makeText(context, "Sorted by location A-Z", Toast.LENGTH_SHORT).show()
+            }
+            "location_desc" -> { newData.sortByDescending { it.location }
+                if(showToast) Toast.makeText(context, "Sorted by location Z-A", Toast.LENGTH_SHORT).show()
+            }
             "date_desc" -> {
                 val sdf_date = SimpleDateFormat("EEE, d MMM yyyy")
                 val sdf_time = SimpleDateFormat("HH:mm")
                 val cmp = compareByDescending<Advertisement> { sdf_date.parse(it.date) }.thenByDescending { sdf_time.parse(it.from) }
                 newData.sortedWith(cmp)
-                Toast.makeText(context, "Sorted by most recent", Toast.LENGTH_SHORT).show()
+                if(showToast) {
+                    Toast.makeText(context, "Sorted by most recent", Toast.LENGTH_SHORT).show()
+                }
             }
             "date_asc" -> {
                 val sdf_date = SimpleDateFormat("EEE, d MMM yyyy")
                 val sdf_time = SimpleDateFormat("HH:mm")
                 val cmp = compareBy<Advertisement> { sdf_date.parse(it.date) }.thenBy { sdf_time.parse(it.from) }
                 newData.sortedWith(cmp)
-                Toast.makeText(context, "Sorted by oldest", Toast.LENGTH_SHORT).show()
+                if(showToast) {
+                    Toast.makeText(context, "Sorted by oldest", Toast.LENGTH_SHORT).show()
+                }
             }
         }
         return newData

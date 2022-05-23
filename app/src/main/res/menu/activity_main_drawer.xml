@@ -5,15 +5,15 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/advertisement_skills"
+            android:id="@+id/onlineAdvertisementSkills"
             android:icon="@drawable/ic_baseline_ads_click_24"
             android:title="@string/menu_online_advertisements" />
         <item
-            android:id="@+id/advertisements"
+            android:id="@+id/myAdvertisements"
             android:icon="@drawable/ic_baseline_list_alt_24"
             android:title="@string/menu_home" />
         <item
-            android:id="@+id/nav_profile"
+            android:id="@+id/myProfile"
             android:icon="@drawable/user"
             android:title="@string/menu_profile" />
         <item

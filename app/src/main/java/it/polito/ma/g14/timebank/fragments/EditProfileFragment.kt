@@ -2,7 +2,6 @@ package it.polito.ma.g14.timebank.fragments
 
 import android.app.Activity.RESULT_OK
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -387,7 +386,7 @@ class EditProfileFragment : Fragment() {
             view?.findViewById<TextView>(R.id.textView11)?.isVisible = false
             skills.forEach {
                 val inflater: LayoutInflater = layoutInflater
-                val skill: Chip = inflater.inflate(R.layout.skill_chip, null) as Chip
+                val skill: Chip = inflater.inflate(R.layout.profile_skill_chip, null) as Chip
                 skill.text = it
                 skill.isCloseIconVisible = true
                 skill.setOnCloseIconClickListener {
