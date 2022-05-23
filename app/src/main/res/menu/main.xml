@@ -35,18 +35,20 @@
         android:visible="true"
         app:showAsAction="always" >
         <menu>
-            <item
-                android:id="@+id/id0"
-                android:title="title"
-                android:visible="true" />
-            <item
-                android:id="@+id/id1"
-                android:title="date"
-                android:visible="true" />
-            <item
-                android:id="@+id/id2"
-                android:title="people"
-                android:visible="true" />
+            <group android:checkableBehavior="all">
+                <item
+                    android:id="@+id/id0"
+                    android:title="Sort by title"
+                    android:visible="true" />
+                <item
+                    android:id="@+id/id2"
+                    android:title="Sort by creator"
+                    android:visible="true" />
+                <item
+                    android:id="@+id/id1"
+                    android:title="Sort by date"
+                    android:visible="true" />
+            </group>
 
         </menu>
     </item>
