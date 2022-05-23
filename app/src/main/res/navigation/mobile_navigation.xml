@@ -87,7 +87,11 @@
         tools:layout="@layout/fragment_skill_advertisement_list">
         <action
             android:id="@+id/action_advertisement_skills_to_onlineAdsListFragment"
-            app:destination="@id/onlineAdsListFragment" />
+            app:destination="@id/onlineAdsListFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"/>
     </fragment>
     <fragment
         android:id="@+id/onlineAdsListFragment"
@@ -95,7 +99,11 @@
         android:label="Browse advertisements">
         <action
             android:id="@+id/action_onlineAdsListFragment_to_onlineAdDetailsFragment"
-            app:destination="@id/onlineAdDetailsFragment" />
+            app:destination="@id/onlineAdDetailsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"/>
     </fragment>
     <fragment
         android:id="@+id/onlineAdDetailsFragment"
