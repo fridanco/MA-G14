@@ -24,6 +24,7 @@ import com.google.firebase.ktx.Firebase
 import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.models.Advertisement
 import it.polito.ma.g14.timebank.models.FirebaseVM
+import java.text.SimpleDateFormat
 
 class OnlineAdvertisementsAdapter(val view: View, val vm: FirebaseVM, val context: Context): RecyclerView.Adapter<OnlineAdvertisementsAdapter.ItemViewHolder>() {
     var filter: Boolean = false
@@ -88,13 +89,25 @@ class OnlineAdvertisementsAdapter(val view: View, val vm: FirebaseVM, val contex
 
     override fun getItemCount(): Int = displayData.size
 
-    fun updateAdvertisements(timeSlots: List<Advertisement>){
+    fun updateAdvertisements(timeSlots: List<Advertisement>, sortBy: String){
         colorIndex = 0
-        data = timeSlots
-        sortList(data, sort)
-        val diffs = DiffUtil.calculateDiff(MyDiffCallbackOnlineAdvertisements(displayData as List<Advertisement>,data))
-        displayData = data as MutableList<Advertisement>
+        data = timeSlots as MutableList
 
+        var newData = data as MutableList<Advertisement>
+
+        when(sortBy){
+            "title" -> { newData.sortBy { it.title } }
+            "creator" -> { newData.sortBy { it.user.fullname } }
+            "date" -> {
+                val sdf_date = SimpleDateFormat("EEE, d MMM yyyy")
+                val sdf_time = SimpleDateFormat("HH:mm")
+                val cmp = compareBy<Advertisement> { sdf_date.parse(it.date) }.thenByDescending { sdf_time.parse(it.from) }
+                newData.sortedWith(cmp)
+            }
+        }
+
+        val diffs = DiffUtil.calculateDiff(MyDiffCallbackOnlineAdvertisements(displayData,newData))
+        displayData = data as MutableList<Advertisement>
         diffs.dispatchUpdatesTo(this)
     }
 
@@ -112,19 +125,21 @@ class OnlineAdvertisementsAdapter(val view: View, val vm: FirebaseVM, val contex
         diffs.dispatchUpdatesTo(this)
     }
 
-    fun sortList(data: List<Advertisement>, field: Int){
-
+    fun addSort(sortBy: String){
         var newData = data as MutableList<Advertisement>
-
-        when(field){
-            0 -> { newData.sortBy { it.title } }
-            1 -> { newData.sortBy { it.from } }
-            2 -> { newData.sortBy { it.title } }
-            else -> { newData.sortBy { it.title } }
-            //todo filter by rating (next lab)
-
+        when(sortBy){
+            "title" -> { newData.sortBy { it.title } }
+            "creator" -> { newData.sortBy { it.user.fullname } }
+            "date" -> {
+                val sdf_date = SimpleDateFormat("EEE, d MMM yyyy")
+                val sdf_time = SimpleDateFormat("HH:mm")
+                val cmp = compareBy<Advertisement> { sdf_date.parse(it.date) }.thenByDescending { sdf_time.parse(it.from) }
+                newData.sortedWith(cmp)
+            }
         }
-
+        val diffs = DiffUtil.calculateDiff(MyDiffCallbackOnlineAdvertisements(displayData, newData))
+        displayData = newData
+        diffs.dispatchUpdatesTo(this)
     }
 }
 

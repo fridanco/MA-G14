@@ -307,6 +307,7 @@ class MyAdEditFragment() : Fragment() {
     }
 
     fun isFormValid() : Boolean {
+        //TODO: add check for skills & error field
         if(title.trim().isEmpty()){
             et_title?.error = "Title cannot be empty"
             h_et_title?.error = "Title cannot be empty"

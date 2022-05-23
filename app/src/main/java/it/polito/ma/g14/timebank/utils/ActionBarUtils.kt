@@ -197,10 +197,27 @@ class Utils {
                     }
                 }
                 R.id.onlineAdsListFragment -> {
-                    val navHostFragment = (activity as FragmentActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
-                    val fragment = navHostFragment!!.childFragmentManager.fragments[0] as OnlineAdsListFragment
-                    fragment.updateAdsList()
-                    fragment.swipeRefreshLayout.isRefreshing = true
+                    val navHostFragment =
+                        (activity as FragmentActivity).supportFragmentManager.findFragmentById(
+                            R.id.nav_host_fragment_content_main
+                        ) as NavHostFragment?
+                    val fragment =
+                        navHostFragment!!.childFragmentManager.fragments[0] as OnlineAdsListFragment
+                    when(item.itemId) {
+                        R.id.app_bar_refresh -> {
+                            fragment.updateAdsList()
+                            fragment.swipeRefreshLayout.isRefreshing = true
+                        }
+                        R.id.id0 -> {
+                            fragment.sortAdvertisements("title")
+                        }
+                        R.id.id1 -> {
+                            fragment.sortAdvertisements("creator")
+                        }
+                        R.id.id2 -> {
+                            fragment.sortAdvertisements("date")
+                        }
+                    }
                 }
             }
         }

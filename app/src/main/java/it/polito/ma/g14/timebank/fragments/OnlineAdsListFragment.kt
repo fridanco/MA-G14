@@ -28,6 +28,8 @@ class OnlineAdsListFragment : Fragment() {
 
     var selectedSkill: String = ""
 
+    var sortByKey = "title"
+
     lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,7 +88,7 @@ class OnlineAdsListFragment : Fragment() {
                 val sdf_date = SimpleDateFormat("EEE, d MMM yyyy")
                 val sdf_time = SimpleDateFormat("HH:mm")
                 val cmp = compareBy<Advertisement> { sdf_date.parse(it.date) }.thenByDescending { sdf_time.parse(it.from) }
-                adapter.updateAdvertisements(ads.sortedWith(cmp))
+                adapter.updateAdvertisements(ads.sortedWith(cmp), sortByKey)
             }
             swipeRefreshLayout.isRefreshing = false
         }
@@ -117,27 +119,32 @@ class OnlineAdsListFragment : Fragment() {
         Utils.manageActionBarItemsVisibility(requireActivity(), menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val id: Int = item.itemId
-        return when (id) {
-            0 -> run {
-                Toast.makeText(requireContext(), "Item 1 Selected", Toast.LENGTH_LONG).show()
-                return true
-            }
-            1 -> run {
-                Toast.makeText(requireContext(), "Item 2 Selected", Toast.LENGTH_LONG).show()
-                return true
-            }
-            2 -> run {
-                Toast.makeText(requireContext(), "Item 3 Selected", Toast.LENGTH_LONG).show()
-                return true
-            }
-            else -> false
-        }
-    }
+//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//        val id: Int = item.itemId
+//        return when (id) {
+//            0 -> run {
+//                Toast.makeText(requireContext(), "Item 1 Selected", Toast.LENGTH_LONG).show()
+//                return true
+//            }
+//            1 -> run {
+//                Toast.makeText(requireContext(), "Item 2 Selected", Toast.LENGTH_LONG).show()
+//                return true
+//            }
+//            2 -> run {
+//                Toast.makeText(requireContext(), "Item 3 Selected", Toast.LENGTH_LONG).show()
+//                return true
+//            }
+//            else -> false
+//        }
+//    }
 
     fun updateAdsList(){
         vm.updateAdvertisementList()
+    }
+
+    fun sortAdvertisements(sortBy: String){
+        sortByKey = sortBy
+        adapter.addFilter(sortBy)
     }
 
 }
