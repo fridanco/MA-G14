@@ -1,6 +1,5 @@
 package it.polito.ma.g14.timebank.fragments
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -25,12 +24,15 @@ import java.text.SimpleDateFormat
 
 class MyAdsListFragment : Fragment() {
 
+
     val vm by viewModels<FirebaseVM>()
 
     lateinit var adapter: MyAdvertisementsAdapter
 
     var operationType: String = ""
     var selectedSkill: String = ""
+
+    var sortByKey = "title_asc"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,7 +69,7 @@ class MyAdsListFragment : Fragment() {
         )
 
         rv.layoutManager = LinearLayoutManager(requireContext())
-        val adapter = MyAdvertisementsAdapter(view, vm, requireContext())
+        adapter = MyAdvertisementsAdapter(view, vm, requireContext(), sortByKey)
         adapter.colorList = colorList as MutableList<String>
         rv.adapter = adapter
 
@@ -100,5 +102,15 @@ class MyAdsListFragment : Fragment() {
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
         Utils.manageActionBarItemsVisibility(requireActivity(), menu)
+    }
+
+    fun sortAdvertisements(sortBy: String){
+        sortByKey = sortBy
+        adapter.addSort(sortBy)
+    }
+
+
+    fun searchAdvertisements(query: String){
+        adapter.addFilter(query)
     }
 }

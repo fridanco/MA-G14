@@ -19,22 +19,55 @@ class Utils {
             val currDestinationID = navController.currentDestination?.id
             when (currDestinationID) {
                 R.id.advertisement_skills -> {
+                    menu.findItem(R.id.app_bar_search).isVisible = true
                     menu.findItem(R.id.app_bar_pencil).isVisible = false
                     menu.findItem(R.id.app_bar_delete).isVisible = false
                     menu.findItem(R.id.app_bar_cancel).isVisible = false
                     menu.findItem(R.id.app_bar_add).isVisible = false
-                    menu.findItem(R.id.app_bar_sort).isVisible = false
+                    menu.findItem(R.id.app_bar_sort).isVisible = true
                     menu.findItem(R.id.app_bar_refresh).isVisible = true
+                    
+                    menu.findItem(R.id.title_asc).isVisible = false
+                    menu.findItem(R.id.title_desc).isVisible = false
+                    menu.findItem(R.id.creator_asc).isVisible = false
+                    menu.findItem(R.id.creator_desc).isVisible = false
+                    menu.findItem(R.id.location_asc).isVisible = false
+                    menu.findItem(R.id.location_desc).isVisible = false
+                    menu.findItem(R.id.date_asc).isVisible = false
+                    menu.findItem(R.id.date_desc).isVisible = false
+                    menu.findItem(R.id.creator_asc).isVisible = false
+                    menu.findItem(R.id.creator_desc).isVisible = false
+                    menu.findItem(R.id.skill_asc).isVisible = true
+                    menu.findItem(R.id.skill_desc).isVisible = true
+                    menu.findItem(R.id.numAd_asc).isVisible = true
+                    menu.findItem(R.id.numAd_desc).isVisible = true
                 }
                 R.id.advertisements -> {
+                    menu.findItem(R.id.app_bar_search).isVisible = true
                     menu.findItem(R.id.app_bar_pencil).isVisible = false
                     menu.findItem(R.id.app_bar_delete).isVisible = false
                     menu.findItem(R.id.app_bar_cancel).isVisible = false
                     menu.findItem(R.id.app_bar_add).isVisible = false
                     menu.findItem(R.id.app_bar_sort).isVisible = true
                     menu.findItem(R.id.app_bar_refresh).isVisible = false
+                    
+                    menu.findItem(R.id.title_asc).isVisible = true
+                    menu.findItem(R.id.title_desc).isVisible = true
+                    menu.findItem(R.id.creator_asc).isVisible = true
+                    menu.findItem(R.id.creator_desc).isVisible = true
+                    menu.findItem(R.id.location_asc).isVisible = true
+                    menu.findItem(R.id.location_desc).isVisible = true
+                    menu.findItem(R.id.date_asc).isVisible = true
+                    menu.findItem(R.id.date_desc).isVisible = true
+                    menu.findItem(R.id.creator_asc).isVisible = true
+                    menu.findItem(R.id.creator_desc).isVisible = true
+                    menu.findItem(R.id.skill_asc).isVisible = false
+                    menu.findItem(R.id.skill_desc).isVisible = false
+                    menu.findItem(R.id.numAd_asc).isVisible = false
+                    menu.findItem(R.id.numAd_desc).isVisible = false
                 }
                 R.id.timeSlotEditFragment -> {
+                    menu.findItem(R.id.app_bar_search).isVisible = false
                     menu.findItem(R.id.app_bar_pencil).isVisible = false
                     menu.findItem(R.id.app_bar_delete).isVisible = false
                     menu.findItem(R.id.app_bar_cancel).isVisible = true
@@ -46,6 +79,7 @@ class Utils {
 //                    menu.findItem(R.id.app_bar_add).isVisible = fragment.operationType=="add_time_slot"
                 }
                 R.id.timeSlotDetailsFragment -> {
+                    menu.findItem(R.id.app_bar_search).isVisible = false
                     menu.findItem(R.id.app_bar_pencil).isVisible = true
                     menu.findItem(R.id.app_bar_delete).isVisible = true
                     menu.findItem(R.id.app_bar_cancel).isVisible = false
@@ -54,14 +88,31 @@ class Utils {
                     menu.findItem(R.id.app_bar_refresh).isVisible = false
                 }
                 R.id.onlineAdsListFragment -> {
+                    menu.findItem(R.id.app_bar_search).isVisible = true
                     menu.findItem(R.id.app_bar_pencil).isVisible = false
                     menu.findItem(R.id.app_bar_delete).isVisible = false
                     menu.findItem(R.id.app_bar_cancel).isVisible = false
                     menu.findItem(R.id.app_bar_add).isVisible = false
                     menu.findItem(R.id.app_bar_sort).isVisible = true
                     menu.findItem(R.id.app_bar_refresh).isVisible = true
+
+                    menu.findItem(R.id.title_asc).isVisible = true
+                    menu.findItem(R.id.title_desc).isVisible = true
+                    menu.findItem(R.id.creator_asc).isVisible = true
+                    menu.findItem(R.id.creator_desc).isVisible = true
+                    menu.findItem(R.id.location_asc).isVisible = true
+                    menu.findItem(R.id.location_desc).isVisible = true
+                    menu.findItem(R.id.date_asc).isVisible = true
+                    menu.findItem(R.id.date_desc).isVisible = true
+                    menu.findItem(R.id.creator_asc).isVisible = true
+                    menu.findItem(R.id.creator_desc).isVisible = true
+                    menu.findItem(R.id.skill_asc).isVisible = false
+                    menu.findItem(R.id.skill_desc).isVisible = false
+                    menu.findItem(R.id.numAd_asc).isVisible = false
+                    menu.findItem(R.id.numAd_desc).isVisible = false
                 }
                 R.id.onlineAdDetailsFragment -> {
+                    menu.findItem(R.id.app_bar_search).isVisible = false
                     menu.findItem(R.id.app_bar_pencil).isVisible = false
                     menu.findItem(R.id.app_bar_delete).isVisible = false
                     menu.findItem(R.id.app_bar_cancel).isVisible = true
@@ -73,6 +124,7 @@ class Utils {
                     val navHostFragment = (activity as FragmentActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
                     val fragment = navHostFragment!!.childFragmentManager.fragments[0] as ShowProfileFragment
                     menu.findItem(R.id.app_bar_pencil).isVisible = fragment.isImageDownloaded
+                    menu.findItem(R.id.app_bar_search).isVisible = false
                     menu.findItem(R.id.app_bar_delete).isVisible = false
                     menu.findItem(R.id.app_bar_cancel).isVisible = false
                     menu.findItem(R.id.app_bar_add).isVisible = false
@@ -80,6 +132,7 @@ class Utils {
                     menu.findItem(R.id.app_bar_refresh).isVisible = false
                 }
                 R.id.edit_profile -> {
+                    menu.findItem(R.id.app_bar_search).isVisible = false
                     menu.findItem(R.id.app_bar_pencil).isVisible = false
                     menu.findItem(R.id.app_bar_delete).isVisible = false
                     menu.findItem(R.id.app_bar_cancel).isVisible = true
@@ -88,10 +141,11 @@ class Utils {
                     menu.findItem(R.id.app_bar_refresh).isVisible = false
                 }
                 R.id.chooseSkillsFragment -> {
+                    menu.findItem(R.id.app_bar_search).isVisible = true
                     menu.findItem(R.id.app_bar_pencil).isVisible = false
                     menu.findItem(R.id.app_bar_delete).isVisible = false
                     menu.findItem(R.id.app_bar_cancel).isVisible = true
-                    menu.findItem(R.id.app_bar_add).isVisible = false
+                    menu.findItem(R.id.app_bar_add).isVisible = true
                     menu.findItem(R.id.app_bar_sort).isVisible = false
                     menu.findItem(R.id.app_bar_refresh).isVisible = false
                 }
@@ -152,6 +206,36 @@ class Utils {
                         }
                     }
                 }
+                R.id.advertisements -> {
+                    val navHostFragment = (activity as FragmentActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
+                    val fragment = navHostFragment!!.childFragmentManager.fragments[0] as MyAdsListFragment
+                    when(item.itemId) {
+                        R.id.title_asc -> {
+                            fragment.sortAdvertisements("title_asc")
+                        }
+                        R.id.title_desc -> {
+                            fragment.sortAdvertisements("title_desc")
+                        }
+                        R.id.location_asc -> {
+                            fragment.sortAdvertisements("location_asc")
+                        }
+                        R.id.location_desc -> {
+                            fragment.sortAdvertisements("location_desc")
+                        }
+                        R.id.creator_asc -> {
+                            fragment.sortAdvertisements("creator_asc")
+                        }
+                        R.id.creator_desc -> {
+                            fragment.sortAdvertisements("creator_desc")
+                        }
+                        R.id.date_asc -> {
+                            fragment.sortAdvertisements("date_asc")
+                        }
+                        R.id.date_desc -> {
+                            fragment.sortAdvertisements("date_desc")
+                        }
+                    }
+                }
                 R.id.nav_profile -> {
                     when(item.itemId){
                         R.id.app_bar_pencil -> {
@@ -178,6 +262,9 @@ class Utils {
                 }
                 R.id.chooseSkillsFragment -> {
                     when(item.itemId){
+                        R.id.app_bar_add -> {
+                            navController.popBackStack(R.id.edit_profile, false)
+                        }
                         R.id.app_bar_cancel -> {
                             val navHostFragment = (activity as FragmentActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
                             val fragment = navHostFragment!!.childFragmentManager.fragments[0] as ChooseSkillsFragment
@@ -187,12 +274,24 @@ class Utils {
                     }
                 }
                 R.id.advertisement_skills -> {
+                    val navHostFragment = (activity as FragmentActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
+                    val fragment = navHostFragment!!.childFragmentManager.fragments[0] as SkillAdvertisementListFragment
                     when(item.itemId){
                         R.id.app_bar_refresh -> {
-                            val navHostFragment = (activity as FragmentActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
-                            val fragment = navHostFragment!!.childFragmentManager.fragments[0] as SkillAdvertisementListFragment
-                            fragment.updateAdsSkillsList()
                             fragment.swipeRefreshLayout.isRefreshing = true
+                            fragment.updateAdsSkillsList()
+                        }
+                        R.id.skill_asc -> {
+                            fragment.sortAdvertisements("skill_asc")
+                        }
+                        R.id.skill_desc -> {
+                            fragment.sortAdvertisements("skill_desc")
+                        }
+                        R.id.numAd_asc -> {
+                            fragment.sortAdvertisements("numAd_asc")
+                        }
+                        R.id.numAd_desc -> {
+                            fragment.sortAdvertisements("numAd_desc")
                         }
                     }
                 }
@@ -205,17 +304,32 @@ class Utils {
                         navHostFragment!!.childFragmentManager.fragments[0] as OnlineAdsListFragment
                     when(item.itemId) {
                         R.id.app_bar_refresh -> {
-                            fragment.updateAdsList()
                             fragment.swipeRefreshLayout.isRefreshing = true
+                            fragment.updateAdsList()
                         }
-                        R.id.id0 -> {
-                            fragment.sortAdvertisements("title")
+                        R.id.title_asc -> {
+                            fragment.sortAdvertisements("title_asc")
                         }
-                        R.id.id1 -> {
-                            fragment.sortAdvertisements("creator")
+                        R.id.title_desc -> {
+                            fragment.sortAdvertisements("title_desc")
                         }
-                        R.id.id2 -> {
-                            fragment.sortAdvertisements("date")
+                        R.id.location_asc -> {
+                            fragment.sortAdvertisements("location_asc")
+                        }
+                        R.id.location_desc -> {
+                            fragment.sortAdvertisements("location_desc")
+                        }
+                        R.id.creator_asc -> {
+                            fragment.sortAdvertisements("creator_asc")
+                        }
+                        R.id.creator_desc -> {
+                            fragment.sortAdvertisements("creator_desc")
+                        }
+                        R.id.date_asc -> {
+                            fragment.sortAdvertisements("date_asc")
+                        }
+                        R.id.date_desc -> {
+                            fragment.sortAdvertisements("date_desc")
                         }
                     }
                 }

@@ -3,6 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/app_bar_search"
+        android:icon="@android:drawable/ic_menu_search"
+        android:title="Search"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        app:showAsAction="ifRoom|collapseActionView" />
+    <item
         android:id="@+id/app_bar_pencil"
         android:icon="@android:drawable/ic_menu_edit"
         android:title="@string/app_bar_edit_profile"
@@ -24,31 +30,56 @@
         app:showAsAction="always" />
     <item
         android:id="@+id/app_bar_refresh"
-        android:icon="@android:drawable/ic_popup_sync"
+        android:icon="@android:drawable/ic_menu_rotate"
         android:title="Refresh"
-        app:showAsAction="always" />
+        app:showAsAction="never" />
     <item
         android:id="@+id/app_bar_sort"
         android:enabled="true"
-        android:icon="@drawable/ic_baseline_filter_list_24"
+        android:icon="@android:drawable/ic_menu_sort_by_size"
         android:title="Sort"
         android:visible="true"
-        app:showAsAction="always" >
+        app:showAsAction="always">
         <menu>
-            <group android:checkableBehavior="all">
-                <item
-                    android:id="@+id/id0"
-                    android:title="Sort by title"
-                    android:visible="true" />
-                <item
-                    android:id="@+id/id2"
-                    android:title="Sort by creator"
-                    android:visible="true" />
-                <item
-                    android:id="@+id/id1"
-                    android:title="Sort by date"
-                    android:visible="true" />
-            </group>
+            <item
+                android:id="@+id/title_asc"
+                android:title="Sort by title A-Z"
+                android:visible="true" />
+            <item
+                android:id="@+id/title_desc"
+                android:title="Sort by title Z-A" />
+            <item
+                android:id="@+id/location_asc"
+                android:title="Sort by location A-Z" />
+            <item
+                android:id="@+id/location_desc"
+                android:title="Sort by location Z-A" />
+            <item
+                android:id="@+id/creator_asc"
+                android:title="Sort by creator A-Z"
+                android:visible="true" />
+            <item
+                android:id="@+id/creator_desc"
+                android:title="Sort by creator Z-A" />
+            <item
+                android:id="@+id/date_desc"
+                android:title="Sort by most recent" />
+            <item
+                android:id="@+id/date_asc"
+                android:title="Sort by oldest"
+                android:visible="true" />
+            <item
+                android:id="@+id/skill_asc"
+                android:title="Sort by skill A-Z" />
+            <item
+                android:id="@+id/skill_desc"
+                android:title="Sort by skill Z-A" />
+            <item
+                android:id="@+id/numAd_desc"
+                android:title="Sort by most number of ads" />
+            <item
+                android:id="@+id/numAd_asc"
+                android:title="Sort by least number of ads" />
 
         </menu>
     </item>

@@ -8,6 +8,7 @@ import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.view.*
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.view.isGone
@@ -25,9 +26,14 @@ import org.w3c.dom.Text
 
 class SkillAdvertisementListFragment : Fragment() {
 
+
     val vm by viewModels<FirebaseVM>()
 
     lateinit var swipeRefreshLayout: SwipeRefreshLayout
+
+    lateinit var adapter : SkillAdvertisementAdapter
+
+    var sortByKey = "skill_asc"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,7 +78,7 @@ class SkillAdvertisementListFragment : Fragment() {
         )
 
         rv.layoutManager = LinearLayoutManager(requireContext())
-        val adapter = SkillAdvertisementAdapter(view)
+        adapter = SkillAdvertisementAdapter(view, requireContext(), sortByKey)
         adapter.colorList = colorList as MutableList<String>
         rv.adapter = adapter
 
@@ -112,7 +118,17 @@ class SkillAdvertisementListFragment : Fragment() {
     }
 
     fun updateAdsSkillsList(){
-        vm.updateAdvertisementList()
+        vm.updateAdvertisementSkillsList()
+    }
+
+    fun sortAdvertisements(sortBy: String){
+        sortByKey = sortBy
+        adapter.addSort(sortBy)
+    }
+
+
+    fun searchSkills(query: String){
+        adapter.addFilter(query)
     }
 
 }

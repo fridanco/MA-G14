@@ -28,7 +28,7 @@ class OnlineAdsListFragment : Fragment() {
 
     var selectedSkill: String = ""
 
-    var sortByKey = "title"
+    var sortByKey = "title_asc"
 
     lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
@@ -144,7 +144,11 @@ class OnlineAdsListFragment : Fragment() {
 
     fun sortAdvertisements(sortBy: String){
         sortByKey = sortBy
-        adapter.addFilter(sortBy)
+        adapter.addSort(sortBy)
+    }
+
+    fun searchAdvertisements(query: String){
+        adapter.addFilter(query)
     }
 
 }

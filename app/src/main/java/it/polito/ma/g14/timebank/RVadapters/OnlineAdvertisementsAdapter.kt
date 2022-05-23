@@ -1,22 +1,19 @@
 package it.polito.ma.g14.timebank.RVadapters
 
 import android.content.Context
-import android.content.res.ColorStateList
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.cardview.widget.CardView
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.ktx.auth
@@ -89,57 +86,70 @@ class OnlineAdvertisementsAdapter(val view: View, val vm: FirebaseVM, val contex
 
     override fun getItemCount(): Int = displayData.size
 
-    fun updateAdvertisements(timeSlots: List<Advertisement>, sortBy: String){
+    fun updateAdvertisements(advertisements: List<Advertisement>, sortBy: String){
         colorIndex = 0
-        data = timeSlots as MutableList
-
-        var newData = data as MutableList<Advertisement>
-
-        when(sortBy){
-            "title" -> { newData.sortBy { it.title } }
-            "creator" -> { newData.sortBy { it.user.fullname } }
-            "date" -> {
-                val sdf_date = SimpleDateFormat("EEE, d MMM yyyy")
-                val sdf_time = SimpleDateFormat("HH:mm")
-                val cmp = compareBy<Advertisement> { sdf_date.parse(it.date) }.thenByDescending { sdf_time.parse(it.from) }
-                newData.sortedWith(cmp)
-            }
-        }
-
+        data = advertisements as MutableList
+        val newData = performSort(sortBy)
         val diffs = DiffUtil.calculateDiff(MyDiffCallbackOnlineAdvertisements(displayData,newData))
-        displayData = data as MutableList<Advertisement>
+        displayData = newData as MutableList<Advertisement>
         diffs.dispatchUpdatesTo(this)
     }
 
     fun addFilter(text: String) {
         var newData = mutableListOf<Advertisement>()
-//        if(text.isEmpty() || text.isBlank()){
-//            newData = data
-//        }
-//        else{
-//            newData = data.filter { it.name.contains(text, ignoreCase = true) } as MutableList<TimeSlot>
-//        }
-//        newData = data as MutableList<Advertisement>
+        if(text.isEmpty() || text.isBlank()){
+            newData = data as MutableList<Advertisement>
+        }
+        else{
+            newData = data.filter {ad ->
+
+                if(ad.title.contains(text, ignoreCase = true) ||
+                    ad.location.contains(text, ignoreCase = true) ||
+                    ad.description.contains(text, ignoreCase = true)){
+                    return@filter true
+                }
+                return@filter false
+
+            } as MutableList<Advertisement>
+        }
         val diffs = DiffUtil.calculateDiff(MyDiffCallbackOnlineAdvertisements(displayData, newData))
         displayData = newData
         diffs.dispatchUpdatesTo(this)
     }
 
     fun addSort(sortBy: String){
-        var newData = data as MutableList<Advertisement>
+        data = displayData.toList()
+        val newData = performSort(sortBy)
+        val diffs = DiffUtil.calculateDiff(MyDiffCallbackOnlineAdvertisements(displayData, newData))
+        displayData = newData as MutableList<Advertisement>
+        diffs.dispatchUpdatesTo(this)
+    }
+
+    fun performSort(sortBy: String) : List<Advertisement>{
+        val newData = data as MutableList<Advertisement>
         when(sortBy){
-            "title" -> { newData.sortBy { it.title } }
-            "creator" -> { newData.sortBy { it.user.fullname } }
-            "date" -> {
+            "title_asc" -> { newData.sortBy { it.title }; Toast.makeText(context, "Sorted by title A-Z", Toast.LENGTH_SHORT).show() }
+            "title_desc" -> { newData.sortByDescending { it.title }; Toast.makeText(context, "Sorted by title Z-A", Toast.LENGTH_SHORT).show() }
+            "creator_asc" -> { newData.sortBy { it.user.fullname }; Toast.makeText(context, "Sorted by creator A-Z", Toast.LENGTH_SHORT).show() }
+            "creator_desc" -> { newData.sortByDescending { it.user.fullname }; Toast.makeText(context, "Sorted by creator Z-A", Toast.LENGTH_SHORT).show() }
+            "location_asc" -> { newData.sortBy { it.location }; Toast.makeText(context, "Sorted by location A-Z", Toast.LENGTH_SHORT).show()}
+            "location_desc" -> { newData.sortByDescending { it.location }; Toast.makeText(context, "Sorted by location Z-A", Toast.LENGTH_SHORT).show() }
+            "date_desc" -> {
                 val sdf_date = SimpleDateFormat("EEE, d MMM yyyy")
                 val sdf_time = SimpleDateFormat("HH:mm")
-                val cmp = compareBy<Advertisement> { sdf_date.parse(it.date) }.thenByDescending { sdf_time.parse(it.from) }
+                val cmp = compareByDescending<Advertisement> { sdf_date.parse(it.date) }.thenByDescending { sdf_time.parse(it.from) }
                 newData.sortedWith(cmp)
+                Toast.makeText(context, "Sorted by most recent", Toast.LENGTH_SHORT).show()
+            }
+            "date_asc" -> {
+                val sdf_date = SimpleDateFormat("EEE, d MMM yyyy")
+                val sdf_time = SimpleDateFormat("HH:mm")
+                val cmp = compareBy<Advertisement> { sdf_date.parse(it.date) }.thenBy { sdf_time.parse(it.from) }
+                newData.sortedWith(cmp)
+                Toast.makeText(context, "Sorted by oldest", Toast.LENGTH_SHORT).show()
             }
         }
-        val diffs = DiffUtil.calculateDiff(MyDiffCallbackOnlineAdvertisements(displayData, newData))
-        displayData = newData
-        diffs.dispatchUpdatesTo(this)
+        return newData
     }
 }
 

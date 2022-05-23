@@ -28,21 +28,5 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/floatingActionButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
-            android:background="@color/white"
-            android:backgroundTint="#512DA8"
-            android:clickable="true"
-            android:foregroundTint="@color/white"
-            android:src="@android:drawable/ic_input_add"
-            android:textColor="@color/white"
-            android:tint="@color/white"
-            app:fabSize="auto"
-            app:rippleColor="@color/white" />
     </FrameLayout>
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

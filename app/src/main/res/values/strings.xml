@@ -51,6 +51,7 @@
     <string name="time_slot_edit_from_label">From<font color='#FF0000'>*</font></string>
     <string name="time_slot_edit_to_label">To<font color='#FF0000'>*</font></string>
     <string name="time_slot_edit_location_label">Location<font color='#FF0000'>*</font></string>
+    <string name="time_slot_edit_skills_label">Select skills<font color='#FF0000'>*</font></string>
 
 
     <string name="change_profile_picture_context_menu_camera">Take a picture</string>
