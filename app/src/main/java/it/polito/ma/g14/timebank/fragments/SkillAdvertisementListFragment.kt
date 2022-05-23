@@ -1,12 +1,15 @@
 package it.polito.ma.g14.timebank.fragments
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -18,6 +21,7 @@ import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.models.FirebaseVM
 import it.polito.ma.g14.timebank.models.SkillAdvertisement
 import it.polito.ma.g14.timebank.utils.Utils
+import org.w3c.dom.Text
 
 class SkillAdvertisementListFragment : Fragment() {
 
@@ -44,6 +48,7 @@ class SkillAdvertisementListFragment : Fragment() {
         return view
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -51,6 +56,11 @@ class SkillAdvertisementListFragment : Fragment() {
 
         val rv = view.findViewById<RecyclerView>(R.id.recyclerViewSkillAdvertisementList)
         val emptyRv = view.findViewById<TextView>(R.id.textView66)
+        val subtitleName = view.findViewById<TextView>(R.id.textView82)
+        val name = view.findViewById<TextView>(R.id.textView81)
+        val closeButton = view.findViewById<Button>(R.id.button3)
+        val welcomeCard = view.findViewById<CardView>(R.id.Welcome_Card)
+        name.text = "Hello Customer!"
 
         //noinspection ResourceType
         val colorList = listOf<String>(
@@ -66,14 +76,20 @@ class SkillAdvertisementListFragment : Fragment() {
         adapter.colorList = colorList as MutableList<String>
         rv.adapter = adapter
 
+        vm.profile.observe(viewLifecycleOwner){
+            name.text = "Hello "+it.fullname + "!"
+        }
+
         vm.skills.observe(viewLifecycleOwner) { it ->
             if(it.isEmpty()){
                 rv.isGone = true
                 emptyRv.isVisible = true
+                subtitleName.text = "There are currently no announcements available"
             }
             else {
                 rv.isVisible = true
                 emptyRv.isGone = true
+                subtitleName.text = "Click on the ad for the skill you prefer"
                 val cmp = compareBy<SkillAdvertisement> { it.skill }
                 adapter.updateSkillAdvertisements(it.sortedWith(cmp))
             }
@@ -82,6 +98,11 @@ class SkillAdvertisementListFragment : Fragment() {
 
         swipeRefreshLayout.setOnRefreshListener {
             vm.updateAdvertisementSkillsList()
+        }
+
+
+        closeButton.setOnClickListener {
+            welcomeCard.isVisible = false
         }
     }
 
