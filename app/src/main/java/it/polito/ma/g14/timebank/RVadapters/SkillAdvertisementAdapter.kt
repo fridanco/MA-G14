@@ -23,6 +23,8 @@ class SkillAdvertisementAdapter(val view: View, val context: Context): RecyclerV
     var colorList = mutableListOf("#FFFFFF")
     var colorIndex = 0
 
+    private var sortBy = ""
+
     class ItemViewHolder(v: View): RecyclerView.ViewHolder(v) {
         private val skillAdvertisementContainer = v.findViewById<LinearLayout>(R.id.skill_advertisement_container)
 
@@ -59,7 +61,7 @@ class SkillAdvertisementAdapter(val view: View, val context: Context): RecyclerV
     override fun getItemCount(): Int = displayData.size
 
     fun updateSkillAdvertisements(skillAdvertisements: List<SkillAdvertisement>, sortBy: String){
-        colorIndex = 0
+        this.sortBy = sortBy
         data = skillAdvertisements.toList()
         val newData = performSort(sortBy, false)
         val diffs = DiffUtil.calculateDiff(MyDiffCallback(displayData, newData))
@@ -72,11 +74,12 @@ class SkillAdvertisementAdapter(val view: View, val context: Context): RecyclerV
             return
         }
         val newData: MutableList<SkillAdvertisement>
+        val allData = performSort(sortBy)
         if(text.isEmpty() || text.isBlank()){
-            newData = displayData.toMutableList()
+            newData = allData.toMutableList()
         }
         else{
-            newData = displayData.filter { it.skill.contains(text, ignoreCase = true) }.toMutableList()
+            newData = allData.filter { it.skill.contains(text, ignoreCase = true) }.toMutableList()
         }
         val diffs = DiffUtil.calculateDiff(MyDiffCallback(displayData, newData))
         displayData = newData
@@ -84,6 +87,7 @@ class SkillAdvertisementAdapter(val view: View, val context: Context): RecyclerV
     }
 
     fun addSort(sortBy: String){
+        this.sortBy = sortBy
         if(displayData.isEmpty()){
             return
         }

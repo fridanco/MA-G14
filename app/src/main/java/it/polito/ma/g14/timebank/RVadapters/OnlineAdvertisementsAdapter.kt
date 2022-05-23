@@ -31,6 +31,8 @@ class OnlineAdvertisementsAdapter(val view: View, val vm: FirebaseVM, val contex
     var colorIndex = 0
     var sort = 0
 
+    private var sortBy = ""
+
     class ItemViewHolder(v: View): RecyclerView.ViewHolder(v) {
         private val advertisementContainer = v.findViewById<LinearLayout>(R.id.online_ad_card)
 
@@ -87,7 +89,7 @@ class OnlineAdvertisementsAdapter(val view: View, val vm: FirebaseVM, val contex
     override fun getItemCount(): Int = displayData.size
 
     fun updateAdvertisements(advertisements: List<Advertisement>, sortBy: String){
-        colorIndex = 0
+        this.sortBy = sortBy
         data = advertisements.toList()
         val newData = performSort(sortBy, false)
         val diffs = DiffUtil.calculateDiff(MyDiffCallbackOnlineAdvertisements(displayData,newData))
@@ -99,12 +101,13 @@ class OnlineAdvertisementsAdapter(val view: View, val vm: FirebaseVM, val contex
         if(displayData.isEmpty()){
             return
         }
-        var newData = mutableListOf<Advertisement>()
+        val newData: MutableList<Advertisement>
+        val allData = performSort(sortBy)
         if(text.isEmpty() || text.isBlank()){
-            newData = displayData.toMutableList()
+            newData = allData.toMutableList()
         }
         else{
-            newData = displayData.filter {ad ->
+            newData = allData.filter {ad ->
 
                 if(ad.title.contains(text, ignoreCase = true) ||
                     ad.location.contains(text, ignoreCase = true) ||
@@ -121,6 +124,7 @@ class OnlineAdvertisementsAdapter(val view: View, val vm: FirebaseVM, val contex
     }
 
     fun addSort(sortBy: String){
+        this.sortBy = sortBy
         if(displayData.isEmpty()){
             return
         }

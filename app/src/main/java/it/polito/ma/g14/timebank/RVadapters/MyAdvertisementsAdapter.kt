@@ -33,6 +33,8 @@ class MyAdvertisementsAdapter(
     var colorList = mutableListOf("#FFFFFF")
     var colorIndex = 0
 
+    private var sortBy: String = ""
+
     class ItemViewHolder(v: View): RecyclerView.ViewHolder(v) {
         private val advertisementContainer = v.findViewById<LinearLayout>(R.id.my_ad_card)
 
@@ -101,7 +103,7 @@ class MyAdvertisementsAdapter(
     override fun getItemCount(): Int = displayData.size
 
     fun updateAdvertisements(advertisements: List<Advertisement>, sortBy: String){
-        colorIndex = 0
+        this.sortBy = sortBy
         data = advertisements.toList()
         val newData = performSort(sortBy, false)
         val diffs = DiffUtil.calculateDiff(MyDiffCallbackMyAdvertisements(displayData.toList(), newData))
@@ -110,12 +112,13 @@ class MyAdvertisementsAdapter(
     }
 
     fun addFilter(text: String) {
-        var newData = mutableListOf<Advertisement>()
+        val newData: MutableList<Advertisement>
+        val allData = performSort(sortBy)
         if(text.isEmpty() || text.isBlank()){
-            newData = displayData.toMutableList()
+            newData = allData.toMutableList()
         }
         else{
-            newData = displayData.filter {ad ->
+            newData = allData.filter {ad ->
 
                 if(ad.title.contains(text, ignoreCase = true) ||
                     ad.location.contains(text, ignoreCase = true) ||
@@ -132,6 +135,7 @@ class MyAdvertisementsAdapter(
     }
 
     fun addSort(sortBy: String){
+        this.sortBy = sortBy
         if(displayData.isEmpty()){
             return
         }
