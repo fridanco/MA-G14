@@ -62,6 +62,7 @@ class SkillAdvertisementAdapter(val view: View, val context: Context): RecyclerV
 
     fun updateSkillAdvertisements(skillAdvertisements: List<SkillAdvertisement>, sortBy: String){
         this.sortBy = sortBy
+        colorIndex = 0
         data = skillAdvertisements.toList()
         val newData = performSort(sortBy, false)
         val diffs = DiffUtil.calculateDiff(MyDiffCallback(displayData, newData))
@@ -69,12 +70,12 @@ class SkillAdvertisementAdapter(val view: View, val context: Context): RecyclerV
         diffs.dispatchUpdatesTo(this)
     }
 
-    fun addFilter(text: String) {
-        if(displayData.isEmpty()){
-            return
+    fun addFilter(text: String): Int {
+        if(data.isEmpty()){
+            return 0
         }
         val newData: MutableList<SkillAdvertisement>
-        val allData = performSort(sortBy)
+        val allData = performSort(sortBy, false)
         if(text.isEmpty() || text.isBlank()){
             newData = allData.toMutableList()
         }
@@ -84,6 +85,7 @@ class SkillAdvertisementAdapter(val view: View, val context: Context): RecyclerV
         val diffs = DiffUtil.calculateDiff(MyDiffCallback(displayData, newData))
         displayData = newData
         diffs.dispatchUpdatesTo(this)
+        return displayData.size
     }
 
     fun addSort(sortBy: String){
@@ -91,8 +93,10 @@ class SkillAdvertisementAdapter(val view: View, val context: Context): RecyclerV
         if(displayData.isEmpty()){
             return
         }
+        val dataTmp = data
         data = displayData.toList()
         val newData = performSort(sortBy)
+        data = dataTmp
         val diffs = DiffUtil.calculateDiff(MyDiffCallback(displayData, newData))
         displayData = newData.toMutableList()
         diffs.dispatchUpdatesTo(this)

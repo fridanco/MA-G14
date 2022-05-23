@@ -86,7 +86,7 @@ class SkillAdvertisementListFragment : Fragment() {
             if(it.isEmpty()){
                 rv.isGone = true
                 emptyRv.isVisible = true
-                subtitleName.text = "There are currently no announcements available"
+                subtitleName.text = "There are currently no advertisements available"
             }
             else {
                 rv.isVisible = true
@@ -123,7 +123,16 @@ class SkillAdvertisementListFragment : Fragment() {
 
 
     fun searchSkills(query: String){
-        adapter.addFilter(query)
+        if(adapter.addFilter(query)==0){
+            view?.findViewById<RecyclerView>(R.id.recyclerViewSkillAdvertisementList)?.isGone = true
+            view?.findViewById<TextView>(R.id.textView66)?.isVisible = true
+            view?.findViewById<TextView>(R.id.textView66)?.text = "No skill matches your search"
+        }
+        else{
+            view?.findViewById<RecyclerView>(R.id.recyclerViewSkillAdvertisementList)?.isVisible = true
+            view?.findViewById<TextView>(R.id.textView66)?.isGone = true
+            view?.findViewById<TextView>(R.id.textView66)?.text = "There are no posted advertisements"
+        }
     }
 
 }

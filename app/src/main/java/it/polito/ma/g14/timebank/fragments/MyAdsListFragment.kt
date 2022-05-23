@@ -109,6 +109,15 @@ class MyAdsListFragment : Fragment() {
 
 
     fun searchAdvertisements(query: String){
-        adapter.addFilter(query)
+        if(adapter.addFilter(query)==0){
+            view?.findViewById<RecyclerView>(R.id.timeSlotRecyclerView)?.isGone = true
+            view?.findViewById<TextView>(R.id.textView60)?.isVisible = true
+            view?.findViewById<TextView>(R.id.textView60)?.text = "No advertisements matches your search"
+        }
+        else{
+            view?.findViewById<RecyclerView>(R.id.timeSlotRecyclerView)?.isVisible = true
+            view?.findViewById<TextView>(R.id.textView60)?.isGone = true
+            view?.findViewById<TextView>(R.id.textView60)?.text = "You have not posted any advertisment yet"
+        }
     }
 }

@@ -104,6 +104,7 @@ class MyAdvertisementsAdapter(
 
     fun updateAdvertisements(advertisements: List<Advertisement>, sortBy: String){
         this.sortBy = sortBy
+        colorIndex = 0
         data = advertisements.toList()
         val newData = performSort(sortBy, false)
         val diffs = DiffUtil.calculateDiff(MyDiffCallbackMyAdvertisements(displayData.toList(), newData))
@@ -111,9 +112,12 @@ class MyAdvertisementsAdapter(
         diffs.dispatchUpdatesTo(this)
     }
 
-    fun addFilter(text: String) {
+    fun addFilter(text: String): Int {
+        if(data.isEmpty()){
+            return 0
+        }
         val newData: MutableList<Advertisement>
-        val allData = performSort(sortBy)
+        val allData = performSort(sortBy, false)
         if(text.isEmpty() || text.isBlank()){
             newData = allData.toMutableList()
         }
@@ -132,6 +136,7 @@ class MyAdvertisementsAdapter(
         val diffs = DiffUtil.calculateDiff(MyDiffCallbackMyAdvertisements(displayData, newData))
         displayData = newData
         diffs.dispatchUpdatesTo(this)
+        return displayData.size
     }
 
     fun addSort(sortBy: String){
@@ -139,15 +144,17 @@ class MyAdvertisementsAdapter(
         if(displayData.isEmpty()){
             return
         }
+        val dataTmp = data
         data = displayData.toList()
         val newData = performSort(sortBy)
+        data = dataTmp
         val diffs = DiffUtil.calculateDiff(MyDiffCallbackOnlineAdvertisements(displayData, newData))
         displayData = newData.toMutableList()
         diffs.dispatchUpdatesTo(this)
     }
 
     fun performSort(sortBy: String, showToast: Boolean = true) : List<Advertisement>{
-        var newData = data as MutableList<Advertisement>
+        val newData = data as MutableList<Advertisement>
         when(sortBy){
             "title_asc" -> { newData.sortBy { it.title }
                 if(showToast) Toast.makeText(context, "Sorted by title A-Z", Toast.LENGTH_SHORT).show()

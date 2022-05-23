@@ -100,42 +100,9 @@ class OnlineAdsListFragment : Fragment() {
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
-
-//        val sortMenuItem: MenuItem = menu.findItem(R.id.app_bar_sort)
-//
-//        sortMenuItem.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
-//            override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
-//                sortMenuItem.isVisible = false
-//                return true
-//            }
-//
-//            override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
-//                sortMenuItem.isVisible = true
-//                return true
-//            }
-//        })
-
         Utils.manageActionBarItemsVisibility(requireActivity(), menu)
     }
 
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        val id: Int = item.itemId
-//        return when (id) {
-//            0 -> run {
-//                Toast.makeText(requireContext(), "Item 1 Selected", Toast.LENGTH_LONG).show()
-//                return true
-//            }
-//            1 -> run {
-//                Toast.makeText(requireContext(), "Item 2 Selected", Toast.LENGTH_LONG).show()
-//                return true
-//            }
-//            2 -> run {
-//                Toast.makeText(requireContext(), "Item 3 Selected", Toast.LENGTH_LONG).show()
-//                return true
-//            }
-//            else -> false
-//        }
-//    }
 
     fun updateAdsList(){
         vm.updateAdvertisementList()
@@ -147,7 +114,16 @@ class OnlineAdsListFragment : Fragment() {
     }
 
     fun searchAdvertisements(query: String){
-        adapter.addFilter(query)
+        if(adapter.addFilter(query)==0){
+            view?.findViewById<RecyclerView>(R.id.timeSlotRecyclerView)?.isGone = true
+            view?.findViewById<TextView>(R.id.textView60)?.isVisible = true
+            view?.findViewById<TextView>(R.id.textView60)?.text = "No advertisements matches your search"
+        }
+        else{
+            view?.findViewById<RecyclerView>(R.id.timeSlotRecyclerView)?.isVisible = true
+            view?.findViewById<TextView>(R.id.textView60)?.isGone = true
+            view?.findViewById<TextView>(R.id.textView60)?.text = "There are no advertisements in this category"
+        }
     }
 
 }

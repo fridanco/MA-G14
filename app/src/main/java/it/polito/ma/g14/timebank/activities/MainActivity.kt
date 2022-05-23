@@ -170,19 +170,6 @@ class MainActivity : AppCompatActivity() {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.main, menu)
 
-//        val expandActionListener = object : MenuItem.OnActionExpandListener {
-//            override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
-//                // TODO: do something...
-//                return true
-//            }
-//
-//            override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
-//                // TODO: do something...
-//                return true
-//            }
-//        }
-
-//        menu.findItem(R.id.app_bar_search).setOnActionExpandListener(expandActionListener)
         val searchView = menu.findItem(R.id.app_bar_search).actionView as androidx.appcompat.widget.SearchView
         searchView.queryHint = "Tap to search"
         searchView.setOnQueryTextListener(object :  androidx.appcompat.widget.SearchView.OnQueryTextListener {

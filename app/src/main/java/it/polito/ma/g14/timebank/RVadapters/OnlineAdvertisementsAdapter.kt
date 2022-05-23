@@ -90,6 +90,7 @@ class OnlineAdvertisementsAdapter(val view: View, val vm: FirebaseVM, val contex
 
     fun updateAdvertisements(advertisements: List<Advertisement>, sortBy: String){
         this.sortBy = sortBy
+        colorIndex = 0
         data = advertisements.toList()
         val newData = performSort(sortBy, false)
         val diffs = DiffUtil.calculateDiff(MyDiffCallbackOnlineAdvertisements(displayData,newData))
@@ -97,12 +98,12 @@ class OnlineAdvertisementsAdapter(val view: View, val vm: FirebaseVM, val contex
         diffs.dispatchUpdatesTo(this)
     }
 
-    fun addFilter(text: String) {
-        if(displayData.isEmpty()){
-            return
+    fun addFilter(text: String) : Int {
+        if(data.isEmpty()){
+            return 0
         }
         val newData: MutableList<Advertisement>
-        val allData = performSort(sortBy)
+        val allData = performSort(sortBy, false)
         if(text.isEmpty() || text.isBlank()){
             newData = allData.toMutableList()
         }
@@ -121,6 +122,7 @@ class OnlineAdvertisementsAdapter(val view: View, val vm: FirebaseVM, val contex
         val diffs = DiffUtil.calculateDiff(MyDiffCallbackOnlineAdvertisements(displayData, newData))
         displayData = newData
         diffs.dispatchUpdatesTo(this)
+        return displayData.size
     }
 
     fun addSort(sortBy: String){
@@ -128,8 +130,10 @@ class OnlineAdvertisementsAdapter(val view: View, val vm: FirebaseVM, val contex
         if(displayData.isEmpty()){
             return
         }
+        val dataTmp = data
         data = displayData.toList()
         val newData = performSort(sortBy)
+        data = dataTmp
         val diffs = DiffUtil.calculateDiff(MyDiffCallbackOnlineAdvertisements(displayData, newData))
         displayData = newData.toMutableList()
         diffs.dispatchUpdatesTo(this)
