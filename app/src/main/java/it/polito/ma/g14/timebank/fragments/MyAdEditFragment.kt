@@ -11,6 +11,8 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.cardview.widget.CardView
 import androidx.core.view.allViews
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -101,41 +103,13 @@ class MyAdEditFragment() : Fragment() {
         h_et_location = view.findViewById<EditText>(R.id.textView49)
         h_et_skills = view.findViewById<LinearLayout>(R.id.editTimeslotSkillsContainer)
 
-        vm.myAdvertisements.observe(viewLifecycleOwner) { myAdvertisementsList ->
-            val ad = myAdvertisementsList.find { it.id==advertisementID }
-            ad?.let {
-                title = it.title
-                description = it.description
-                date = it.date
-                from = it.from
-                to = it.to
-                location = it.location
-                et_title?.text = it.title.toEditable()
-                et_description?.text = it.description.toEditable()
-                et_date?.text = it.date.toEditable()
-                et_from?.text = it.from.toEditable()
-                et_to?.text = it.to.toEditable()
-                et_location?.text = it.location.toEditable()
-                h_et_title?.text = it.title.toEditable()
-                h_et_description?.text = it.description.toEditable()
-                h_et_date?.text = it.date.toEditable()
-                h_et_from?.text = it.from.toEditable()
-                h_et_to?.text = it.to.toEditable()
-                h_et_location?.text = it.location.toEditable()
-
-                val profileSkills = vm.profile.value?.skills
-                val adSkills = it.skills
-
-                val displayedSkills = mutableListOf<String>()
-                et_skills?.allViews?.forEach { skillView ->
-                    if(skillView is CardView) {
-                        displayedSkills.add(skillView.findViewById<TextView>(R.id.textView72).text.toString())
-                    }
-                }
-
+        if(operationType=="add_time_slot") {
+            vm.profile.observe(viewLifecycleOwner) {
                 val inflater: LayoutInflater = layoutInflater
-                adSkills.forEach { skill ->
-                    if(!displayedSkills.contains(skill)){
+                et_skills?.removeAllViews()
+                if(it.skills.isNotEmpty()){
+                    view.findViewById<TextView>(R.id.textView79).isGone = true
+                    it.skills.forEach { skill ->
                         val skillCard = inflater.inflate(R.layout.my_ad_skill_card, null)
                         skillCard.findViewById<TextView>(R.id.textView72).text = skill
                         skillCard.findViewById<CheckBox>(R.id.checkBox).isChecked = true
@@ -157,69 +131,105 @@ class MyAdEditFragment() : Fragment() {
                         et_skills?.addView(skillCard)
                     }
                 }
-
-            }
-        }
-
-        vm.profile.observe(viewLifecycleOwner){ userProfile ->
-            val displayedSkills = mutableListOf<String>()
-            et_skills?.allViews?.forEach { skillView ->
-                if(skillView is CardView) {
-                    displayedSkills.add(skillView.findViewById<TextView>(R.id.textView72).text.toString())
+                else{
+                    view.findViewById<TextView>(R.id.textView79).isVisible = true
                 }
             }
+        }
+        else{
+            vm.myAdvertisements.observe(viewLifecycleOwner) { myAdvertisementsList ->
+                val ad = myAdvertisementsList.find { it.id==advertisementID }
+                ad?.let {
+                    title = it.title
+                    description = it.description
+                    date = it.date
+                    from = it.from
+                    to = it.to
+                    location = it.location
+                    et_title?.text = it.title.toEditable()
+                    et_description?.text = it.description.toEditable()
+                    et_date?.text = it.date.toEditable()
+                    et_from?.text = it.from.toEditable()
+                    et_to?.text = it.to.toEditable()
+                    et_location?.text = it.location.toEditable()
+                    h_et_title?.text = it.title.toEditable()
+                    h_et_description?.text = it.description.toEditable()
+                    h_et_date?.text = it.date.toEditable()
+                    h_et_from?.text = it.from.toEditable()
+                    h_et_to?.text = it.to.toEditable()
+                    h_et_location?.text = it.location.toEditable()
 
-            val inflater: LayoutInflater = layoutInflater
-            userProfile.skills.forEach { skill ->
-                if(!displayedSkills.contains(skill)){
-                    val skillCard = inflater.inflate(R.layout.my_ad_skill_card, null)
-                    skillCard.findViewById<TextView>(R.id.textView72).text = skill
-                    skillCard.findViewById<CheckBox>(R.id.checkBox).isChecked = false
-                    skillCard.findViewById<CheckBox>(R.id.checkBox).setOnCheckedChangeListener { _, isChecked  ->
-                        if(isChecked){
-                            advertisementSkills.add(skill)
-                        }
-                        else{
-                            if(advertisementSkills.size>1) {
-                                advertisementSkills.remove(skill)
-                            }
-                            else{
-                                skillCard.findViewById<CheckBox>(R.id.checkBox).isChecked = true
-                                Toast.makeText(requireContext(), "At least 1 skill must be selected", Toast.LENGTH_SHORT).show()
-                            }
+                    val profileSkills = vm.profile.value?.skills
+                    val adSkills = it.skills
+
+                    val displayedSkills = mutableListOf<String>()
+                    et_skills?.allViews?.forEach { skillView ->
+                        if(skillView is CardView) {
+                            displayedSkills.add(skillView.findViewById<TextView>(R.id.textView72).text.toString())
                         }
                     }
-                    et_skills?.addView(skillCard)
+
+                    val inflater: LayoutInflater = layoutInflater
+                    adSkills.forEach { skill ->
+                        if(!displayedSkills.contains(skill)){
+                            val skillCard = inflater.inflate(R.layout.my_ad_skill_card, null)
+                            skillCard.findViewById<TextView>(R.id.textView72).text = skill
+                            skillCard.findViewById<CheckBox>(R.id.checkBox).isChecked = true
+                            advertisementSkills.add(skill)
+                            skillCard.findViewById<CheckBox>(R.id.checkBox).setOnCheckedChangeListener { _, isChecked  ->
+                                if(isChecked){
+                                    advertisementSkills.add(skill)
+                                }
+                                else{
+                                    if(advertisementSkills.size>1) {
+                                        advertisementSkills.remove(skill)
+                                    }
+                                    else{
+                                        skillCard.findViewById<CheckBox>(R.id.checkBox).isChecked = true
+                                        Toast.makeText(requireContext(), "At least 1 skill must be selected", Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                            }
+                            et_skills?.addView(skillCard)
+                        }
+                    }
+
                 }
             }
-        }
 
-        if(operationType=="add_time_slot") {
-            vm.profile.observe(viewLifecycleOwner) {
+            vm.profile.observe(viewLifecycleOwner){ userProfile ->
+                val displayedSkills = mutableListOf<String>()
+                et_skills?.allViews?.forEach { skillView ->
+                    if(skillView is CardView) {
+                        displayedSkills.add(skillView.findViewById<TextView>(R.id.textView72).text.toString())
+                    }
+                }
+
                 val inflater: LayoutInflater = layoutInflater
-                et_skills?.removeAllViews()
-                it.skills.forEach { skill ->
-                    val skillCard = inflater.inflate(R.layout.my_ad_skill_card, null)
-                    skillCard.findViewById<TextView>(R.id.textView72).text = skill
-                    skillCard.findViewById<CheckBox>(R.id.checkBox).isChecked = true
-                    advertisementSkills.add(skill)
-                    skillCard.findViewById<CheckBox>(R.id.checkBox).setOnCheckedChangeListener { _, isChecked  ->
-                        if(isChecked){
-                            advertisementSkills.add(skill)
-                        }
-                        else{
-                            if(advertisementSkills.size>1) {
-                                advertisementSkills.remove(skill)
+                userProfile.skills.forEach { skill ->
+                    if(!displayedSkills.contains(skill)){
+                        val skillCard = inflater.inflate(R.layout.my_ad_skill_card, null)
+                        skillCard.findViewById<TextView>(R.id.textView72).text = skill
+                        skillCard.findViewById<CheckBox>(R.id.checkBox).isChecked = false
+                        skillCard.findViewById<CheckBox>(R.id.checkBox).setOnCheckedChangeListener { _, isChecked  ->
+                            if(isChecked){
+                                advertisementSkills.add(skill)
                             }
                             else{
-                                skillCard.findViewById<CheckBox>(R.id.checkBox).isChecked = true
-                                Toast.makeText(requireContext(), "At least 1 skill must be selected", Toast.LENGTH_SHORT).show()
+                                if(advertisementSkills.size>1) {
+                                    advertisementSkills.remove(skill)
+                                }
+                                else{
+                                    skillCard.findViewById<CheckBox>(R.id.checkBox).isChecked = true
+                                    Toast.makeText(requireContext(), "At least 1 skill must be selected", Toast.LENGTH_SHORT).show()
+                                }
                             }
                         }
+                        et_skills?.addView(skillCard)
                     }
-                    et_skills?.addView(skillCard)
                 }
             }
+
         }
 
         et_title?.doOnTextChanged { text, _, _, _ ->

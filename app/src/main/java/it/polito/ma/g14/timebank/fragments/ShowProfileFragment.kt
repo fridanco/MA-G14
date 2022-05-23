@@ -10,6 +10,7 @@ import android.widget.*
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -118,8 +119,8 @@ class ShowProfileFragment : Fragment() {
             .error(R.drawable.user)
 
         vm.profile.observe(viewLifecycleOwner){
-            val coroutineScope = CoroutineScope(Dispatchers.IO)
-            coroutineScope.launch {
+            //val coroutineScope = CoroutineScope(Dispatchers.IO)
+            lifecycleScope.launch(Dispatchers.IO){
                 try {
                     val bitmap = Glide.with(requireContext())
                         .asBitmap()

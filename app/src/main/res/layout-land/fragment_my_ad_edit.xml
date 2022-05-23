@@ -130,6 +130,15 @@
         android:layout_height="wrap_content"
         android:text="Select skills" />
 
+    <TextView
+        android:id="@+id/textView79"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:paddingTop="8dp"
+        android:paddingBottom="12dp"
+        android:text="@string/you_have_not_selected_any_skill_yet_please_update_your_profile_with_atleast_one_skill" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
