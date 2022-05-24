@@ -28,6 +28,11 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
     private val _profile = MutableLiveData<User>()
     val profile : LiveData<User> = _profile
 
+    private val _editProfile = MutableLiveData<User>()
+    val editProfile : LiveData<User> = _editProfile
+    private val _editProfileImage = MutableLiveData<ByteArray>()
+    val editProfileImage : LiveData<ByteArray> = _editProfileImage
+
     private val _skills = MutableLiveData<List<SkillAdvertisement>>()
     val skills: LiveData<List<SkillAdvertisement>> = _skills
 
@@ -46,6 +51,13 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
     init {
         val uid = Firebase.auth.uid
 
+        db.collection("users").document(uid!!)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                _editProfile.value = querySnapshot.toObject(User::class.java)
+            }
+
+
         profileListener = db.collection("users").document(uid!!)
             .addSnapshotListener{ result, exception ->
                 if (exception != null) {
@@ -57,34 +69,6 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
                     } ?: throw Exception("Could not load user profile")
                 }
             }
-
-//        db.collection("skillAdvertisements")
-//            .whereGreaterThan("numAdvertisements",0)
-//            .get()
-//            .addOnSuccessListener { querySnapshot ->
-//                _skills.value = querySnapshot.mapNotNull { skillAdvertisement ->
-//                    skillAdvertisement.toObject(
-//                        SkillAdvertisement::class.java
-//                    )
-//                }
-//            }
-//
-//
-//        db.collection("advertisements")
-//            .get()
-//            .addOnSuccessListener { querySnapshot ->
-//                val adsMap = mutableMapOf<String, MutableList<Advertisement>>()
-//
-//                querySnapshot.mapNotNull { it.toObject(Advertisement::class.java) }.forEach { advertisement ->
-//                    advertisement.skills.forEach{ skill ->
-//                        adsMap.getOrPut(skill){
-//                            mutableListOf()
-//                        }.add(advertisement)
-//                    }
-//                }
-//
-//                _onlineAdvertisements.value = adsMap
-//            }
 
         myAdvertisementsListener = db.collection("advertisements")
             .whereEqualTo("uid",uid)
@@ -120,25 +104,21 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
 
         if(profileImage.isNotEmpty()){
             val profileImageRef = storageRef.child(Firebase.auth.currentUser!!.uid)
-
             profileImageRef.putBytes(profileImage)
                 .addOnFailureListener {
                     Log.w("Timebank FBSTORAGE", "Profile image could not be uploaded")
                 }.addOnSuccessListener { taskSnapshot ->
                     db.collection("users").document(Firebase.auth.currentUser!!.uid)
                         .set(user)
+                    db.collection("users").document(Firebase.auth.currentUser!!.uid)
+                        .update("timestamp",Date().toString())
                     Log.d("Timebank FBSTORAGE", "Profile image successfully uploaded")
                 }
         }
-    }
-
-    fun uploadProfileImage(profileImage: ByteArray){
-
-    }
-
-    fun updateProfileImage(){
-        db.collection("users").document(Firebase.auth.currentUser!!.uid)
-            .update("imageTimestamp",Date().toString())
+        else{
+            db.collection("users").document(Firebase.auth.currentUser!!.uid)
+                .set(user)
+        }
     }
 
     fun updateProfileSkills(skills: List<String>){

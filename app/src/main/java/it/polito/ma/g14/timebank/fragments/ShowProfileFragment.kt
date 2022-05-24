@@ -30,7 +30,7 @@ import java.io.ByteArrayOutputStream
 
 class ShowProfileFragment : Fragment() {
 
-    private val vm by viewModels<FirebaseVM>()
+    val vm by viewModels<FirebaseVM>()
 
     var fullName :  String = "Peter Parker"
     var email : String = "peter.parker@stark.us"
@@ -67,17 +67,6 @@ class ShowProfileFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_show_profile, container, false)
 
         requireActivity().invalidateOptionsMenu()
-
-//        try {
-//            val inputStream : FileInputStream = requireContext().openFileInput(getString(R.string.profile_picture_filename))
-//            profilePicture = IOUtils.toByteArray(inputStream)
-//            if(profilePicture?.size==0){
-//                profilePicture = null
-//            }
-//        }
-//        catch (e: Exception){
-//            profilePicture=null
-//        }
 
         val sv = view?.findViewById<ScrollView>(R.id.scrollView2)
         val frameLayout = view?.findViewById<FrameLayout>(R.id.frameLayout)
@@ -138,6 +127,7 @@ class ShowProfileFragment : Fragment() {
             }
 
             iv_profilePicture?.let { it1 ->
+                Glide.with(this).clear(it1)
                 Glide.with(this)
                     .load(vm.storageRef.child(Firebase.auth.currentUser!!.uid))
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
@@ -146,6 +136,7 @@ class ShowProfileFragment : Fragment() {
                     .into(it1)
             }
             h_iv_profilePicture?.let { it2 ->
+                Glide.with(this).clear(it2)
                 Glide.with(this)
                     .load(vm.storageRef.child(Firebase.auth.currentUser!!.uid))
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
@@ -213,14 +204,6 @@ class ShowProfileFragment : Fragment() {
             h_tv_description?.text = profile.description
             view?.findViewById<TextView>(R.id.textView39)?.isGone = true
             view?.findViewById<TextView>(R.id.textView40)?.isGone = true
-        }
-    }
-
-    private fun populateProfilePicture(){
-        profilePicture?.let {
-            val bmp = BitmapFactory.decodeByteArray(it, 0, it.size)
-            iv_profilePicture?.setImageBitmap(bmp)
-            h_iv_profilePicture?.setImageBitmap(bmp)
         }
     }
 

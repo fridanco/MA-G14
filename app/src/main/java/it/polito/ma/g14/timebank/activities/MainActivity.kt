@@ -119,6 +119,9 @@ class MainActivity : AppCompatActivity() {
                     toast.show()
                     return;
                 }
+                else{
+                    fragment.saveData()
+                }
             }
             R.id.myAdvertisementEdit -> {
                 val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
@@ -149,6 +152,9 @@ class MainActivity : AppCompatActivity() {
                     toast.setGravity(Gravity.CENTER, 0, 0)
                     toast.show()
                     return false;
+                }
+                else{
+                    fragment.saveData()
                 }
             }
             R.id.myAdvertisementEdit -> {

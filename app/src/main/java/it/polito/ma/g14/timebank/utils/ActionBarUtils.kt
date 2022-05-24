@@ -1,8 +1,10 @@
 package it.polito.ma.g14.timebank.utils
 
 import android.app.Activity
+import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.findNavController
@@ -248,15 +250,24 @@ class Utils {
                     }
                 }
                 R.id.myProfileEdit -> {
+                    val navHostFragment = (activity as FragmentActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
+                    val fragment = navHostFragment!!.childFragmentManager.fragments[0] as EditProfileFragment
                     when(item.itemId){
                         R.id.app_bar_cancel -> {
-                            val navHostFragment = (activity as FragmentActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
-                            val fragment = navHostFragment!!.childFragmentManager.fragments[0] as EditProfileFragment
                             fragment.cancelOperation = true
+                            fragment.saveData()
                             navController.popBackStack(R.id.myProfile, false)
                         }
                         R.id.app_bar_add -> {
-                            navController.popBackStack(R.id.myProfile, false)
+                            if(!fragment.isFormValid() && !fragment.cancelOperation){
+                                val toast = Toast.makeText(activity.applicationContext, "Please fill in all the mandatory fields", Toast.LENGTH_LONG)
+                                toast.setGravity(Gravity.CENTER, 0, 0)
+                                toast.show()
+                            }
+                            else{
+                                fragment.saveData()
+                                navController.popBackStack(R.id.myProfile, false)
+                            }
                         }
                     }
                 }
