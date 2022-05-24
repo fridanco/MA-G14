@@ -121,7 +121,7 @@ class OnlineAdsListFragment : Fragment() {
         if(adapter.addFilter(query)==0){
             view?.findViewById<RecyclerView>(R.id.timeSlotRecyclerView)?.isGone = true
             view?.findViewById<TextView>(R.id.textView60)?.isVisible = true
-            view?.findViewById<TextView>(R.id.textView60)?.text = "No advertisements matches your search"
+            view?.findViewById<TextView>(R.id.textView60)?.text = "No advertisements matche your search"
         }
         else{
             view?.findViewById<RecyclerView>(R.id.timeSlotRecyclerView)?.isVisible = true
