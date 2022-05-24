@@ -14,4 +14,6 @@
         <!-- Customize your theme here. -->
         <item name = "android:textColorPrimary">@color/white</item>
     </style>
+
+    <style name="Theme.TimeBank.PopupOverlay" parent="ThemeOverlay.AppCompat.Dark" />
 </resources>

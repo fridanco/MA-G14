@@ -42,7 +42,7 @@
         android:id="@+id/app_bar_sort"
         android:enabled="true"
         android:icon="@android:drawable/ic_menu_sort_by_size"
-        android:textColor="@color/white"
+        android:textColor="?android:textColorPrimary"
         android:title="Sort"
         android:visible="true"
         app:showAsAction="always">
