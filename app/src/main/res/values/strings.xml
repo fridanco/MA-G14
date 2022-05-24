@@ -104,7 +104,7 @@
     <string name="welcome_to_timebank">Welcome to TimeBank</string>
     <string name="in_order_to_use_this_app_you_must_login_using_one_of_the_options_below">In order to use this app you must login using your Google account</string>
     <string name="login_with_google">Login with Google</string>
-    <string name="you_have_not_selected_any_skill_yet_please_update_your_profile_with_atleast_one_skill">You have not selected any skill yet. Please update your profile with atleast one skill</string>
+    <string name="you_have_not_selected_any_skill_yet_please_update_your_profile_with_atleast_one_skill">You have not selected any skill yet. Please update your profile with at least one skill</string>
     <string name="click_here_to_go_to_your_profile"><font color='#0000EE'><u>Click here to go to your profile</u></font></string>
 
 
