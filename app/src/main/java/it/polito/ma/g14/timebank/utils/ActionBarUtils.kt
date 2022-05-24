@@ -164,6 +164,7 @@ class Utils {
                             val navHostFragment = (activity as FragmentActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
                             val fragment = navHostFragment!!.childFragmentManager.fragments[0] as MyAdEditFragment
                             fragment.cancelOperation = true
+                            fragment.saveData()
                             if(fragment.operationType=="edit_time_slot") {
                                 if(fragment.originFragment=="list_time_slot"){
                                     navController.popBackStack(R.id.myAdvertisements, false)
@@ -179,7 +180,13 @@ class Utils {
                         R.id.app_bar_add -> {
                             val navHostFragment = (activity as FragmentActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
                             val fragment = navHostFragment!!.childFragmentManager.fragments[0] as MyAdEditFragment
-                            if(fragment.isFormValid()) {
+                            if(!fragment.isFormValid() && !fragment.cancelOperation){
+                                val toast = Toast.makeText(activity.applicationContext, "Please fill in all the mandatory fields", Toast.LENGTH_LONG)
+                                toast.setGravity(Gravity.CENTER, 0, 0)
+                                toast.show()
+                            }
+                            else{
+                                fragment.saveData()
                                 navController.popBackStack(R.id.myAdvertisements, false)
                             }
                         }
@@ -244,7 +251,7 @@ class Utils {
                             val navHostFragment = (activity as FragmentActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
                             val fragment = navHostFragment!!.childFragmentManager.fragments[0] as ShowProfileFragment
                             val profileBackup = fragment.performProfileBackup()
-                            val bundle = bundleOf("profileBackup" to profileBackup)
+                            val bundle = bundleOf("createAdSrc" to false)
                             navController.navigate(R.id.action_nav_profile_to_edit_profile, bundle)
                         }
                     }
@@ -256,7 +263,12 @@ class Utils {
                         R.id.app_bar_cancel -> {
                             fragment.cancelOperation = true
                             fragment.saveData()
-                            navController.popBackStack(R.id.myProfile, false)
+                            if(fragment.createAdSrc){
+                                navController.popBackStack(R.id.myAdvertisementEdit, false)
+                            }
+                            else{
+                                navController.popBackStack(R.id.myProfile, false)
+                            }
                         }
                         R.id.app_bar_add -> {
                             if(!fragment.isFormValid() && !fragment.cancelOperation){
@@ -266,7 +278,12 @@ class Utils {
                             }
                             else{
                                 fragment.saveData()
-                                navController.popBackStack(R.id.myProfile, false)
+                                if(fragment.createAdSrc){
+                                    navController.popBackStack(R.id.myAdvertisementEdit, false)
+                                }
+                                else{
+                                    navController.popBackStack(R.id.myProfile, false)
+                                }
                             }
                         }
                     }
@@ -274,12 +291,18 @@ class Utils {
                 R.id.myProfileSkills -> {
                     when(item.itemId){
                         R.id.app_bar_add -> {
+                            val navHostFragment = (activity as FragmentActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
+                            val fragment = navHostFragment!!.childFragmentManager.fragments[0] as ChooseSkillsFragment
+                            fragment.saveData()
+                            println(fragment.adapter.checked_skills.size)
+                            navController.previousBackStackEntry?.savedStateHandle?.set("newSkills", fragment.adapter.checked_skills.toList())
                             navController.popBackStack(R.id.myProfileEdit, false)
                         }
                         R.id.app_bar_cancel -> {
                             val navHostFragment = (activity as FragmentActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
                             val fragment = navHostFragment!!.childFragmentManager.fragments[0] as ChooseSkillsFragment
                             fragment.cancelOperation = true
+                            fragment.saveData()
                             navController.popBackStack(R.id.myProfileEdit, false)
                         }
                     }

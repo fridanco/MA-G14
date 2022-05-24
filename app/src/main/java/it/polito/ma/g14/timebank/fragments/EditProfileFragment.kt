@@ -18,6 +18,7 @@ import android.widget.*
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.exifinterface.media.ExifInterface
@@ -75,6 +76,7 @@ class EditProfileFragment : Fragment() {
     var imgButton2 : ImageButton? = null
 
     var cancelOperation = false
+    var createAdSrc = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,19 +88,6 @@ class EditProfileFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_edit_profile, container, false)
 
         activity?.invalidateOptionsMenu()
-
-//        try {
-//            val inputStream : FileInputStream = requireContext().openFileInput(getString(R.string.profile_picture_filename))
-//            profilePicture = IOUtils.toByteArray(inputStream)
-//            if(profilePicture?.size==0){
-//                profilePicture = null
-//            }
-//        }
-//        catch (e: Exception){
-//            profilePicture=null
-//        }
-
-        //TODO: Set email field as disabled
 
         val sv = view?.findViewById<ScrollView>(R.id.scrollView)
         val frameLayout = view?.findViewById<FrameLayout>(R.id.frameLayout)
@@ -133,32 +122,18 @@ class EditProfileFragment : Fragment() {
         attachListeners()
         attachContextMenu()
 
-        //populateProfileImage()
-//        val circularProgressDrawable = CircularProgressDrawable(requireContext())
-//        circularProgressDrawable.strokeWidth = 5f
-//        circularProgressDrawable.centerRadius = 30f
-//        circularProgressDrawable.start()
-//
-//        val options: RequestOptions = RequestOptions()
-//            .placeholder(circularProgressDrawable)
-//            .error(R.drawable.user)
+        val navController = view.findNavController()
+        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<List<String>>("newSkills")?.observe(viewLifecycleOwner) {
+            localVm.updateProfileSkills(it)
+        }
 
-//        iv_profilePicture?.let { it1 ->
-//            Glide.with(this)
-//                .load(vm.storageRef.child(Firebase.auth.currentUser!!.uid))
-//                .apply(options)
-//                .diskCacheStrategy(DiskCacheStrategy.NONE)
-//                .skipMemoryCache(true)
-//                .into(it1)
-//        }
-//        h_iv_profilePicture?.let { it2 ->
-//            Glide.with(this)
-//                .load(vm.storageRef.child(Firebase.auth.currentUser!!.uid))
-//                .apply(options)
-//                .diskCacheStrategy(DiskCacheStrategy.NONE)
-//                .skipMemoryCache(true)
-//                .into(it2)
-//        }
+        if(arguments?.getBoolean("createAdSrc")!=null){
+            createAdSrc = arguments?.getBoolean("createAdSrc")!!
+        }
+        else{
+            createAdSrc = false
+        }
+
 
         localVm.editProfileImage.observe(viewLifecycleOwner){
             if(profilePicture==null && it.isNotEmpty()) {
@@ -181,6 +156,14 @@ class EditProfileFragment : Fragment() {
             populateProfileSkills(it.skills)
         }
 
+        val img = localVm.getProfileImage()
+        if(img!=null && img.isNotEmpty()){
+            profilePicture = img
+            val bmp = BitmapFactory.decodeByteArray(img, 0, img.size)
+            iv_profilePicture?.setImageBitmap(bmp)
+            h_iv_profilePicture?.setImageBitmap(bmp)
+        }
+
     }
 
     override fun onDestroy() {
@@ -189,6 +172,7 @@ class EditProfileFragment : Fragment() {
             localVm.setProfileImage(profilePicture!!)
         }
         else{
+            println("profile picture null")
             localVm.setProfileImage(byteArrayOf())
         }
         super.onDestroy()
@@ -425,7 +409,8 @@ class EditProfileFragment : Fragment() {
             localVm.setProfileData(fullName,nickName,email,location,description,skills)
             localVm.setProfileImage(byteArray)
 
-            view?.findNavController()?.navigate(R.id.action_edit_profile_to_chooseSkillsFragment)
+            val bundle = bundleOf("skills" to skills)
+            view?.findNavController()?.navigate(R.id.action_edit_profile_to_chooseSkillsFragment, bundle)
         }
 
 
@@ -477,10 +462,10 @@ class EditProfileFragment : Fragment() {
             description = text.toString()
         }
         h_button_skills?.setOnClickListener {
-            var byteArray = byteArrayOf()
-            profilePicture?.let { byteArray=it }
-            localVm.setProfileData(fullName,nickName,email,location,description,skills)
-            localVm.setProfileImage(byteArray)
+//            var byteArray = byteArrayOf()
+//            profilePicture?.let { byteArray=it }
+//            localVm.setProfileData(fullName,nickName,email,location,description,skills)
+//            localVm.setProfileImage(byteArray)
 
             view?.findNavController()?.navigate(R.id.action_edit_profile_to_chooseSkillsFragment)
         }
@@ -553,23 +538,9 @@ class EditProfileFragment : Fragment() {
 
     fun saveData(){
         if(cancelOperation){
-            //Restore profile data
-//            profileBackup.let {
-//                val inputStream : FileInputStream
-//                var byteArray = byteArrayOf()
-//                try {
-//                    inputStream = requireContext().openFileInput(getString(R.string.profile_picture_filename))
-//                    byteArray = IOUtils.toByteArray(inputStream)
-//                }
-//                catch (e: Exception){
-//
-//                }
-//                vm.updateProfile(it.fullname,it.nickname,it.email,it.location,it.description, it.skills, byteArray)
-//            }
-
+            //Don't save profile data
             Toast.makeText(requireContext(), "Changes discarded", Toast.LENGTH_SHORT).show()
 
-            super.onDestroy()
             return
         }
 
@@ -581,7 +552,6 @@ class EditProfileFragment : Fragment() {
         vm.updateProfile(fullName, nickName, email, location, description, skills, byteArray)
         Toast.makeText(requireContext(), "Profile updated", Toast.LENGTH_SHORT).show()
 
-        super.onDestroy()
     }
 
 }

@@ -132,8 +132,18 @@ class MainActivity : AppCompatActivity() {
                     toast.show()
                     return;
                 }
+                else{
+                    fragment.saveData()
+                }
             }
             R.id.myAdvertisementDetails -> {
+                navController.popBackStack(R.id.myAdvertisements, true)
+            }
+            R.id.myProfileSkills -> {
+                val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
+                val fragment = navHostFragment!!.childFragmentManager.fragments[0] as ChooseSkillsFragment
+                fragment.saveData()
+                navController.previousBackStackEntry?.savedStateHandle?.set("newSkills", fragment.adapter.checked_skills.toList())
                 navController.popBackStack(R.id.myAdvertisements, true)
             }
         }
@@ -166,6 +176,19 @@ class MainActivity : AppCompatActivity() {
                     toast.show()
                     return false;
                 }
+                else{
+                    fragment.saveData()
+                }
+            }
+            R.id.myAdvertisementDetails -> {
+                navController.popBackStack(R.id.myAdvertisements, true)
+            }
+            R.id.myProfileSkills -> {
+                val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
+                val fragment = navHostFragment!!.childFragmentManager.fragments[0] as ChooseSkillsFragment
+                fragment.saveData()
+                navController.previousBackStackEntry?.savedStateHandle?.set("newSkills", fragment.adapter.checked_skills.toList())
+                navController.popBackStack(R.id.myAdvertisements, true)
             }
         }
 

@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.cardview.widget.CardView
+import androidx.core.os.bundleOf
 import androidx.core.view.allViews
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
@@ -21,6 +22,7 @@ import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.dialogs.DatePickerFragment
 import it.polito.ma.g14.timebank.dialogs.TimePickerFragment
 import it.polito.ma.g14.timebank.models.Advertisement
+import it.polito.ma.g14.timebank.models.EditAdVM
 import it.polito.ma.g14.timebank.models.FirebaseVM
 import it.polito.ma.g14.timebank.utils.Utils
 import java.text.SimpleDateFormat
@@ -30,6 +32,7 @@ import java.util.*
 class MyAdEditFragment() : Fragment() {
 
     val vm by viewModels<FirebaseVM>()
+    val editAdVM by viewModels<EditAdVM>()
 
     private var et_title : TextView? = null
     private var et_description : TextView? = null
@@ -88,7 +91,17 @@ class MyAdEditFragment() : Fragment() {
         originFragment = requireArguments().getString("originFragment") ?: "time_slot_details"
 
         view.findViewById<TextView>(R.id.textView78).setOnClickListener {
-            findNavController().navigate(R.id.myProfile)
+            editAdVM.setNewAdvertisement(
+                title,
+                description,
+                date,
+                from,
+                to,
+                location,
+                advertisementSkills
+            )
+            val bundle = bundleOf("createAdSrc" to true)
+            findNavController().navigate(R.id.myProfileEdit, bundle)
         }
 
         et_title = view.findViewById<EditText>(R.id.textView51)
@@ -108,7 +121,31 @@ class MyAdEditFragment() : Fragment() {
         h_et_skills = view.findViewById<LinearLayout>(R.id.editTimeslotSkillsContainer)
 
         if(operationType=="add_time_slot") {
+
+            editAdVM.newAdvertisement.observe(viewLifecycleOwner){
+                title = it.title
+                description = it.description
+                date = it.date
+                from = it.from
+                to = it.to
+                location = it.location
+
+                et_title?.text = it.title.toEditable()
+                et_description?.text = it.description.toEditable()
+                et_date?.text = it.date.toEditable()
+                et_from?.text = it.from.toEditable()
+                et_to?.text = it.to.toEditable()
+                et_location?.text = it.location.toEditable()
+                h_et_title?.text = it.title.toEditable()
+                h_et_description?.text = it.description.toEditable()
+                h_et_date?.text = it.date.toEditable()
+                h_et_from?.text = it.from.toEditable()
+                h_et_to?.text = it.to.toEditable()
+                h_et_location?.text = it.location.toEditable()
+            }
+
             vm.profile.observe(viewLifecycleOwner) {
+                val newAdSkills = editAdVM.getNewAdvertisementSkills()
                 val inflater: LayoutInflater = layoutInflater
                 et_skills?.removeAllViews()
                 if(it.skills.isNotEmpty()){
@@ -117,7 +154,7 @@ class MyAdEditFragment() : Fragment() {
                     it.skills.forEach { skill ->
                         val skillCard = inflater.inflate(R.layout.my_ad_skill_card, null)
                         skillCard.findViewById<TextView>(R.id.textView72).text = skill
-                        skillCard.findViewById<CheckBox>(R.id.checkBox).isChecked = true
+                        skillCard.findViewById<CheckBox>(R.id.checkBox).isChecked = newAdSkills.isEmpty() || newAdSkills.contains(skill)
                         advertisementSkills.add(skill)
                         skillCard.findViewById<CheckBox>(R.id.checkBox).setOnCheckedChangeListener { _, isChecked  ->
                             if(isChecked){
@@ -142,8 +179,11 @@ class MyAdEditFragment() : Fragment() {
                 }
             }
         }
+        //Edit advertisement (time slot)
         else{
-            vm.myAdvertisements.observe(viewLifecycleOwner) { myAdvertisementsList ->
+            view.findViewById<TextView>(R.id.textView79).isGone = true
+            view.findViewById<TextView>(R.id.textView78).isGone = true
+            editAdVM.myAdvertisements.observe(viewLifecycleOwner) { myAdvertisementsList ->
                 val ad = myAdvertisementsList.find { it.id==advertisementID }
                 ad?.let {
                     title = it.title
@@ -152,6 +192,7 @@ class MyAdEditFragment() : Fragment() {
                     from = it.from
                     to = it.to
                     location = it.location
+
                     et_title?.text = it.title.toEditable()
                     et_description?.text = it.description.toEditable()
                     et_date?.text = it.date.toEditable()
@@ -165,7 +206,6 @@ class MyAdEditFragment() : Fragment() {
                     h_et_to?.text = it.to.toEditable()
                     h_et_location?.text = it.location.toEditable()
 
-                    val profileSkills = vm.profile.value?.skills
                     val adSkills = it.skills
 
                     val displayedSkills = mutableListOf<String>()
@@ -314,31 +354,29 @@ class MyAdEditFragment() : Fragment() {
     }
 
     override fun onDestroy() {
-        if(!cancelOperation){
-            val advertisement = Advertisement().also {
-                it.title = title.capitalized()
-                it.description = description.capitalized()
-                it.date = date
-                it.from = from
-                it.to = to
-                it.location = location.capitalized()
-                it.skills = advertisementSkills
-            }
-            if(operationType=="edit_time_slot"){
-                advertisement.id = advertisementID
-                vm.updateAdvertisement(advertisement)
-            }
-            else if(operationType=="add_time_slot"){
-                vm.addAdvertisement(advertisement)
-            }
-            Toast.makeText(requireContext(), "Changes discarded", Toast.LENGTH_SHORT).show()
-        }
 
-        if(operationType=="edit_time_slot"){
-            Toast.makeText(requireContext(), "Advertisement correctly edited", Toast.LENGTH_SHORT).show()
+        if(operationType=="add_time_slot") {
+            editAdVM.setNewAdvertisement(
+                title,
+                description,
+                date,
+                from,
+                to,
+                location,
+                advertisementSkills
+            )
         }
-        else if(operationType=="add_time_slot"){
-            Toast.makeText(requireContext(), "Advertisement posted", Toast.LENGTH_SHORT).show()
+        else {
+            editAdVM.setAdvertisement(
+                advertisementID,
+                title,
+                description,
+                date,
+                from,
+                to,
+                location,
+                advertisementSkills
+            )
         }
 
         super.onDestroy()
@@ -470,6 +508,32 @@ class MyAdEditFragment() : Fragment() {
                 }
             }
         }
+    }
+
+    fun saveData(){
+        if(!cancelOperation){
+            val advertisement = Advertisement().also {
+                it.title = title.capitalized()
+                it.description = description.capitalized()
+                it.date = date
+                it.from = from
+                it.to = to
+                it.location = location.capitalized()
+                it.skills = advertisementSkills
+            }
+            if(operationType=="edit_time_slot"){
+                advertisement.id = advertisementID
+                vm.updateAdvertisement(advertisement)
+                Toast.makeText(requireContext(), "Advertisement correctly edited", Toast.LENGTH_SHORT).show()
+            }
+            else if(operationType=="add_time_slot"){
+                vm.addAdvertisement(advertisement)
+                Toast.makeText(requireContext(), "Advertisement posted", Toast.LENGTH_SHORT).show()
+            }
+            return
+        }
+
+        Toast.makeText(requireContext(), "Changes discarded", Toast.LENGTH_SHORT).show()
     }
 
     private fun String.toEditable(): Editable =  Editable.Factory.getInstance().newEditable(this)

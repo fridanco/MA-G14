@@ -58,17 +58,6 @@ class EditProfileVM(application:Application) : AndroidViewModel(application) {
             }
 
 
-//        profileListener = db.collection("users").document(uid!!)
-//            .addSnapshotListener{ result, exception ->
-//                if (exception != null) {
-//                    User()
-//                }
-//                else{
-//                    result?.let {
-//                        _profile.postValue(it.toObject(User::class.java))
-//                    } ?: throw Exception("Could not load user profile")
-//                }
-//            }
 
     }
 
@@ -87,45 +76,12 @@ class EditProfileVM(application:Application) : AndroidViewModel(application) {
         _editProfileImage.value = profileImage
     }
 
-    fun updateProfile(fullname: String, nickname: String, email: String, location: String, description: String, skills: List<String>, profileImage: ByteArray){
-        val user = User().apply {
-            this.fullname = fullname
-            this.nickname = nickname
-            this.email = email
-            this.location = location
-            this.description = description
-            this.skills = skills
-        }
-
-        if(profileImage.isNotEmpty()){
-            val profileImageRef = storageRef.child(Firebase.auth.currentUser!!.uid)
-
-            profileImageRef.putBytes(profileImage)
-                .addOnFailureListener {
-                    Log.w("Timebank FBSTORAGE", "Profile image could not be uploaded")
-                }.addOnSuccessListener { taskSnapshot ->
-                    db.collection("users").document(Firebase.auth.currentUser!!.uid)
-                        .set(user)
-                    Log.d("Timebank FBSTORAGE", "Profile image successfully uploaded")
-                }
-        }
-    }
-
-    fun updateProfileImage(){
-        db.collection("users").document(Firebase.auth.currentUser!!.uid)
-            .update("imageTimestamp",Date().toString())
+    fun getProfileImage() : ByteArray? {
+        return _editProfileImage.value
     }
 
     fun updateProfileSkills(skills: List<String>){
-        db.collection("users").document(Firebase.auth.currentUser!!.uid)
-            .update("skills",skills)
-    }
-
-    fun removeProfileSkill(skills: List<String>, skillToRemove: String){
-        val newSkills = skills as MutableList
-        newSkills.remove(skillToRemove)
-        db.collection("users").document(Firebase.auth.currentUser!!.uid)
-            .update("skills", newSkills)
+        _editProfile.value?.skills = skills
     }
 
     override fun onCleared() {

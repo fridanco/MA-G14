@@ -4,9 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="8dp"
-    android:layout_marginTop="4dp"
     android:layout_marginEnd="8dp"
-    android:layout_marginBottom="4dp"
     android:orientation="vertical"
     app:cardCornerRadius="15dp">
 
@@ -20,7 +18,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#C3C2C2"
+            android:background="#EDEDED"
             android:orientation="horizontal"
             android:paddingStart="8dp"
             android:paddingTop="4dp"
