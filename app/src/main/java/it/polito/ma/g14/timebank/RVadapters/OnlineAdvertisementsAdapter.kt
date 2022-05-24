@@ -140,7 +140,7 @@ class OnlineAdvertisementsAdapter(val view: View, val vm: FirebaseVM, val contex
     }
 
     fun performSort(sortBy: String, showToast: Boolean = true) : List<Advertisement>{
-        val newData = data.toMutableList()
+        var newData = data.toMutableList()
         when(sortBy){
             "title_asc" -> { newData.sortBy { it.title }
                 if(showToast) Toast.makeText(context, "Sorted by title A-Z", Toast.LENGTH_SHORT).show()
@@ -164,7 +164,7 @@ class OnlineAdvertisementsAdapter(val view: View, val vm: FirebaseVM, val contex
                 val sdf_date = SimpleDateFormat("EEE, d MMM yyyy")
                 val sdf_time = SimpleDateFormat("HH:mm")
                 val cmp = compareByDescending<Advertisement> { sdf_date.parse(it.date) }.thenByDescending { sdf_time.parse(it.from) }
-                newData.sortedWith(cmp)
+                newData = newData.sortedWith(cmp).toMutableList()
                 if(showToast) {
                     Toast.makeText(context, "Sorted by most recent", Toast.LENGTH_SHORT).show()
                 }
@@ -173,7 +173,7 @@ class OnlineAdvertisementsAdapter(val view: View, val vm: FirebaseVM, val contex
                 val sdf_date = SimpleDateFormat("EEE, d MMM yyyy")
                 val sdf_time = SimpleDateFormat("HH:mm")
                 val cmp = compareBy<Advertisement> { sdf_date.parse(it.date) }.thenBy { sdf_time.parse(it.from) }
-                newData.sortedWith(cmp)
+                newData = newData.sortedWith(cmp).toMutableList()
                 if(showToast) {
                     Toast.makeText(context, "Sorted by oldest", Toast.LENGTH_SHORT).show()
                 }

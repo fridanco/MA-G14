@@ -27,7 +27,7 @@ class OnlineAdsListFragment : Fragment() {
 
     var selectedSkill: String = ""
 
-    var sortByKey = "title_asc"
+    var sortByKey = "date_desc"
 
     lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
