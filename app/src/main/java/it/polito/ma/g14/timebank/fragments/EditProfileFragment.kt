@@ -462,12 +462,13 @@ class EditProfileFragment : Fragment() {
             description = text.toString()
         }
         h_button_skills?.setOnClickListener {
-//            var byteArray = byteArrayOf()
-//            profilePicture?.let { byteArray=it }
-//            localVm.setProfileData(fullName,nickName,email,location,description,skills)
-//            localVm.setProfileImage(byteArray)
+            var byteArray = byteArrayOf()
+            profilePicture?.let { byteArray=it }
+            localVm.setProfileData(fullName,nickName,email,location,description,skills)
+            localVm.setProfileImage(byteArray)
 
-            view?.findNavController()?.navigate(R.id.action_edit_profile_to_chooseSkillsFragment)
+            val bundle = bundleOf("skills" to skills)
+            view?.findNavController()?.navigate(R.id.action_edit_profile_to_chooseSkillsFragment, bundle)
         }
 
     }
