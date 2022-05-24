@@ -119,10 +119,10 @@ class ShowProfileFragment : Fragment() {
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
                     profilePicture = stream.toByteArray()
                     isImageDownloaded = true
-                    requireActivity().invalidateOptionsMenu()
+                    activity?.invalidateOptionsMenu()
                 } catch (ex: Exception) {
                     isImageDownloaded = true
-                    requireActivity().invalidateOptionsMenu()
+                    activity?.invalidateOptionsMenu()
                 }
             }
 
