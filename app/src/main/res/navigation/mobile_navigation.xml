@@ -46,7 +46,15 @@
         android:id="@+id/myAdvertisementEdit"
         android:name="it.polito.ma.g14.timebank.fragments.MyAdEditFragment"
         android:label="Edit advertisement"
-        tools:layout="@layout/fragment_my_ad_edit" />
+        tools:layout="@layout/fragment_my_ad_edit" >
+        <action
+            android:id="@+id/action_myAdvertisementEdit_to_myProfileEdit"
+            app:destination="@id/myProfileEdit"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"/>
+    </fragment>
 
     <fragment
         android:id="@+id/myProfile"
