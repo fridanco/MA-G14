@@ -92,7 +92,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/profile_edit_email_label"
-                tools:ignore="TextContrastCheck" />
+                android:visibility="gone"
+                tools:ignore="TextContrastCheck"
+                tools:visibility="gone" />
 
             <EditText
                 android:id="@+id/editTextTextEmailAddress2"
@@ -105,7 +107,9 @@
                 android:hint="@string/profile_edit_email_placeholder"
                 android:inputType="none"
                 android:minHeight="48dp"
-                tools:ignore="TextContrastCheck" />
+                android:visibility="gone"
+                tools:ignore="TextContrastCheck"
+                tools:visibility="gone" />
 
             <TextView
                 android:id="@+id/textView17"
