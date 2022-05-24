@@ -5,14 +5,19 @@
     <item
         android:id="@+id/app_bar_search"
         android:icon="@android:drawable/ic_menu_search"
+        android:color = "@color/white"
         android:title="Search"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
-        app:showAsAction="ifRoom|collapseActionView" />
+        app:showAsAction="ifRoom|collapseActionView"
+        android:iconTint="@color/white"
+        />
     <item
         android:id="@+id/app_bar_pencil"
+        android:color="@color/white"
         android:icon="@android:drawable/ic_menu_edit"
         android:title="@string/app_bar_edit_profile"
-        app:showAsAction="always" />
+        app:showAsAction="always"
+        />
     <item
         android:id="@+id/app_bar_delete"
         android:icon="@android:drawable/ic_menu_delete"
@@ -37,48 +42,61 @@
         android:id="@+id/app_bar_sort"
         android:enabled="true"
         android:icon="@android:drawable/ic_menu_sort_by_size"
+        android:textColor="@color/white"
         android:title="Sort"
         android:visible="true"
         app:showAsAction="always">
         <menu>
             <item
                 android:id="@+id/title_asc"
+                android:textColor="?android:textColorPrimary"
                 android:title="Sort by title A-Z"
                 android:visible="true" />
             <item
                 android:id="@+id/title_desc"
+                android:textColor="?android:textColorPrimary"
                 android:title="Sort by title Z-A" />
             <item
                 android:id="@+id/location_asc"
+                android:textColor="?android:textColorPrimary"
                 android:title="Sort by location A-Z" />
             <item
                 android:id="@+id/location_desc"
+                android:textColor="?android:textColorPrimary"
                 android:title="Sort by location Z-A" />
             <item
                 android:id="@+id/creator_asc"
+                android:textColor="?android:textColorPrimary"
                 android:title="Sort by creator A-Z"
                 android:visible="true" />
             <item
                 android:id="@+id/creator_desc"
+                android:textColor="?android:textColorPrimary"
                 android:title="Sort by creator Z-A" />
             <item
                 android:id="@+id/date_desc"
+                android:textColor="?android:textColorPrimary"
                 android:title="Sort by most recent" />
             <item
                 android:id="@+id/date_asc"
+                android:textColor="?android:textColorPrimary"
                 android:title="Sort by oldest"
                 android:visible="true" />
             <item
                 android:id="@+id/skill_asc"
+                android:textColor="?android:textColorPrimary"
                 android:title="Sort by skill A-Z" />
             <item
                 android:id="@+id/skill_desc"
+                android:textColor="?android:textColorPrimary"
                 android:title="Sort by skill Z-A" />
             <item
                 android:id="@+id/numAd_desc"
+                android:textColor="?android:textColorPrimary"
                 android:title="Sort by most number of ads" />
             <item
                 android:id="@+id/numAd_asc"
+                android:textColor="?android:textColorPrimary"
                 android:title="Sort by least number of ads" />
 
         </menu>

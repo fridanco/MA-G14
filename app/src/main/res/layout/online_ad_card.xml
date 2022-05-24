@@ -59,7 +59,7 @@
                             android:layout_height="wrap_content"
                             android:text="@string/timeslot_advertisment_title_list"
                             android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-                            android:textColor="#FF000000" />
+                            android:textColor="?android:textColorPrimary" />
 
                         <TextView
                             android:id="@+id/textView5"
