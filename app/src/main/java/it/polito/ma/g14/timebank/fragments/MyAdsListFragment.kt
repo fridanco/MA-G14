@@ -18,12 +18,14 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.RVadapters.MyAdvertisementsAdapter
 import it.polito.ma.g14.timebank.models.FirebaseVM
+import it.polito.ma.g14.timebank.models.MyAdsListVM
 import it.polito.ma.g14.timebank.utils.Utils
 
 class MyAdsListFragment : Fragment() {
 
 
     val vm by viewModels<FirebaseVM>()
+    val myAdsListVM by viewModels<MyAdsListVM>()
 
     lateinit var adapter: MyAdvertisementsAdapter
 
@@ -83,7 +85,8 @@ class MyAdsListFragment : Fragment() {
 //                val sdf_date = SimpleDateFormat("EEE, d MMM yyyy")
 //                val sdf_time = SimpleDateFormat("HH:mm")
 //                val cmp = compareBy<Advertisement> { sdf_date.parse(it.date) }.thenByDescending { sdf_time.parse(it.from) }
-                adapter.updateAdvertisements(it, sortByKey)
+                val sortBy = myAdsListVM.getSortBy()
+                adapter.updateAdvertisements(it, sortBy)
             }
         }
 
@@ -104,6 +107,7 @@ class MyAdsListFragment : Fragment() {
 
     fun sortAdvertisements(sortBy: String){
         sortByKey = sortBy
+        myAdsListVM.setSortBy(sortBy)
         adapter.addSort(sortBy)
     }
 

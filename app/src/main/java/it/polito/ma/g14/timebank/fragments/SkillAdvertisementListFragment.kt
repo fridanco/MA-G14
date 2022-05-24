@@ -101,7 +101,8 @@ class SkillAdvertisementListFragment : Fragment() {
                 rv.isVisible = true
                 emptyRv.isGone = true
                 subtitleName.text = "Click on the ad for the skill you prefer"
-                adapter.updateSkillAdvertisements(it, sortByKey)
+                val sortBy = adSkillsVM.getSortBy()
+                adapter.updateSkillAdvertisements(it, sortBy)
             }
             swipeRefreshLayout.isRefreshing = false
         }
@@ -135,6 +136,7 @@ class SkillAdvertisementListFragment : Fragment() {
 
     fun sortAdvertisements(sortBy: String){
         sortByKey = sortBy
+        adSkillsVM.setSortBy(sortBy)
         adapter.addSort(sortBy)
     }
 

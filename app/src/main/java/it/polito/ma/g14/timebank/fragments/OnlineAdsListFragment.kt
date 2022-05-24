@@ -15,6 +15,7 @@ import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.RVadapters.OnlineAdvertisementsAdapter
 import it.polito.ma.g14.timebank.models.Advertisement
 import it.polito.ma.g14.timebank.models.FirebaseVM
+import it.polito.ma.g14.timebank.models.OnlineAdsListVM
 import it.polito.ma.g14.timebank.utils.Utils
 import java.text.SimpleDateFormat
 
@@ -22,6 +23,7 @@ import java.text.SimpleDateFormat
 class OnlineAdsListFragment : Fragment() {
 
     val vm by viewModels<FirebaseVM>()
+    val onlineAdsListVM by viewModels<OnlineAdsListVM>()
 
     lateinit var adapter: OnlineAdvertisementsAdapter
 
@@ -84,10 +86,11 @@ class OnlineAdsListFragment : Fragment() {
             else {
                 rv.isVisible = true
                 emptyRv.isGone = true
-                val sdf_date = SimpleDateFormat("EEE, d MMM yyyy")
-                val sdf_time = SimpleDateFormat("HH:mm")
-                val cmp = compareBy<Advertisement> { sdf_date.parse(it.date) }.thenByDescending { sdf_time.parse(it.from) }
-                adapter.updateAdvertisements(ads.sortedWith(cmp), sortByKey)
+//                val sdf_date = SimpleDateFormat("EEE, d MMM yyyy")
+//                val sdf_time = SimpleDateFormat("HH:mm")
+//                val cmp = compareBy<Advertisement> { sdf_date.parse(it.date) }.thenByDescending { sdf_time.parse(it.from) }
+                val sortBy = onlineAdsListVM.getSortBy()
+                adapter.updateAdvertisements(ads, sortBy)
             }
             swipeRefreshLayout.isRefreshing = false
         }
@@ -110,6 +113,7 @@ class OnlineAdsListFragment : Fragment() {
 
     fun sortAdvertisements(sortBy: String){
         sortByKey = sortBy
+        onlineAdsListVM.setSortBy(sortBy)
         adapter.addSort(sortBy)
     }
 
