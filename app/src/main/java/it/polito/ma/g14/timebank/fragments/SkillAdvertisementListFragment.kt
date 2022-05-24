@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import it.polito.ma.g14.timebank.R
+import it.polito.ma.g14.timebank.models.AdSkillsVM
 import it.polito.ma.g14.timebank.models.FirebaseVM
 import it.polito.ma.g14.timebank.utils.Utils
 
@@ -24,6 +25,7 @@ class SkillAdvertisementListFragment : Fragment() {
 
 
     val vm by viewModels<FirebaseVM>()
+    val adSkillsVM by viewModels<AdSkillsVM>()
 
     lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
@@ -78,17 +80,24 @@ class SkillAdvertisementListFragment : Fragment() {
         adapter.colorList = colorList as MutableList<String>
         rv.adapter = adapter
 
-        vm.profile.observe(viewLifecycleOwner){
-            name.text = "Hello "+it.fullname + "!"
+        vm.profile.observe(viewLifecycleOwner) {
+            name.text = "Hello " + it.fullname + "!"
+        }
+
+        adSkillsVM.showWelcome.observe(viewLifecycleOwner) {
+            if (it) {
+                welcomeCard.isVisible = true
+            } else {
+                welcomeCard.isGone = true
+            }
         }
 
         vm.skills.observe(viewLifecycleOwner) { it ->
-            if(it.isEmpty()){
+            if (it.isEmpty()) {
                 rv.isGone = true
                 emptyRv.isVisible = true
                 subtitleName.text = "There are currently no advertisements available"
-            }
-            else {
+            } else {
                 rv.isVisible = true
                 emptyRv.isGone = true
                 subtitleName.text = "Click on the ad for the skill you prefer"
@@ -101,9 +110,17 @@ class SkillAdvertisementListFragment : Fragment() {
             vm.updateAdvertisementSkillsList()
         }
 
+        val showWelcome = adSkillsVM.getWelcomeStatus()
+        if (showWelcome != null){
+            if (showWelcome) {
+                welcomeCard.isVisible = true
+            } else {
+                welcomeCard.isGone = true
+            }
+        }
 
         closeButton.setOnClickListener {
-            welcomeCard.isVisible = false
+            adSkillsVM.hideWelcome()
         }
     }
 
