@@ -3,6 +3,7 @@ package it.polito.ma.g14.timebank.activities
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
@@ -17,6 +18,9 @@ import it.polito.ma.g14.timebank.models.User
 
 
 class LoginActivity : AppCompatActivity() {
+    val text = "Something went wrong, please try again"
+    val duration = Toast.LENGTH_SHORT
+
 
 //    private lateinit var oneTapClient: SignInClient
 //    private lateinit var signInRequest: BeginSignInRequest
@@ -115,18 +119,16 @@ class LoginActivity : AppCompatActivity() {
                             }
                         }
                         else{
-                            //TODO: Firebase create user profile failed
-                        }
+                           Toast.makeText(this,text,duration).show()
+                                                   }
                     }
             }
 
             // ...
         }
         else {
-            // TODO: Sign in failed. If response is null the user canceled the
-            // sign-in flow using the back button. Otherwise check
-            // response.getError().getErrorCode() and handle the error.
-            // ...
+            Toast.makeText(this,text,duration).show()
+
         }
     }
 
