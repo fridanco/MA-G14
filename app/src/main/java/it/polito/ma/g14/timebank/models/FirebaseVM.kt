@@ -255,6 +255,10 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
 
     }
 
+    fun getProfileValue(): User {
+        return _profile.value ?: User()
+    }
+
     override fun onCleared() {
         super.onCleared();
         profileListener?.remove()

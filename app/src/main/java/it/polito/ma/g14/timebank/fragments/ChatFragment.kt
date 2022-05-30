@@ -1,33 +1,60 @@
 package it.polito.ma.g14.timebank.fragments
 
+import android.content.Context
 import android.os.Bundle
+import android.text.Editable
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import it.polito.ma.g14.timebank.R
+import it.polito.ma.g14.timebank.RVadapters.ChatAdapter
 import it.polito.ma.g14.timebank.models.Chat
 import it.polito.ma.g14.timebank.models.ChatMessage
 import it.polito.ma.g14.timebank.models.ChatVM
+import it.polito.ma.g14.timebank.models.FirebaseVM
 
 class ChatFragment : Fragment() {
 
     val chatsVM by viewModels<ChatVM>()
+    val firebaseVM by viewModels<FirebaseVM>()
+
+    lateinit var et_message : EditText
+    lateinit var btn_send_message : Button
+
+    var message = ""
 
     val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     val storageRef = Firebase.storage("gs://mad2022-g14.appspot.com").reference
 
-    lateinit var profileListener : ListenerRegistration
+    lateinit var chatMessagesListener : ListenerRegistration
 
-    lateinit var uid: String
+    lateinit var client_uid: String
+    lateinit var advertiser_uid: String
     lateinit var advertisementID: String
+
+    lateinit var adapter: ChatAdapter
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        getChatMessages()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,23 +69,81 @@ class ChatFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        uid = Firebase.auth.currentUser!!.uid
         advertisementID = requireArguments().getString("advertisementID").toString()
+        client_uid = requireArguments().getString("clientUID") ?: Firebase.auth.currentUser!!.uid
+        advertiser_uid = requireArguments().getString("advertiserUID") ?: Firebase.auth.currentUser!!.uid
+
+        et_message = view.findViewById(R.id.chat_message)
+        btn_send_message = view.findViewById(R.id.button5)
+
+        val rv = view.findViewById<RecyclerView>(R.id.chatRV)
+        val emptyRv = view.findViewById<TextView>(R.id.emptyChatRV)
+
+        val linearLayoutManager = LinearLayoutManager(requireContext())
+        linearLayoutManager.stackFromEnd = true
+        rv.layoutManager = linearLayoutManager
+        rv.layoutManager
+        adapter = ChatAdapter(view, firebaseVM, requireContext())
+        rv.adapter = adapter
+
+        chatsVM.chat.observe(viewLifecycleOwner) { chatList ->
+            if(chatList.isEmpty()){
+                rv.isGone = true
+                emptyRv.isVisible = true
+            }
+            else {
+                rv.isVisible = true
+                emptyRv.isGone = true
+                adapter.updateChat(chatList)
+            }
+        }
+
+        et_message.doOnTextChanged { text, _, _, _ ->
+            message = text.toString()
+        }
+
+        btn_send_message.setOnClickListener {
+            sendMessage(message)
+            message = ""
+            et_message.text = message.toEditable()
+        }
 
     }
 
-    fun getChatMessages(){
-        val chatID = "${uid}_${advertisementID}"
+    fun sendMessage(msg: String){
+        if(msg.isBlank()){
+            return
+        }
 
-        profileListener = db.collection("chats").document(chatID)
+        val chatID = "${client_uid}_${advertisementID}"
+        val senderUID = if(client_uid==Firebase.auth.currentUser!!.uid) client_uid else Firebase.auth.currentUser!!.uid
+        val chatMessage = ChatMessage(msg, System.currentTimeMillis(), senderUID, firebaseVM.getProfileValue().fullname)
+        db.collection("chats").document(chatID).update(
+            "chatMessages",FieldValue.arrayUnion(chatMessage)
+        )
+    }
+
+    fun getChatMessages(){
+        val chatID = "${client_uid}_${advertisementID}"
+        chatMessagesListener = db.collection("chats").document(chatID)
             .addSnapshotListener{ result, exception ->
                 if(exception!=null){
-                    Log.e("Timebank","Could not retrieve chat messages")
+                    val chat = Chat(advertisementID, client_uid, advertiser_uid, listOf())
+                    db.collection("chats").document(chatID).set(chat)
+                    Log.e("Timebank","Could not retrieve chat messages & created chat document")
+                    return@addSnapshotListener
                 }
                 val chat = result!!.toObject(Chat::class.java)
                 chat?.chatMessages?.let { chatsVM.addChatMessages(it) }
             }
-
     }
+
+
+    override fun onDetach() {
+        chatMessagesListener.remove()
+        super.onDetach()
+    }
+
+    private fun String.toEditable(): Editable =  Editable.Factory.getInstance().newEditable(this)
 
 }

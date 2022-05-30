@@ -4,6 +4,7 @@ import java.sql.Timestamp
 
 data class ChatMessage(
     val message: String,
-    val timestamp: String,
-    val sender: String
+    val timestamp: Long,
+    val senderUID: String,
+    val senderName: String
 )

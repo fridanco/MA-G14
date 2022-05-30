@@ -5,10 +5,13 @@ import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import it.polito.ma.g14.timebank.R
@@ -30,6 +33,8 @@ class OnlineAdDetailsFragment() : Fragment() {
     lateinit var tv_fullname : TextView
     lateinit var tv_user_description : TextView
     lateinit var iv_profileImage : ImageView
+    lateinit var btn_book : Button
+    lateinit var btn_chat : Button
 
     lateinit var advertisement : Advertisement
 
@@ -62,6 +67,8 @@ class OnlineAdDetailsFragment() : Fragment() {
         tv_fullname = view.findViewById<TextView>(R.id.textView77)
         tv_user_description = view.findViewById<TextView>(R.id.textView74)
         iv_profileImage = view.findViewById<ImageView>(R.id.imageView6)
+        btn_book = view.findViewById(R.id.button7)
+        btn_chat = view.findViewById(R.id.button8)
 
         advertisement = requireArguments().getSerializable("advertisement") as Advertisement
 
@@ -77,6 +84,12 @@ class OnlineAdDetailsFragment() : Fragment() {
         }
         else{
             tv_user_description.text = "No description provided"
+        }
+        btn_book.setOnClickListener {
+
+        }
+        btn_chat.setOnClickListener {
+            startChat()
         }
 
         val profileImageRef = vm.storageRef.child(advertisement.uid)
@@ -95,5 +108,14 @@ class OnlineAdDetailsFragment() : Fragment() {
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
         Utils.manageActionBarItemsVisibility(requireActivity(), menu)
+    }
+
+    fun bookSlot(){
+
+    }
+
+    fun startChat(){
+        val bundle = bundleOf("advertisementID" to advertisement.id, "advertiserUID" to advertisement.uid)
+        view?.findNavController()?.navigate(R.id.action_onlineAdDetailsFragment_to_chatFragment, bundle)
     }
 }

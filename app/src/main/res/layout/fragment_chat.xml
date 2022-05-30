@@ -7,6 +7,7 @@
     tools:context=".fragments.ChatFragment">
 
     <TextView
+        android:id="@+id/emptyChatRV"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center_horizontal"
@@ -19,8 +20,9 @@
         android:orientation="vertical">
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/chatRV"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_weight="1">
 
         </androidx.recyclerview.widget.RecyclerView>
@@ -43,7 +45,7 @@
                 android:orientation="horizontal">
 
                 <EditText
-                    android:id="@+id/editTextTextPersonName7"
+                    android:id="@+id/chat_message"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"

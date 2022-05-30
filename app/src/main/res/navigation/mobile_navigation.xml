@@ -116,6 +116,19 @@
     <fragment
         android:id="@+id/onlineAdDetailsFragment"
         android:name="it.polito.ma.g14.timebank.fragments.OnlineAdDetailsFragment"
-        android:label="Advertisement details" />
+        android:label="Advertisement details" >
+        <action
+            android:id="@+id/action_onlineAdDetailsFragment_to_chatFragment"
+            app:destination="@id/chatFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/chatFragment"
+        android:name="it.polito.ma.g14.timebank.fragments.ChatFragment"
+        android:label="fragment_chat"
+        tools:layout="@layout/fragment_chat" />
 
 </navigation>
