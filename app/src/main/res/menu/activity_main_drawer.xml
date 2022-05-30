@@ -13,6 +13,10 @@
             android:icon="@drawable/ic_baseline_list_alt_24"
             android:title="@string/menu_home" />
         <item
+            android:id="@+id/myMessages"
+            android:icon="@drawable/ic_baseline_message_24"
+            android:title="My messages" />
+        <item
             android:id="@+id/myProfile"
             android:icon="@drawable/user"
             android:title="@string/menu_profile" />

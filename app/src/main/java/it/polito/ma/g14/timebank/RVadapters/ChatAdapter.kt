@@ -9,10 +9,8 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import androidx.core.os.bundleOf
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -25,15 +23,23 @@ import it.polito.ma.g14.timebank.models.FirebaseVM
 import java.text.SimpleDateFormat
 import java.util.*
 
-class ChatAdapter(val view: View, val vm: FirebaseVM, val context: Context): RecyclerView.Adapter<ChatAdapter.ItemViewHolder>() {
+class ChatAdapter(val view: View, val vm: FirebaseVM, val context: Context, val advertiserUID: String): RecyclerView.Adapter<ChatAdapter.ItemViewHolder>() {
     var filter: Boolean = false
     var data = listOf<ChatMessage>()
     var displayData = data.toMutableList()
+    var lastAdvertiserMsgIndex = -1
     
     class ItemViewHolder(v: View): RecyclerView.ViewHolder(v) {
         private val advertisementContainer = v.findViewById<LinearLayout>(R.id.online_ad_card)
 
-        fun bind(chatMessage: ChatMessage, context: Context, vm: FirebaseVM) {
+        fun bind(
+            chatMessage: ChatMessage,
+            context: Context,
+            vm: FirebaseVM,
+            data: List<ChatMessage>,
+            advertiserUID: String,
+            lastAdvertiserMsgIndex: Int
+        ) {
             val userIcon = advertisementContainer.findViewById<ImageView>(R.id.imageView6)
 
             val profileImageRef = vm.storageRef.child(chatMessage.senderUID)
@@ -48,17 +54,25 @@ class ChatAdapter(val view: View, val vm: FirebaseVM, val context: Context): Rec
                 .into(userIcon)
 
             //Not me
-            if(chatMessage.senderUID!= Firebase.auth.currentUser!!.uid) {
+            if(chatMessage.senderUID != Firebase.auth.currentUser!!.uid) {
+                advertisementContainer.findViewById<LinearLayout>(R.id.spacerLeft).isGone = true
+                advertisementContainer.findViewById<LinearLayout>(R.id.spacerRight).isVisible = true
                 advertisementContainer.findViewById<TextView>(R.id.textView74).text = "By ${chatMessage.senderName}"
-                //TODO: more constraints
-                advertisementContainer.findViewById<LinearLayout>(R.id.book_panel).isVisible = true
                 advertisementContainer.findViewById<CardView>(R.id.cardView).setBackgroundColor(Color.parseColor("0x00000a"))
             }
             //Me
             else{
+                advertisementContainer.findViewById<LinearLayout>(R.id.spacerLeft).isVisible = true
+                advertisementContainer.findViewById<LinearLayout>(R.id.spacerRight).isGone = true
                 advertisementContainer.findViewById<TextView>(R.id.textView74).text = "You"
-                advertisementContainer.findViewById<LinearLayout>(R.id.book_panel).isGone = true
                 advertisementContainer.findViewById<CardView>(R.id.cardView).setBackgroundColor(Color.parseColor("0x0a0000"))
+            }
+
+            if(chatMessage.senderUID==advertiserUID && data.indexOf(chatMessage)==lastAdvertiserMsgIndex){
+                advertisementContainer.findViewById<LinearLayout>(R.id.book_panel).isVisible = true
+            }
+            else{
+                advertisementContainer.findViewById<LinearLayout>(R.id.book_panel).isGone = true
             }
 
             advertisementContainer.findViewById<TextView>(R.id.chat_msg).text = chatMessage.message
@@ -100,7 +114,6 @@ class ChatAdapter(val view: View, val vm: FirebaseVM, val context: Context): Rec
 
         }
         fun unbind() {
-            advertisementContainer.findViewById<CardView>(R.id.cardView).setOnClickListener(null)
         }
     }
 
@@ -114,13 +127,14 @@ class ChatAdapter(val view: View, val vm: FirebaseVM, val context: Context): Rec
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val chatMessage = displayData[position]
 
-        holder.bind(chatMessage, context, vm)
+        holder.bind(chatMessage, context, vm, data, advertiserUID, lastAdvertiserMsgIndex)
     }
 
     override fun getItemCount(): Int = displayData.size
 
     fun updateChat(chatMessages: List<ChatMessage>){
         data = chatMessages.toList()
+        lastAdvertiserMsgIndex = chatMessages.indexOfLast { it.senderUID==advertiserUID }
         val diffs = DiffUtil.calculateDiff(MyDiffCallbackChat(displayData,data))
         displayData = data.toMutableList()
         diffs.dispatchUpdatesTo(this)
