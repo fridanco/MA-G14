@@ -83,7 +83,7 @@ class ChatFragment : Fragment() {
         linearLayoutManager.stackFromEnd = true
         rv.layoutManager = linearLayoutManager
         rv.layoutManager
-        adapter = ChatAdapter(view, firebaseVM, requireContext())
+        adapter = ChatAdapter(view, firebaseVM, requireContext(), advertiser_uid)
         rv.adapter = adapter
 
         chatsVM.chat.observe(viewLifecycleOwner) { chatList ->

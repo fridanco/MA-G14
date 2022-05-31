@@ -5,7 +5,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.viewModels
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.tabs.TabLayout
 import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.models.MyMessagesVM
 
@@ -13,7 +17,10 @@ class MyMessagesFragment : Fragment() {
 
     val myMessagesVM by viewModels<MyMessagesVM>()
 
-    private lateinit var viewModel: MyMessagesVM
+    lateinit var tabLayout : TabLayout
+    lateinit var viewPager : ViewPager2
+
+    lateinit var pagerAdapter: FragmentStateAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -24,6 +31,48 @@ class MyMessagesFragment : Fragment() {
         return view
     }
 
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        tabLayout = view.findViewById(R.id.msgTabLayout)
+
+        viewPager = view.findViewById(R.id.msgViewPager)
+        pagerAdapter = ScreenSlidePagerAdapter(requireActivity())
+        viewPager.adapter = pagerAdapter
+
+        tabLayout.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener{
+
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                when(tab?.id){
+                    R.id.tabReceivedMsg -> viewPager.currentItem = 0
+                    R.id.tabSentMsg -> viewPager.currentItem = 1
+                }
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab) {
+
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab) {
+
+            }
+        })
+
+    }
+
+
+    private inner class ScreenSlidePagerAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa) {
+        override fun getItemCount(): Int = 2
+
+        override fun createFragment(position: Int): Fragment {
+            return when(position){
+                0 -> MyReceivedMessagesFragment()
+                else -> MySentMessagesFragment()
+            }
+        }
+
+    }
 
 
 }

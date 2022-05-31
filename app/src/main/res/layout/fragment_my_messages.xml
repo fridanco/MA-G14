@@ -7,26 +7,26 @@
     tools:context=".fragments.MyMessagesFragment">
 
     <com.google.android.material.tabs.TabLayout
+        android:id="@+id/msgTabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <com.google.android.material.tabs.TabItem
-            android:id="@+id/receivedMsg"
+            android:id="@+id/tabReceivedMsg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Received" />
 
         <com.google.android.material.tabs.TabItem
-            android:id="@+id/sentMsg"
+            android:id="@+id/tabSentMsg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Sent" />
 
     </com.google.android.material.tabs.TabLayout>
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fragmentContainerView"
-        android:name="it.polito.ma.g14.timebank.fragments.MyReceivedMessagesFragment"
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/msgViewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

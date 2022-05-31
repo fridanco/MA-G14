@@ -146,6 +146,18 @@ class MainActivity : AppCompatActivity() {
                 navController.previousBackStackEntry?.savedStateHandle?.set("newSkills", fragment.adapter.checked_skills.toList())
                 navController.popBackStack(R.id.myAdvertisements, true)
             }
+            R.id.myMessages -> {
+                val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
+                val fragment = navHostFragment!!.childFragmentManager.fragments[0] as MyMessagesFragment
+                if (fragment.viewPager.currentItem == 0) {
+                    // If the user is currently looking at the first step, allow the system to handle the
+                    // Back button. This calls finish() on this activity and pops the back stack.
+                    super.onBackPressed()
+                } else {
+                    // Otherwise, select the previous step.
+                    fragment.viewPager.currentItem = fragment.viewPager.currentItem - 1
+                }
+            }
         }
         super.onBackPressed()
     }
@@ -189,6 +201,18 @@ class MainActivity : AppCompatActivity() {
                 fragment.saveData()
                 navController.previousBackStackEntry?.savedStateHandle?.set("newSkills", fragment.adapter.checked_skills.toList())
                 navController.popBackStack(R.id.myAdvertisements, true)
+            }
+            R.id.myMessages -> {
+                val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
+                val fragment = navHostFragment!!.childFragmentManager.fragments[0] as MyMessagesFragment
+                if (fragment.viewPager.currentItem == 0) {
+                    // If the user is currently looking at the first step, allow the system to handle the
+                    // Back button. This calls finish() on this activity and pops the back stack.
+                    super.onBackPressed()
+                } else {
+                    // Otherwise, select the previous step.
+                    fragment.viewPager.currentItem = fragment.viewPager.currentItem - 1
+                }
             }
         }
 
