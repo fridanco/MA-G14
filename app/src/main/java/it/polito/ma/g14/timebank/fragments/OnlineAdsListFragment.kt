@@ -17,7 +17,6 @@ import it.polito.ma.g14.timebank.models.Advertisement
 import it.polito.ma.g14.timebank.models.FirebaseVM
 import it.polito.ma.g14.timebank.models.OnlineAdsListVM
 import it.polito.ma.g14.timebank.utils.Utils
-import java.text.SimpleDateFormat
 
 
 class OnlineAdsListFragment : Fragment() {

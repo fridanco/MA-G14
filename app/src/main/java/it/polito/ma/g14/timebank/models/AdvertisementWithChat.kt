@@ -1,0 +1,6 @@
+package it.polito.ma.g14.timebank.models
+
+data class AdvertisementWithChat (
+    val advertisement: Advertisement,
+    val messageList: List<ChatMessageWithCounter>
+)
