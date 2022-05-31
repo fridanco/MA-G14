@@ -26,6 +26,7 @@ import it.polito.ma.g14.timebank.utils.Utils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.w3c.dom.Text
 import java.io.ByteArrayOutputStream
 
 class ShowProfileFragment : Fragment() {
@@ -39,6 +40,8 @@ class ShowProfileFragment : Fragment() {
     var skills = arrayListOf<String>()
     var description : String = ""
     var profilePicture : ByteArray? = null
+    var ratingProfile : Float = 0F
+    var n_ratings : Int = 0
 
     private var tv_fullname : TextView? = null
     private var tv_nickname : TextView? = null
@@ -47,6 +50,8 @@ class ShowProfileFragment : Fragment() {
     private var tv_description : TextView? = null
     private var et_skills : ChipGroup? = null
     private var iv_profilePicture : ImageView? = null
+    private var tv_ratingProfile : TextView? = null
+    private var h_tv_ratingProfile : TextView? = null
     private var h_tv_fullname : TextView? = null
     private var h_tv_nickname : TextView? = null
     private var h_tv_email : TextView? = null
@@ -151,6 +156,9 @@ class ShowProfileFragment : Fragment() {
             location = it.location
             skills = it.skills as ArrayList<String>
             description = it.description
+            ratingProfile = it.ratings
+            n_ratings = it.n_ratings
+
 
             populateProfileText(it)
             populateProfileSkills(it.skills)
@@ -171,6 +179,7 @@ class ShowProfileFragment : Fragment() {
         tv_description = view?.findViewById<TextView>(R.id.textView19)
         et_skills = view?.findViewById<ChipGroup>(R.id.chipGroup)
         iv_profilePicture = view?.findViewById<ImageView>(R.id.imageView4)
+        tv_ratingProfile = view?.findViewById<TextView>(R.id.textView85)
 
         h_tv_fullname = view?.findViewById<TextView>(R.id.textView)
         h_tv_nickname = view?.findViewById<TextView>(R.id.textView2)
@@ -179,6 +188,7 @@ class ShowProfileFragment : Fragment() {
         h_iv_profilePicture = view?.findViewById<ImageView>(R.id.imageView)
         h_tv_description = view?.findViewById<TextView>(R.id.textView20)
         h_et_skills = view?.findViewById<ChipGroup>(R.id.chipGroup2)
+        h_tv_ratingProfile = view?.findViewById<TextView>(R.id.textView86)
     }
 
     private fun populateProfileText(profile: User) {
@@ -186,11 +196,20 @@ class ShowProfileFragment : Fragment() {
         tv_nickname?.text = profile.nickname
         tv_email?.text = profile.email
         tv_location?.text = profile.location
+        tv_ratingProfile?.text = profile.ratings.toString() + "/5"
+        h_tv_ratingProfile?.text = profile.ratings.toString() + "/5"
+        if(profile.n_ratings == 0){
+            tv_ratingProfile?.text = "You have not received any rating yet"
+            h_tv_ratingProfile?.text = "You have not received any rating yet"
+        }
+
+
 
         h_tv_fullname?.text = profile.fullname
         h_tv_nickname?.text = profile.nickname
         h_tv_email?.text = profile.email
         h_tv_location?.text = profile.location
+
 
         if (profile.description.trim().isEmpty()) {
             tv_description?.isGone = true
@@ -239,6 +258,8 @@ class ShowProfileFragment : Fragment() {
         val userLocation = location
         val userDescription = description
         val skills = skills
+        val ratings = ratingProfile
+        val nratings = n_ratings
         return User().apply {
             this.fullname=fullName
             this.nickname=nickName
@@ -246,6 +267,8 @@ class ShowProfileFragment : Fragment() {
             this.location=userLocation
             this.description=userDescription
             this.skills=skills
+            this.ratings=ratings
+            this.n_ratings=nratings
         }
     }
 
