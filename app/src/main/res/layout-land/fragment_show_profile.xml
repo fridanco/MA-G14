@@ -142,9 +142,17 @@
                 android:layout_height="wrap_content"
                 android:text="Your rating" />
 
-            <TextView
-                android:id="@+id/textView86"
+            <RatingBar
+                android:id="@+id/ratingBar1"
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:isIndicator="true"
+                android:numStars="5"
+                tools:ignore="SpeakableTextPresentCheck" />
+
+            <TextView
+                android:id="@+id/textView84"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingBottom="12dp"
                 android:text="@string/profile_description_placeholder"

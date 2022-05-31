@@ -53,6 +53,8 @@ class EditProfileFragment : Fragment() {
     var skills : ArrayList<String> = arrayListOf()
     var description : String = ""
     var profilePicture : ByteArray? = null
+    var ratingProfile : Float = 0f
+    var n_ratings : Int = 0
 
     var et_fullname : EditText? = null
     var et_nickname : EditText? = null
@@ -151,6 +153,8 @@ class EditProfileFragment : Fragment() {
             location = it.location
             description = it.description
             skills = it.skills as ArrayList<String>
+            ratingProfile = it.ratings
+            n_ratings = it.n_ratings
 
             populateProfileEditText(it)
             populateProfileSkills(it.skills)
@@ -550,7 +554,7 @@ class EditProfileFragment : Fragment() {
             byteArray = it
         }
 
-        vm.updateProfile(fullName, nickName, email, location, description, skills, byteArray)
+        vm.updateProfile(fullName, nickName, email, location, description, skills, byteArray,ratingProfile,n_ratings)
         Toast.makeText(requireContext(), "Profile updated", Toast.LENGTH_SHORT).show()
 
     }

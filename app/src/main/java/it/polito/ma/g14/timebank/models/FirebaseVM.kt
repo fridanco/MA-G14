@@ -12,6 +12,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.SetOptions
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.CoroutineScope
@@ -92,7 +93,8 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
             }
     }
 
-    fun updateProfile(fullname: String, nickname: String, email: String, location: String, description: String, skills: List<String>, profileImage: ByteArray){
+    fun updateProfile(fullname: String, nickname: String, email: String, location: String, description: String, skills: List<String>,
+                      profileImage: ByteArray,ratingProfile : Float, n_rating:Int){
         val user = User().apply {
             this.fullname = fullname
             this.nickname = nickname
@@ -100,7 +102,10 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
             this.location = location
             this.description = description
             this.skills = skills
+            this.ratings = ratingProfile
+            this.n_ratings = n_rating
         }
+
 
         if(profileImage.isNotEmpty()){
             val profileImageRef = storageRef.child(Firebase.auth.currentUser!!.uid)
