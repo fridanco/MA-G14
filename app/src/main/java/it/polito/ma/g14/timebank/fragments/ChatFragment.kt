@@ -118,23 +118,47 @@ class ChatFragment : Fragment() {
         val chatID = "${client_uid}_${advertisementID}"
         val senderUID = if(client_uid==Firebase.auth.currentUser!!.uid) client_uid else Firebase.auth.currentUser!!.uid
         val chatMessage = ChatMessage(msg, System.currentTimeMillis(), senderUID, firebaseVM.getProfileValue().fullname)
-        db.collection("chats").document(chatID).update(
-            "chatMessages",FieldValue.arrayUnion(chatMessage)
-        )
+
+
+        if(senderUID==client_uid) {
+            db.collection("chats").document(chatID).update(
+                "chatMessages", FieldValue.arrayUnion(chatMessage),
+                "advertiserNotifications", FieldValue.increment(1)
+            )
+        }
+        else{
+            db.collection("chats").document(chatID).update(
+                "chatMessages", FieldValue.arrayUnion(chatMessage),
+                "clientNotifications", FieldValue.increment(1)
+            )
+        }
     }
 
     fun getChatMessages(){
         val chatID = "${client_uid}_${advertisementID}"
+        val uid = Firebase.auth.currentUser!!.uid
         chatMessagesListener = db.collection("chats").document(chatID)
             .addSnapshotListener{ result, exception ->
                 if(exception!=null){
-                    val chat = Chat(advertisementID, client_uid, advertiser_uid, listOf())
+                    val chat = Chat(advertisementID, client_uid, 0, advertiser_uid, 0, listOf())
                     db.collection("chats").document(chatID).set(chat)
                     Log.e("Timebank","Could not retrieve chat messages & created chat document")
                     return@addSnapshotListener
                 }
                 val chat = result!!.toObject(Chat::class.java)
-                chat?.chatMessages?.let { chatsVM.addChatMessages(it) }
+                chat?.let {
+                    if(it.clientUID==uid){
+                        if(it.clientNotifications > 0){
+                            db.collection("chats").document(chatID).update("clientNotifications", 0)
+                        }
+                    }
+                    else{
+                        if(it.advertiserNotifications > 0){
+                            db.collection("chats").document(chatID).update("advertiserNotifications", 0)
+                        }
+                    }
+                    it.chatMessages.let { chatsVM.addChatMessages(it) }
+                }
             }
     }
 
