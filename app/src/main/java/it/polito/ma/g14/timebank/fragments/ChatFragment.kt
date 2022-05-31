@@ -25,10 +25,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.RVadapters.ChatAdapter
-import it.polito.ma.g14.timebank.models.Chat
-import it.polito.ma.g14.timebank.models.ChatMessage
-import it.polito.ma.g14.timebank.models.ChatVM
-import it.polito.ma.g14.timebank.models.FirebaseVM
+import it.polito.ma.g14.timebank.models.*
 
 class ChatFragment : Fragment() {
 
@@ -120,12 +117,14 @@ class ChatFragment : Fragment() {
         val chatMessage = ChatMessage(msg, System.currentTimeMillis(), senderUID, firebaseVM.getProfileValue().fullname)
 
 
+        //I am the advertiser - client is notified
         if(senderUID==client_uid) {
             db.collection("chats").document(chatID).update(
                 "chatMessages", FieldValue.arrayUnion(chatMessage),
                 "advertiserNotifications", FieldValue.increment(1)
             )
         }
+        //I am the client requesting the advertised service - advertiser is notified
         else{
             db.collection("chats").document(chatID).update(
                 "chatMessages", FieldValue.arrayUnion(chatMessage),
@@ -140,24 +139,45 @@ class ChatFragment : Fragment() {
         chatMessagesListener = db.collection("chats").document(chatID)
             .addSnapshotListener{ result, exception ->
                 if(exception!=null){
-                    val chat = Chat(advertisementID, client_uid, 0, advertiser_uid, 0, listOf())
-                    db.collection("chats").document(chatID).set(chat)
+                    db.runTransaction { transaction ->
+                        val clientProfileRef = db.collection("users").document(client_uid)
+                        val advertiserProfileRef = db.collection("users").document(client_uid)
+                        val clientProfile = transaction.get(clientProfileRef).toObject(User::class.java)
+                        val advertiserProfile = transaction.get(advertiserProfileRef).toObject(User::class.java)
+
+                        val chat = Chat(
+                            advertisementID,
+                            client_uid,
+                            clientProfile!!.fullname,
+                            0,
+                            advertiser_uid,
+                            advertiserProfile!!.fullname,
+                            0,
+                            listOf()
+                        )
+                        val chatRef = db.collection("chats").document(chatID)
+                        transaction.set(chatRef, chat)
+                    }
                     Log.e("Timebank","Could not retrieve chat messages & created chat document")
                     return@addSnapshotListener
                 }
                 val chat = result!!.toObject(Chat::class.java)
                 chat?.let {
+                    //I am the client - my notifications should be zeroed
                     if(it.clientUID==uid){
                         if(it.clientNotifications > 0){
                             db.collection("chats").document(chatID).update("clientNotifications", 0)
                         }
                     }
+                    //I am the advertised - my notifications should be zeroed
                     else{
                         if(it.advertiserNotifications > 0){
                             db.collection("chats").document(chatID).update("advertiserNotifications", 0)
                         }
                     }
-                    it.chatMessages.let { chatsVM.addChatMessages(it) }
+                    it.chatMessages.let { chatMessagesList ->
+                        chatsVM.addChatMessages(chatMessagesList)
+                    }
                 }
             }
     }
