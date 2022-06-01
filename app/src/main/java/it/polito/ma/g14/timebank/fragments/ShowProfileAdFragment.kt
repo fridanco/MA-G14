@@ -30,7 +30,7 @@ import kotlinx.coroutines.launch
 import org.w3c.dom.Text
 import java.io.ByteArrayOutputStream
 
-class ShowProfileFragment : Fragment() {
+class ShowProfileAdFragment : Fragment() {
 
     val vm by viewModels<FirebaseVM>()
 
@@ -66,12 +66,12 @@ class ShowProfileFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
+        setHasOptionsMenu(false)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_show_profile, container, false)
+        val view = inflater.inflate(R.layout.fragment_show_profile_ad, container, false)
 
         otherUid = requireArguments().getString("uid")
         requireActivity().invalidateOptionsMenu()
@@ -100,9 +100,6 @@ class ShowProfileFragment : Fragment() {
 
         setViewsReferences()
 
-
-        //populateProfilePicture()
-
         val circularProgressDrawable = CircularProgressDrawable(requireContext())
         circularProgressDrawable.strokeWidth = 5f
         circularProgressDrawable.centerRadius = 30f
@@ -113,73 +110,65 @@ class ShowProfileFragment : Fragment() {
             .error(R.drawable.user)
 
 
+        vm.db.collection("users")
+            .document(otherUid.toString())
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                val user = querySnapshot.toObject(User::class.java)
+
+                user?.let {
+                    fullName = it.fullname
+                    email = it.email
+                    nickName = it.nickname
+                    location = it.location
+                    skills = it.skills as ArrayList<String>
+                    description = it.description
+                    ratingProfile = it.ratings
+                    n_ratings = it.n_ratings
 
 
-            vm.profile.observe(viewLifecycleOwner) {
-                //val coroutineScope = CoroutineScope(Dispatchers.IO)
-                lifecycleScope.launch(Dispatchers.IO) {
-                    try {
-                        val bitmap = Glide.with(requireContext())
-                            .asBitmap()
-                            .load(vm.storageRef.child(Firebase.auth.currentUser!!.uid))
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .skipMemoryCache(true)
-                            .apply(options)
-                            .submit()
-                            .get()
-                        val stream = ByteArrayOutputStream()
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
-                        profilePicture = stream.toByteArray()
-                        isImageDownloaded = true
-                        activity?.invalidateOptionsMenu()
-                    } catch (ex: Exception) {
-                        isImageDownloaded = true
-                        activity?.invalidateOptionsMenu()
-                    }
+                    populateProfileText(it)
+                    populateProfileSkills(it.skills)
                 }
 
-                iv_profilePicture?.let { it1 ->
-                    Glide.with(this).clear(it1)
-                    Glide.with(this)
-                        .load(vm.storageRef.child(Firebase.auth.currentUser!!.uid))
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .skipMemoryCache(true)
-                        .apply(options)
-                        .into(it1)
-                }
-                h_iv_profilePicture?.let { it2 ->
-                    Glide.with(this).clear(it2)
-                    Glide.with(this)
-                        .load(vm.storageRef.child(Firebase.auth.currentUser!!.uid))
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .skipMemoryCache(true)
-                        .apply(options)
-                        .into(it2)
-                }
-
-                fullName = it.fullname
-                email = it.email
-                nickName = it.nickname
-                location = it.location
-                skills = it.skills as ArrayList<String>
-                description = it.description
-                ratingProfile = it.ratings
-                n_ratings = it.n_ratings
-
-
-                populateProfileText(it)
-                populateProfileSkills(it.skills)
             }
 
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val bitmap = Glide.with(requireContext())
+                    .asBitmap()
+                    .load(vm.storageRef.child(otherUid.toString()))
+                    .apply(options)
+                    .submit()
+                    .get()
+                val stream = ByteArrayOutputStream()
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+                profilePicture = stream.toByteArray()
+                isImageDownloaded = true
+                activity?.invalidateOptionsMenu()
+            } catch (ex: Exception) {
+                isImageDownloaded = true
+                activity?.invalidateOptionsMenu()
+            }
+        }
+
+        iv_profilePicture?.let { it1 ->
+            Glide.with(this).clear(it1)
+            Glide.with(this)
+                .load(vm.storageRef.child(otherUid.toString()))
+                .apply(options)
+                .into(it1)
+        }
+        h_iv_profilePicture?.let { it2 ->
+            Glide.with(this).clear(it2)
+            Glide.with(this)
+                .load(vm.storageRef.child(otherUid.toString()))
+                .apply(options)
+                .into(it2)
+        }
+
+
     }
-
-
-
-    override fun onPrepareOptionsMenu(menu: Menu) {
-        super.onPrepareOptionsMenu(menu)
-        Utils.manageActionBarItemsVisibility(requireActivity(), menu)
-    }
-
     private fun setViewsReferences(){
         tv_fullname = view?.findViewById<TextView>(R.id.textView4)
         tv_nickname = view?.findViewById<TextView>(R.id.textView5)
@@ -256,29 +245,4 @@ class ShowProfileFragment : Fragment() {
             }
         }
     }
-
-    fun performProfileBackup() : User{
-        if(profilePicture?.isNotEmpty() == true) {
-            requireContext().openFileOutput("profile_picture", Context.MODE_PRIVATE).use {
-                it.write(profilePicture)
-            }
-        }
-        val userEmail = email
-        val userLocation = location
-        val userDescription = description
-        val skills = skills
-        val ratings = ratingProfile
-        val nratings = n_ratings
-        return User().apply {
-            this.fullname=fullName
-            this.nickname=nickName
-            this.email=userEmail
-            this.location=userLocation
-            this.description=userDescription
-            this.skills=skills
-            this.ratings=ratings
-            this.n_ratings=nratings
-        }
-    }
-
 }

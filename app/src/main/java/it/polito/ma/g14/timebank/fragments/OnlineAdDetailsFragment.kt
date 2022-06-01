@@ -7,17 +7,21 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.models.Advertisement
 import it.polito.ma.g14.timebank.models.FirebaseVM
 import it.polito.ma.g14.timebank.utils.Utils
+import org.w3c.dom.Text
 
 
 class OnlineAdDetailsFragment() : Fragment() {
@@ -35,6 +39,7 @@ class OnlineAdDetailsFragment() : Fragment() {
     lateinit var iv_profileImage : ImageView
     lateinit var btn_book : Button
     lateinit var btn_chat : Button
+    lateinit var user: LinearLayout
 
     lateinit var advertisement : Advertisement
 
@@ -49,7 +54,6 @@ class OnlineAdDetailsFragment() : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_online_ad_details, container, false)
-
         requireActivity().invalidateOptionsMenu()
 
         return view
@@ -69,6 +73,7 @@ class OnlineAdDetailsFragment() : Fragment() {
         iv_profileImage = view.findViewById<ImageView>(R.id.imageView6)
         btn_book = view.findViewById(R.id.button7)
         btn_chat = view.findViewById(R.id.button8)
+        user = view.findViewById<LinearLayout>(R.id.user_link)
 
         advertisement = requireArguments().getSerializable("advertisement") as Advertisement
 
@@ -92,6 +97,10 @@ class OnlineAdDetailsFragment() : Fragment() {
             startChat()
         }
 
+        user.setOnClickListener {
+            redirect(advertisement.uid)
+        }
+
         val profileImageRef = vm.storageRef.child(advertisement.uid)
 
         val options: RequestOptions = RequestOptions()
@@ -105,6 +114,8 @@ class OnlineAdDetailsFragment() : Fragment() {
 
     }
 
+
+
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
         Utils.manageActionBarItemsVisibility(requireActivity(), menu)
@@ -117,5 +128,12 @@ class OnlineAdDetailsFragment() : Fragment() {
     fun startChat(){
         val bundle = bundleOf("advertisementID" to advertisement.id, "advertiserUID" to advertisement.uid)
         view?.findNavController()?.navigate(R.id.action_onlineAdDetailsFragment_to_chatFragment, bundle)
+    }
+
+    fun redirect(uid: String){
+        val navController = activity?.findNavController(R.id.nav_host_fragment_content_main)
+        val bundle = bundleOf("uid" to uid)
+        view?.findNavController()?.navigate(R.id.action_onlineAdDetailsFragment_to_showProfileAdFragment, bundle)
+
     }
 }

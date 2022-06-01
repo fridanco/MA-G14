@@ -15,5 +15,7 @@
         <item name = "android:textColorPrimary">@color/white</item>
     </style>
 
-    <style name="Theme.TimeBank.PopupOverlay" parent="ThemeOverlay.AppCompat.Dark" />
+    <style name="Theme.TimeBank.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="Theme.TimeBank.PopupOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
 </resources>

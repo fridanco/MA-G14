@@ -58,6 +58,7 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
             }
 
 
+
         profileListener = db.collection("users").document(uid!!)
             .addSnapshotListener{ result, exception ->
                 if (exception != null) {
