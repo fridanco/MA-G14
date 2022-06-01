@@ -35,28 +35,11 @@ class ChatVM : ViewModel() {
                     return@addSnapshotListener
                 }
 
-                if(result!=null){
-                    val chat = result.toObject(Chat::class.java)!!
 
-                    //I am the client - my notifications should be zeroed
-                    if(chat.clientUID==uid){
-                        if(chat.clientNotifications > 0){
-                            db.collection("chats").document(chatID).update("clientNotifications", 0)
-                        }
-                    }
-                    //I am the advertised - my notifications should be zeroed
-                    else{
-                        if(chat.advertiserNotifications > 0){
-                            db.collection("chats").document(chatID).update("advertiserNotifications", 0)
-                        }
-                    }
-
-                    _chat.value = chat.chatMessages
-                }
-                else{
+                if(result==null || !result.exists()){
                     db.runTransaction { transaction ->
                         val clientProfileRef = db.collection("users").document(client_uid)
-                        val advertiserProfileRef = db.collection("users").document(client_uid)
+                        val advertiserProfileRef = db.collection("users").document(advertiser_uid)
                         val clientProfile = transaction.get(clientProfileRef).toObject(User::class.java)
                         val advertiserProfile = transaction.get(advertiserProfileRef).toObject(User::class.java)
 
@@ -74,7 +57,26 @@ class ChatVM : ViewModel() {
                         transaction.set(chatRef, newChat)
                         _chat.value = listOf()
                     }
+                    return@addSnapshotListener
                 }
+
+                val chat = result.toObject(Chat::class.java)!!
+
+                //I am the client - my notifications should be zeroed
+                if(chat.clientUID==uid){
+                    if(chat.clientNotifications > 0){
+                        db.collection("chats").document(chatID).update("clientNotifications", 0)
+                    }
+                }
+                //I am the advertised - my notifications should be zeroed
+                else{
+                    if(chat.advertiserNotifications > 0){
+                        db.collection("chats").document(chatID).update("advertiserNotifications", 0)
+                    }
+                }
+
+                addChatMessages(chat.chatMessages)
+
             }
     }
 
