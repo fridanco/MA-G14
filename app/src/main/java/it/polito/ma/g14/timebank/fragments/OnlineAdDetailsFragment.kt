@@ -10,6 +10,8 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.os.bundleOf
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.viewModels
@@ -17,6 +19,8 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.models.Advertisement
 import it.polito.ma.g14.timebank.models.FirebaseVM
@@ -90,15 +94,23 @@ class OnlineAdDetailsFragment() : Fragment() {
         else{
             tv_user_description.text = "No description provided"
         }
-        btn_book.setOnClickListener {
 
-        }
-        btn_chat.setOnClickListener {
-            startChat()
-        }
+        if(advertisement.uid != Firebase.auth.currentUser!!.uid) {
+            view.findViewById<LinearLayout>(R.id.bookChatContainer).isVisible = true
 
-        user.setOnClickListener {
-            redirect(advertisement.uid)
+            btn_book.setOnClickListener {
+                bookSlot()
+            }
+            btn_chat.setOnClickListener {
+                startChat()
+            }
+
+            user.setOnClickListener {
+                redirect(advertisement.uid)
+            }
+        }
+        else{
+            view.findViewById<LinearLayout>(R.id.bookChatContainer).isGone = true
         }
 
         val profileImageRef = vm.storageRef.child(advertisement.uid)
