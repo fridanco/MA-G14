@@ -197,8 +197,8 @@ class ShowProfileAdFragment : Fragment() {
         tv_ratingProfile?.text = profile.ratings.toString() + "/5"
         h_tv_ratingProfile?.text = profile.ratings.toString() + "/5"
         if(profile.n_ratings == 0){
-            tv_ratingProfile?.text = "You have not received any rating yet"
-            h_tv_ratingProfile?.text = "You have not received any rating yet"
+            tv_ratingProfile?.text = "No ratings yet"
+            h_tv_ratingProfile?.text = "No ratings yet"
         }
 
 

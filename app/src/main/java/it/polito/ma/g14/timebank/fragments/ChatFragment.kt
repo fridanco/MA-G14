@@ -25,10 +25,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.RVadapters.ChatAdapter
-import it.polito.ma.g14.timebank.models.Chat
-import it.polito.ma.g14.timebank.models.ChatMessage
-import it.polito.ma.g14.timebank.models.ChatVM
-import it.polito.ma.g14.timebank.models.FirebaseVM
+import it.polito.ma.g14.timebank.models.*
 
 class ChatFragment : Fragment() {
 
@@ -40,20 +37,14 @@ class ChatFragment : Fragment() {
 
     var message = ""
 
-    val db: FirebaseFirestore = FirebaseFirestore.getInstance()
-    val storageRef = Firebase.storage("gs://mad2022-g14.appspot.com").reference
-
-    lateinit var chatMessagesListener : ListenerRegistration
-
-    lateinit var client_uid: String
-    lateinit var advertiser_uid: String
-    lateinit var advertisementID: String
+    var client_uid = ""
+    var advertiser_uid = ""
+    var advertisementID = ""
 
     lateinit var adapter: ChatAdapter
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        getChatMessages()
     }
 
     override fun onCreateView(
@@ -62,16 +53,19 @@ class ChatFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_chat, container, false)
 
+        advertisementID = requireArguments().getString("advertisementID").toString()
+        client_uid = requireArguments().getString("clientUID") ?: Firebase.auth.currentUser!!.uid
+        advertiser_uid = requireArguments().getString("advertiserUID") ?: Firebase.auth.currentUser!!.uid
+
+        val chatID = "${client_uid}_${advertisementID}"
+
+        chatsVM.getChatMessages(chatID, client_uid, advertiser_uid, advertisementID)
 
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        advertisementID = requireArguments().getString("advertisementID").toString()
-        client_uid = requireArguments().getString("clientUID") ?: Firebase.auth.currentUser!!.uid
-        advertiser_uid = requireArguments().getString("advertiserUID") ?: Firebase.auth.currentUser!!.uid
 
         et_message = view.findViewById(R.id.chat_message)
         btn_send_message = view.findViewById(R.id.button5)
@@ -88,11 +82,12 @@ class ChatFragment : Fragment() {
 
         chatsVM.chat.observe(viewLifecycleOwner) { chatList ->
             if(chatList.isEmpty()){
-                rv.isGone = true
+                //rv.isGone = true
                 emptyRv.isVisible = true
+                adapter.updateChat(listOf())
             }
             else {
-                rv.isVisible = true
+                //rv.isVisible = true
                 emptyRv.isGone = true
                 adapter.updateChat(chatList)
             }
@@ -103,70 +98,13 @@ class ChatFragment : Fragment() {
         }
 
         btn_send_message.setOnClickListener {
-            sendMessage(message)
+            chatsVM.sendMessage(message, client_uid, advertisementID)
             message = ""
             et_message.text = message.toEditable()
         }
 
     }
 
-    fun sendMessage(msg: String){
-        if(msg.isBlank()){
-            return
-        }
-
-        val chatID = "${client_uid}_${advertisementID}"
-        val senderUID = if(client_uid==Firebase.auth.currentUser!!.uid) client_uid else Firebase.auth.currentUser!!.uid
-        val chatMessage = ChatMessage(msg, System.currentTimeMillis(), senderUID, firebaseVM.getProfileValue().fullname)
-
-
-        if(senderUID==client_uid) {
-            db.collection("chats").document(chatID).update(
-                "chatMessages", FieldValue.arrayUnion(chatMessage),
-                "advertiserNotifications", FieldValue.increment(1)
-            )
-        }
-        else{
-            db.collection("chats").document(chatID).update(
-                "chatMessages", FieldValue.arrayUnion(chatMessage),
-                "clientNotifications", FieldValue.increment(1)
-            )
-        }
-    }
-
-    fun getChatMessages(){
-        val chatID = "${client_uid}_${advertisementID}"
-        val uid = Firebase.auth.currentUser!!.uid
-        chatMessagesListener = db.collection("chats").document(chatID)
-            .addSnapshotListener{ result, exception ->
-                if(exception!=null){
-                    val chat = Chat(advertisementID, client_uid, 0, advertiser_uid, 0, listOf())
-                    db.collection("chats").document(chatID).set(chat)
-                    Log.e("Timebank","Could not retrieve chat messages & created chat document")
-                    return@addSnapshotListener
-                }
-                val chat = result!!.toObject(Chat::class.java)
-                chat?.let {
-                    if(it.clientUID==uid){
-                        if(it.clientNotifications > 0){
-                            db.collection("chats").document(chatID).update("clientNotifications", 0)
-                        }
-                    }
-                    else{
-                        if(it.advertiserNotifications > 0){
-                            db.collection("chats").document(chatID).update("advertiserNotifications", 0)
-                        }
-                    }
-                    it.chatMessages.let { chatsVM.addChatMessages(it) }
-                }
-            }
-    }
-
-
-    override fun onDetach() {
-        chatMessagesListener.remove()
-        super.onDetach()
-    }
 
     private fun String.toEditable(): Editable =  Editable.Factory.getInstance().newEditable(this)
 

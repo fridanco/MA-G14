@@ -4,8 +4,6 @@ import com.google.firebase.firestore.DocumentId
 import java.io.Serializable
 
 class User : Serializable {
-
-
     @DocumentId
     var id : String = ""
     var fullname : String = ""

@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.models.MyMessagesVM
 
@@ -41,23 +42,27 @@ class MyMessagesFragment : Fragment() {
         pagerAdapter = ScreenSlidePagerAdapter(requireActivity())
         viewPager.adapter = pagerAdapter
 
-        tabLayout.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener{
+//        tabLayout.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener{
+//
+//            override fun onTabSelected(tab: TabLayout.Tab?) {
+//                when(tab?.id){
+//                    R.id.tabReceivedMsg -> viewPager.currentItem = 0
+//                    R.id.tabSentMsg -> viewPager.currentItem = 1
+//                }
+//            }
+//
+//            override fun onTabUnselected(tab: TabLayout.Tab) {
+//
+//            }
+//
+//            override fun onTabReselected(tab: TabLayout.Tab) {
+//
+//            }
+//        })
 
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-                when(tab?.id){
-                    R.id.tabReceivedMsg -> viewPager.currentItem = 0
-                    R.id.tabSentMsg -> viewPager.currentItem = 1
-                }
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab) {
-
-            }
-
-            override fun onTabReselected(tab: TabLayout.Tab) {
-
-            }
-        })
+        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+            //viewPager.currentItem = position
+        }.attach()
 
     }
 

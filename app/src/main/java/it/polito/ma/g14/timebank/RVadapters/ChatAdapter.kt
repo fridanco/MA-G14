@@ -30,7 +30,7 @@ class ChatAdapter(val view: View, val vm: FirebaseVM, val context: Context, val 
     var lastAdvertiserMsgIndex = -1
     
     class ItemViewHolder(v: View): RecyclerView.ViewHolder(v) {
-        private val advertisementContainer = v.findViewById<LinearLayout>(R.id.online_ad_card)
+        private val chatMessageContainer = v.findViewById<LinearLayout>(R.id.chat_message_card)
 
         fun bind(
             chatMessage: ChatMessage,
@@ -40,7 +40,7 @@ class ChatAdapter(val view: View, val vm: FirebaseVM, val context: Context, val 
             advertiserUID: String,
             lastAdvertiserMsgIndex: Int
         ) {
-            val userIcon = advertisementContainer.findViewById<ImageView>(R.id.imageView6)
+            val userIcon = chatMessageContainer.findViewById<ImageView>(R.id.imageView6)
 
             val profileImageRef = vm.storageRef.child(chatMessage.senderUID)
 
@@ -55,27 +55,27 @@ class ChatAdapter(val view: View, val vm: FirebaseVM, val context: Context, val 
 
             //Not me
             if(chatMessage.senderUID != Firebase.auth.currentUser!!.uid) {
-                advertisementContainer.findViewById<LinearLayout>(R.id.spacerLeft).isGone = true
-                advertisementContainer.findViewById<LinearLayout>(R.id.spacerRight).isVisible = true
-                advertisementContainer.findViewById<TextView>(R.id.textView74).text = "By ${chatMessage.senderName}"
-                advertisementContainer.findViewById<CardView>(R.id.cardView).setBackgroundColor(Color.parseColor("0x00000a"))
+                chatMessageContainer.findViewById<LinearLayout>(R.id.spacerLeft).isGone = true
+                chatMessageContainer.findViewById<LinearLayout>(R.id.spacerRight).isVisible = true
+                chatMessageContainer.findViewById<TextView>(R.id.msg_sender).text = "By ${chatMessage.senderName}"
+                //TODO:chatMessageContainer.findViewById<CardView>(R.id.cardView).setBackgroundColor(Color.parseColor("#00000A"))
             }
             //Me
             else{
-                advertisementContainer.findViewById<LinearLayout>(R.id.spacerLeft).isVisible = true
-                advertisementContainer.findViewById<LinearLayout>(R.id.spacerRight).isGone = true
-                advertisementContainer.findViewById<TextView>(R.id.textView74).text = "You"
-                advertisementContainer.findViewById<CardView>(R.id.cardView).setBackgroundColor(Color.parseColor("0x0a0000"))
+                chatMessageContainer.findViewById<LinearLayout>(R.id.spacerLeft).isVisible = true
+                chatMessageContainer.findViewById<LinearLayout>(R.id.spacerRight).isGone = true
+                chatMessageContainer.findViewById<TextView>(R.id.msg_sender).text = "You"
+                //TODO:chatMessageContainer.findViewById<CardView>(R.id.cardView).setBackgroundColor(Color.parseColor("#0A0000"))
             }
 
             if(chatMessage.senderUID==advertiserUID && data.indexOf(chatMessage)==lastAdvertiserMsgIndex){
-                advertisementContainer.findViewById<LinearLayout>(R.id.book_panel).isVisible = true
+                chatMessageContainer.findViewById<LinearLayout>(R.id.book_panel).isVisible = true
             }
             else{
-                advertisementContainer.findViewById<LinearLayout>(R.id.book_panel).isGone = true
+                chatMessageContainer.findViewById<LinearLayout>(R.id.book_panel).isGone = true
             }
 
-            advertisementContainer.findViewById<TextView>(R.id.chat_msg).text = chatMessage.message
+            chatMessageContainer.findViewById<TextView>(R.id.chat_msg).text = chatMessage.message
 
             val dateTime = Date(chatMessage.timestamp)
             val calendar: Calendar = Calendar.getInstance()
@@ -109,7 +109,7 @@ class ChatAdapter(val view: View, val vm: FirebaseVM, val context: Context, val 
                 timeString = timeFormatter4.format(dateTime)
             }
 
-            advertisementContainer.findViewById<TextView>(R.id.msg_time).text = timeString
+            chatMessageContainer.findViewById<TextView>(R.id.msg_time).text = timeString
 
 
         }
