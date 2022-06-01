@@ -11,8 +11,8 @@ import com.google.firebase.storage.ktx.storage
 
 class MySentMessagesVM : ViewModel() {
 
-    val _sentMessages = MutableLiveData<Map<String, AdvertisementWithChat>>()
-    val sentMessages : LiveData<Map<String, AdvertisementWithChat>> = _sentMessages
+    val _sentMessages = MutableLiveData<List<Pair<String, AdvertisementWithChat>>>()
+    val sentMessages : LiveData<List<Pair<String, AdvertisementWithChat>>> = _sentMessages
 
     val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     val storageRef = Firebase.storage("gs://mad2022-g14.appspot.com").reference
@@ -39,8 +39,9 @@ class MySentMessagesVM : ViewModel() {
                             chat.clientName,
                             chat.chatMessages.last().message,
                             chat.chatMessages.last().senderName,
+                            chat.chatMessages.last().senderUID,
                             chat.chatMessages.last().timestamp,
-                            chat.advertiserNotifications
+                            chat.clientNotifications
                         )
                         if(!messageWithCounterMap.containsKey(chat.advertisementID)){
                             messageWithCounterMap[chat.advertisementID] = mutableListOf()
@@ -81,6 +82,7 @@ class MySentMessagesVM : ViewModel() {
                             }
                             messagesMap[it.key] = advertisementWithChat
                         }
+
                         val cmp = compareByDescending<Pair<String, AdvertisementWithChat>> {
                             it.second.containsUnreadMessage
                         }.thenByDescending {
@@ -92,7 +94,7 @@ class MySentMessagesVM : ViewModel() {
                             }
                         }
 
-                        _sentMessages.value = messagesMap.toList().sortedWith(cmp).toMap()
+                        _sentMessages.postValue(messagesMap.toList().sortedWith(cmp))
                     }
                 }
             }

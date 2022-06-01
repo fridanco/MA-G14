@@ -11,8 +11,8 @@ import com.google.firebase.storage.ktx.storage
 
 class MyReceivedMessagesVM : ViewModel() {
 
-    val _receivedMessages = MutableLiveData<Map<String, AdvertisementWithChat>>()
-    val receivedMessages : LiveData<Map<String, AdvertisementWithChat>> = _receivedMessages
+    val _receivedMessages = MutableLiveData<List<Pair<String, AdvertisementWithChat>>>()
+    val receivedMessages : LiveData<List<Pair<String, AdvertisementWithChat>>> = _receivedMessages
 
     val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     val storageRef = Firebase.storage("gs://mad2022-g14.appspot.com").reference
@@ -39,6 +39,7 @@ class MyReceivedMessagesVM : ViewModel() {
                             chat.clientName,
                             chat.chatMessages.last().message,
                             chat.chatMessages.last().senderName,
+                            chat.chatMessages.last().senderUID,
                             chat.chatMessages.last().timestamp,
                             chat.advertiserNotifications
                         )
@@ -92,7 +93,7 @@ class MyReceivedMessagesVM : ViewModel() {
                             }
                         }
 
-                        _receivedMessages.value = messagesMap.toList().sortedWith(cmp).toMap()
+                        _receivedMessages.postValue(messagesMap.toList().sortedWith(cmp))
                     }
                 }
             }

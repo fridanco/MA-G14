@@ -1,7 +1,9 @@
 package it.polito.ma.g14.timebank.RVadapters
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,10 +20,15 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.models.AdvertisementWithChat
 import it.polito.ma.g14.timebank.models.FirebaseVM
+import org.w3c.dom.Text
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.util.*
 
 class MyMessagesAdapter(val view: View, val vm: FirebaseVM, val context: Context, val type: String): RecyclerView.Adapter<MyMessagesAdapter.ItemViewHolder>() {
     var filter: Boolean = false
@@ -34,38 +41,81 @@ class MyMessagesAdapter(val view: View, val vm: FirebaseVM, val context: Context
     private var sortBy = ""
 
     class ItemViewHolder(v: View): RecyclerView.ViewHolder(v) {
-        private val messageContainer = v.findViewById<LinearLayout>(R.id.my_message_container)
+        private val messageCard = v.findViewById<LinearLayout>(R.id.my_message_container)
+        private val uid = Firebase.auth.currentUser!!.uid
 
+        @SuppressLint("SetTextI18n", "SimpleDateFormat")
         fun bind(advertisementWithChat: AdvertisementWithChat, context: Context, vm: FirebaseVM, type:String, view: View, color: String) {
-            messageContainer.findViewById<TextView>(R.id.textView4).text = advertisementWithChat.advertisement.title
-            messageContainer.findViewById<TextView>(R.id.textView5).text = advertisementWithChat.advertisement.description
-            messageContainer.findViewById<TextView>(R.id.textView6).text = advertisementWithChat.advertisement.date
-            messageContainer.findViewById<TextView>(R.id.textView7).text = "${advertisementWithChat.advertisement.from} - ${advertisementWithChat.advertisement.to}"
-            messageContainer.findViewById<TextView>(R.id.textView19).text = advertisementWithChat.advertisement.location
-            messageContainer.findViewById<LinearLayout>(R.id.cardColor).setBackgroundColor(Color.parseColor(color))
+            messageCard.findViewById<TextView>(R.id.textView4).text = advertisementWithChat.advertisement.title
+            messageCard.findViewById<TextView>(R.id.textView5).text = advertisementWithChat.advertisement.description
+            messageCard.findViewById<TextView>(R.id.textView6).text = advertisementWithChat.advertisement.date
+            messageCard.findViewById<TextView>(R.id.textView7).text = "${advertisementWithChat.advertisement.from} - ${advertisementWithChat.advertisement.to}"
+            messageCard.findViewById<LinearLayout>(R.id.cardColor).setBackgroundColor(Color.parseColor(color))
 
-            val messageContainer = messageContainer.findViewById<LinearLayout>(R.id.messageContainer)
+            val messageContainer = messageCard.findViewById<LinearLayout>(R.id.messageContainer)
             messageContainer.removeAllViews()
 
-            this.messageContainer.findViewById<CardView>(R.id.cardView).setOnClickListener{
-                val bundle = bundleOf("advertisementWithChat.advertisement" to advertisementWithChat.advertisement)
-                view.findNavController().navigate(R.id.action_onlineAdsListFragment_to_onlineAdDetailsFragment, bundle)
+            this.messageCard.findViewById<CardView>(R.id.cardView).setOnClickListener{
+                val bundle = bundleOf("advertisement" to advertisementWithChat.advertisement)
+                view.findNavController().navigate(R.id.action_myMessages_to_onlineAdDetailsFragment, bundle)
             }
             advertisementWithChat.messageList.forEach {
-                val msgLayout = LayoutInflater.from(context).inflate(R.layout.my_message_entry,
-                    this.messageContainer
-                )
-                msgLayout.findViewById<TextView>(R.id.textView74).text = it.recipientUID
-                msgLayout.findViewById<TextView>(R.id.textView83).text = "${it.lastMessageSenderName}: ${it.lastMessage}"
+                val msgLayout = LayoutInflater.from(context).inflate(R.layout.my_message_entry,messageContainer)
+                msgLayout.findViewById<TextView>(R.id.textView74).text = it.recipientName
+                val senderName = if(it.lastMessageSenderUID==uid){
+                    "You"
+                }
+                else{
+                    it.lastMessageSenderName
+                }
+                val tv_lastMessage = msgLayout.findViewById<TextView>(R.id.textView83)!!
+                tv_lastMessage.text = "${senderName}: ${it.lastMessage}"
+
                 if(it.messageCounter>0) {
+                    tv_lastMessage.setTypeface(null, Typeface.BOLD)
                     msgLayout.findViewById<TextView>(R.id.textView85).apply {
                         this.isVisible = true
                         this.text = it.messageCounter.toString()
                     }
                 }
                 else {
+                    tv_lastMessage.typeface = null
                     msgLayout.findViewById<TextView>(R.id.textView85).isGone = true
                 }
+
+                val dateTime = Date(it.timestamp)
+                val calendar: Calendar = Calendar.getInstance()
+                calendar.setTime(dateTime)
+                val today: Calendar = Calendar.getInstance()
+                val timeFormatter1 = SimpleDateFormat("HH:mm")
+                val timeFormatter2 = SimpleDateFormat("EEE")
+                val timeFormatter3 = SimpleDateFormat("EEE dd")
+                val timeFormatter4 = SimpleDateFormat("MMM")
+                val timeFormatter5 = SimpleDateFormat("MMM yyyy")
+
+                var timeString = ""
+
+                if (calendar.get(Calendar.YEAR) == today.get(Calendar.YEAR)
+                    && calendar.get(Calendar.DAY_OF_YEAR) == today.get(Calendar.DAY_OF_YEAR)) {
+                    timeString = timeFormatter1.format(dateTime)
+                }
+                else if (calendar.get(Calendar.YEAR) == today.get(Calendar.YEAR)
+                    && calendar.get(Calendar.WEEK_OF_YEAR) == today.get(Calendar.WEEK_OF_YEAR)) {
+                    timeString = timeFormatter2.format(dateTime)
+                }
+                else if(calendar.get(Calendar.YEAR)==today.get(Calendar.YEAR)
+                    && calendar.get(Calendar.MONTH)==today.get(Calendar.MONTH)) {
+                    timeString = timeFormatter3.format(dateTime)
+                }
+                else if(calendar.get(Calendar.YEAR)==today.get(Calendar.YEAR)) {
+                    timeString = timeFormatter4.format(dateTime)
+                }
+                else{
+                    timeString = timeFormatter5.format(dateTime)
+                }
+
+                msgLayout.findViewById<TextView>(R.id.textView89).text = timeString
+
                 val userIcon = msgLayout.findViewById<ImageView>(R.id.imageView6)
 
                 val profileImageRef = vm.storageRef.child(it.recipientUID)
@@ -81,20 +131,27 @@ class MyMessagesAdapter(val view: View, val vm: FirebaseVM, val context: Context
 
                 msgLayout.setOnClickListener {  _ ->
                     val bundle = if(type=="received_msg") {
-                        bundleOf("client_uid" to it.recipientUID)
+                        //Client is the recipient (i am the advertiser)
+                        bundleOf(
+                            "advertisementID" to advertisementWithChat.advertisement.id,
+                            "clientUID" to it.recipientUID,
+                            "advertiserName" to advertisementWithChat.advertisement.user.fullname
+                        )
                     }
                     else {
-                        bundleOf("advertiser_uid" to advertisementWithChat.advertisement.uid)
+                        //Get advertiser from advertisement object (i am sending messages = i am the client)
+                        bundleOf(
+                            "advertisementID" to advertisementWithChat.advertisement.id,
+                            "advertiserUID" to advertisementWithChat.advertisement.uid,
+                            "advertiserName" to advertisementWithChat.advertisement.user.fullname
+                        )
                     }
-                    //TODO: continue here
-                    view.findNavController()
+                    view.findNavController().navigate(R.id.action_myMessages_to_chatFragment, bundle)
                 }
-
-                messageContainer.addView(msgLayout)
             }
         }
         fun unbind() {
-            messageContainer.findViewById<CardView>(R.id.cardView).setOnClickListener(null)
+            messageCard.findViewById<CardView>(R.id.cardView).setOnClickListener(null)
         }
     }
 

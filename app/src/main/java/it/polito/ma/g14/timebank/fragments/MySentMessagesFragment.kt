@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -21,6 +22,7 @@ import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.RVadapters.MyAdvertisementsAdapter
 import it.polito.ma.g14.timebank.RVadapters.MyMessagesAdapter
 import it.polito.ma.g14.timebank.models.*
+import it.polito.ma.g14.timebank.utils.Utils
 
 class MySentMessagesFragment : Fragment() {
 
@@ -29,11 +31,18 @@ class MySentMessagesFragment : Fragment() {
 
     lateinit var adapter: MyMessagesAdapter
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_my_sent_messages, container, false)
+
+        requireActivity().invalidateOptionsMenu()
 
         sentMessagesVM.getReceivedMessages(Firebase.auth.currentUser!!.uid)
 
@@ -77,6 +86,11 @@ class MySentMessagesFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
+        Utils.manageActionBarItemsVisibility(requireActivity(), menu)
     }
 
 }

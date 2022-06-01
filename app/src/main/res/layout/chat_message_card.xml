@@ -10,8 +10,8 @@
     android:backgroundTint="#EAEAEA"
     android:foregroundTint="#E6E6E6"
     android:orientation="horizontal"
-    android:paddingTop="8dp"
-    android:paddingBottom="8dp"
+    android:paddingTop="2dp"
+    android:paddingBottom="2dp"
     android:weightSum="10">
 
     <LinearLayout
@@ -93,7 +93,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="end"
                 android:paddingEnd="8dp"
-                android:paddingBottom="8dp"
+                android:paddingBottom="2dp"
                 android:text="Today 09:35"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:textSize="10sp" />

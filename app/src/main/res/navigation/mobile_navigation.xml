@@ -143,7 +143,14 @@
         android:id="@+id/myMessages"
         android:name="it.polito.ma.g14.timebank.fragments.MyMessagesFragment"
         android:label="My messages"
-        tools:layout="@layout/fragment_my_messages" />
+        tools:layout="@layout/fragment_my_messages" >
+        <action
+            android:id="@+id/action_myMessages_to_chatFragment"
+            app:destination="@id/chatFragment" />
+        <action
+            android:id="@+id/action_myMessages_to_onlineAdDetailsFragment"
+            app:destination="@id/onlineAdDetailsFragment" />
+    </fragment>
 
 
 

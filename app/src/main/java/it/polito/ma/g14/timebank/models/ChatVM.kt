@@ -55,8 +55,14 @@ class ChatVM : ViewModel() {
                         }
                         val chatRef = db.collection("chats").document(chatID)
                         transaction.set(chatRef, newChat)
-                        _chat.value = listOf()
                     }
+                        .addOnFailureListener {
+                            println(it.message)
+                        }
+                        .addOnSuccessListener {
+                            println("SUCCESS")
+                        }
+                    _chat.value = listOf()
                     return@addSnapshotListener
                 }
 
@@ -83,7 +89,7 @@ class ChatVM : ViewModel() {
     fun addChatMessages(newChatMessages: List<ChatMessage>){
         val currChats = _chat.value!!.toMutableList()
         newChatMessages.forEach {
-            if(!currChats.contains(it)){
+            if(currChats.find{ currChat -> currChat.timestamp==it.timestamp && currChat.senderUID==it.senderUID}==null){
                 currChats.add(it)
             }
         }

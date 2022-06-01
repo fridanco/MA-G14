@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -21,6 +22,7 @@ import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.RVadapters.MyAdvertisementsAdapter
 import it.polito.ma.g14.timebank.RVadapters.MyMessagesAdapter
 import it.polito.ma.g14.timebank.models.*
+import it.polito.ma.g14.timebank.utils.Utils
 
 class MyReceivedMessagesFragment : Fragment() {
 
@@ -29,11 +31,18 @@ class MyReceivedMessagesFragment : Fragment() {
 
     lateinit var adapter: MyMessagesAdapter
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_my_received_messages, container, false)
+
+        requireActivity().invalidateOptionsMenu()
 
         receivedMessagesVM.getReceivedMessages(Firebase.auth.currentUser!!.uid)
 
@@ -61,7 +70,7 @@ class MyReceivedMessagesFragment : Fragment() {
         rv.adapter = adapter
 
 
-        receivedMessagesVM.receivedMessages.observe(viewLifecycleOwner) { it ->
+        receivedMessagesVM.receivedMessages.observe(viewLifecycleOwner) {
             if(it.isEmpty()){
                 rv.isGone = true
                 emptyRv.isVisible = true
@@ -70,13 +79,18 @@ class MyReceivedMessagesFragment : Fragment() {
                 rv.isVisible = true
                 emptyRv.isGone = true
                 val sortBy = receivedMessagesVM.getSortBy()
-                adapter.updateMessages(it.toList(), sortBy)
+                adapter.updateMessages(it, sortBy)
             }
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
+        Utils.manageActionBarItemsVisibility(requireActivity(), menu)
     }
 
 }

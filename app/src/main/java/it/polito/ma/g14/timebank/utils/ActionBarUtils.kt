@@ -5,12 +5,14 @@ import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.fragments.*
+
 
 class Utils {
 
@@ -118,6 +120,28 @@ class Utils {
                     menu.findItem(R.id.app_bar_pencil).isVisible = false
                     menu.findItem(R.id.app_bar_delete).isVisible = false
                     menu.findItem(R.id.app_bar_cancel).isVisible = true
+                    menu.findItem(R.id.app_bar_add).isVisible = false
+                    menu.findItem(R.id.app_bar_sort).isVisible = false
+                    menu.findItem(R.id.app_bar_refresh).isVisible = false
+                }
+                R.id.chatFragment -> {
+                    val navHostFragment = (activity as FragmentActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
+                    val fragment = navHostFragment!!.childFragmentManager.fragments[0] as ChatFragment
+                    (activity as AppCompatActivity).supportActionBar!!.setTitle(fragment.advertiser_name)
+
+                    menu.findItem(R.id.app_bar_pencil).isVisible = false
+                    menu.findItem(R.id.app_bar_search).isVisible = true
+                    menu.findItem(R.id.app_bar_delete).isVisible = false
+                    menu.findItem(R.id.app_bar_cancel).isVisible = false
+                    menu.findItem(R.id.app_bar_add).isVisible = false
+                    menu.findItem(R.id.app_bar_sort).isVisible = false
+                    menu.findItem(R.id.app_bar_refresh).isVisible = false
+                }
+                R.id.myMessages -> {
+                    menu.findItem(R.id.app_bar_pencil).isVisible = false
+                    menu.findItem(R.id.app_bar_search).isVisible = true
+                    menu.findItem(R.id.app_bar_delete).isVisible = false
+                    menu.findItem(R.id.app_bar_cancel).isVisible = false
                     menu.findItem(R.id.app_bar_add).isVisible = false
                     menu.findItem(R.id.app_bar_sort).isVisible = false
                     menu.findItem(R.id.app_bar_refresh).isVisible = false

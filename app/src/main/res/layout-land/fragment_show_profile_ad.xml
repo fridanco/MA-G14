@@ -136,6 +136,14 @@
                 android:paddingBottom="16dp"
                 android:text="@string/profile_ad_no_skills_selected" />
 
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroup2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingBottom="12dp">
+
+            </com.google.android.material.chip.ChipGroup>
+
             <TextView
                 android:id="@+id/textView87"
                 android:layout_width="match_parent"
@@ -150,14 +158,6 @@
                 android:text="@string/profile_description_placeholder"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="#040404" />
-
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/chipGroup2"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingBottom="12dp">
-
-            </com.google.android.material.chip.ChipGroup>
 
         </LinearLayout>
     </ScrollView>

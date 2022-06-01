@@ -3,6 +3,7 @@ package it.polito.ma.g14.timebank.fragments
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentActivity
@@ -13,6 +14,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.models.MyMessagesVM
+import it.polito.ma.g14.timebank.utils.Utils
 
 class MyMessagesFragment : Fragment() {
 
@@ -23,11 +25,18 @@ class MyMessagesFragment : Fragment() {
 
     lateinit var pagerAdapter: FragmentStateAdapter
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_my_messages, container, false)
+
+        requireActivity().invalidateOptionsMenu()
 
         return view
     }
@@ -60,8 +69,9 @@ class MyMessagesFragment : Fragment() {
 //            }
 //        })
 
+        val tabText = listOf("Received", "Sent")
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-            //viewPager.currentItem = position
+            tab.text = tabText[position]
         }.attach()
 
     }
@@ -79,5 +89,9 @@ class MyMessagesFragment : Fragment() {
 
     }
 
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
+        Utils.manageActionBarItemsVisibility(requireActivity(), menu)
+    }
 
 }

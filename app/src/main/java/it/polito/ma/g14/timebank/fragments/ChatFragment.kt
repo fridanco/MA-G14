@@ -6,6 +6,7 @@ import android.text.Editable
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -26,6 +27,7 @@ import com.google.firebase.storage.ktx.storage
 import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.RVadapters.ChatAdapter
 import it.polito.ma.g14.timebank.models.*
+import it.polito.ma.g14.timebank.utils.Utils
 
 class ChatFragment : Fragment() {
 
@@ -40,11 +42,17 @@ class ChatFragment : Fragment() {
     var client_uid = ""
     var advertiser_uid = ""
     var advertisementID = ""
+    var advertiser_name = ""
 
     lateinit var adapter: ChatAdapter
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
     }
 
     override fun onCreateView(
@@ -56,6 +64,9 @@ class ChatFragment : Fragment() {
         advertisementID = requireArguments().getString("advertisementID").toString()
         client_uid = requireArguments().getString("clientUID") ?: Firebase.auth.currentUser!!.uid
         advertiser_uid = requireArguments().getString("advertiserUID") ?: Firebase.auth.currentUser!!.uid
+        advertiser_name = requireArguments().getString("advertiserName").toString()
+
+        requireActivity().invalidateOptionsMenu()
 
         val chatID = "${client_uid}_${advertisementID}"
 
@@ -105,6 +116,10 @@ class ChatFragment : Fragment() {
 
     }
 
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
+        Utils.manageActionBarItemsVisibility(requireActivity(), menu)
+    }
 
     private fun String.toEditable(): Editable =  Editable.Factory.getInstance().newEditable(this)
 
