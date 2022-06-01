@@ -2,7 +2,6 @@ package it.polito.ma.g14.timebank.RVadapters
 
 import android.content.Context
 import android.graphics.Color
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,8 +18,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.models.AdvertisementWithChat
 import it.polito.ma.g14.timebank.models.FirebaseVM
@@ -28,7 +25,7 @@ import java.text.SimpleDateFormat
 
 class MyMessagesAdapter(val view: View, val vm: FirebaseVM, val context: Context, val type: String): RecyclerView.Adapter<MyMessagesAdapter.ItemViewHolder>() {
     var filter: Boolean = false
-    var data = listOf<AdvertisementWithChat>()
+    var data = listOf<Pair<String, AdvertisementWithChat>>()
     var displayData = data.toMutableList()
     var colorList = mutableListOf("#FFFFFF")
     var colorIndex = 0
@@ -37,25 +34,27 @@ class MyMessagesAdapter(val view: View, val vm: FirebaseVM, val context: Context
     private var sortBy = ""
 
     class ItemViewHolder(v: View): RecyclerView.ViewHolder(v) {
-        private val advertisementContainer = v.findViewById<LinearLayout>(R.id.online_ad_card)
+        private val messageContainer = v.findViewById<LinearLayout>(R.id.my_message_container)
 
         fun bind(advertisementWithChat: AdvertisementWithChat, context: Context, vm: FirebaseVM, type:String, view: View, color: String) {
-            advertisementContainer.findViewById<TextView>(R.id.textView4).text = advertisementWithChat.advertisement.title
-            advertisementContainer.findViewById<TextView>(R.id.textView5).text = advertisementWithChat.advertisement.description
-            advertisementContainer.findViewById<TextView>(R.id.textView6).text = advertisementWithChat.advertisement.date
-            advertisementContainer.findViewById<TextView>(R.id.textView7).text = "${advertisementWithChat.advertisement.from} - ${advertisementWithChat.advertisement.to}"
-            advertisementContainer.findViewById<TextView>(R.id.textView19).text = advertisementWithChat.advertisement.location
-            advertisementContainer.findViewById<LinearLayout>(R.id.cardColor).setBackgroundColor(Color.parseColor(color))
+            messageContainer.findViewById<TextView>(R.id.textView4).text = advertisementWithChat.advertisement.title
+            messageContainer.findViewById<TextView>(R.id.textView5).text = advertisementWithChat.advertisement.description
+            messageContainer.findViewById<TextView>(R.id.textView6).text = advertisementWithChat.advertisement.date
+            messageContainer.findViewById<TextView>(R.id.textView7).text = "${advertisementWithChat.advertisement.from} - ${advertisementWithChat.advertisement.to}"
+            messageContainer.findViewById<TextView>(R.id.textView19).text = advertisementWithChat.advertisement.location
+            messageContainer.findViewById<LinearLayout>(R.id.cardColor).setBackgroundColor(Color.parseColor(color))
 
-            val messageContainer = advertisementContainer.findViewById<LinearLayout>(R.id.messageContainer)
+            val messageContainer = messageContainer.findViewById<LinearLayout>(R.id.messageContainer)
             messageContainer.removeAllViews()
 
-            advertisementContainer.findViewById<CardView>(R.id.cardView).setOnClickListener{
+            this.messageContainer.findViewById<CardView>(R.id.cardView).setOnClickListener{
                 val bundle = bundleOf("advertisementWithChat.advertisement" to advertisementWithChat.advertisement)
                 view.findNavController().navigate(R.id.action_onlineAdsListFragment_to_onlineAdDetailsFragment, bundle)
             }
             advertisementWithChat.messageList.forEach {
-                val msgLayout = LayoutInflater.from(context).inflate(R.layout.my_message_entry, advertisementContainer)
+                val msgLayout = LayoutInflater.from(context).inflate(R.layout.my_message_entry,
+                    this.messageContainer
+                )
                 msgLayout.findViewById<TextView>(R.id.textView74).text = it.recipientUID
                 msgLayout.findViewById<TextView>(R.id.textView83).text = "${it.lastMessageSenderName}: ${it.lastMessage}"
                 if(it.messageCounter>0) {
@@ -81,12 +80,11 @@ class MyMessagesAdapter(val view: View, val vm: FirebaseVM, val context: Context
                     .into(userIcon)
 
                 msgLayout.setOnClickListener {  _ ->
-                    var bundle : Bundle
-                    if(type=="received_msg") {
-                        bundle = bundleOf("client_uid" to it.recipientUID)
+                    val bundle = if(type=="received_msg") {
+                        bundleOf("client_uid" to it.recipientUID)
                     }
                     else {
-                        bundle = bundleOf("advertiser_uid" to advertisementWithChat.advertisement.uid)
+                        bundleOf("advertiser_uid" to advertisementWithChat.advertisement.uid)
                     }
                     //TODO: continue here
                     view.findNavController()
@@ -96,7 +94,7 @@ class MyMessagesAdapter(val view: View, val vm: FirebaseVM, val context: Context
             }
         }
         fun unbind() {
-            advertisementContainer.findViewById<CardView>(R.id.cardView).setOnClickListener(null)
+            messageContainer.findViewById<CardView>(R.id.cardView).setOnClickListener(null)
         }
     }
 
@@ -110,15 +108,15 @@ class MyMessagesAdapter(val view: View, val vm: FirebaseVM, val context: Context
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val advertisementWithChat = displayData[position]
 
-        holder.bind(advertisementWithChat, context, vm, type, view, colorList[(colorIndex++)%colorList.size])
+        holder.bind(advertisementWithChat.second, context, vm, type, view, colorList[(colorIndex++)%colorList.size])
     }
 
     override fun getItemCount(): Int = displayData.size
 
-    fun updateAdvertisements(advertisements: List<AdvertisementWithChat>, sortBy: String){
+    fun updateMessages(advertisementsWithChat: List<Pair<String, AdvertisementWithChat>>, sortBy: String){
         this.sortBy = sortBy
         colorIndex = 0
-        data = advertisements.toList()
+        data = advertisementsWithChat.toList()
         val newData = performSort(sortBy, false)
         val diffs = DiffUtil.calculateDiff(MyDiffCallbackMyMessages(displayData,newData))
         displayData = newData.toMutableList()
@@ -129,7 +127,7 @@ class MyMessagesAdapter(val view: View, val vm: FirebaseVM, val context: Context
         if(data.isEmpty()){
             return 0
         }
-        val newData: MutableList<AdvertisementWithChat>
+        val newData: MutableList<Pair<String, AdvertisementWithChat>>
         val allData = performSort(sortBy, false)
         if(text.isEmpty() || text.isBlank()){
             newData = allData.toMutableList()
@@ -137,19 +135,19 @@ class MyMessagesAdapter(val view: View, val vm: FirebaseVM, val context: Context
         else{
             newData = allData.filter {adWithMessage ->
 
-                if(adWithMessage.advertisement.title.contains(text, ignoreCase = true) ||
-                    adWithMessage.advertisement.location.contains(text, ignoreCase = true) ||
-                    adWithMessage.advertisement.description.contains(text, ignoreCase = true)){
+                if(adWithMessage.second.advertisement.title.contains(text, ignoreCase = true) ||
+                    adWithMessage.second.advertisement.location.contains(text, ignoreCase = true) ||
+                    adWithMessage.second.advertisement.description.contains(text, ignoreCase = true)){
                     return@filter true
                 }
-                adWithMessage.messageList.forEach {
+                adWithMessage.second.messageList.forEach {
                     if(it.recipientName.contains(text, ignoreCase = true)){
                         return@filter true
                     }
                 }
                 return@filter false
 
-            } as MutableList<AdvertisementWithChat>
+            }.toMutableList()
         }
         val diffs = DiffUtil.calculateDiff(MyDiffCallbackMyMessages(displayData, newData))
         displayData = newData
@@ -171,31 +169,31 @@ class MyMessagesAdapter(val view: View, val vm: FirebaseVM, val context: Context
         diffs.dispatchUpdatesTo(this)
     }
 
-    fun performSort(sortBy: String, showToast: Boolean = true) : List<AdvertisementWithChat>{
+    fun performSort(sortBy: String, showToast: Boolean = true) : List<Pair<String, AdvertisementWithChat>>{
         var newData = data.toMutableList()
         when(sortBy){
-            "title_asc" -> { newData.sortBy { it.advertisement.title }
+            "title_asc" -> { newData.sortBy { it.second.advertisement.title }
                 if(showToast) Toast.makeText(context, "Sorted by title A-Z", Toast.LENGTH_SHORT).show()
             }
-            "title_desc" -> { newData.sortByDescending { it.advertisement.title }
+            "title_desc" -> { newData.sortByDescending { it.second.advertisement.title }
                 if(showToast) Toast.makeText(context, "Sorted by title Z-A", Toast.LENGTH_SHORT).show()
             }
-            "creator_asc" -> { newData.sortBy { it.advertisement.user.fullname }
+            "creator_asc" -> { newData.sortBy { it.second.advertisement.user.fullname }
                 if(showToast) Toast.makeText(context, "Sorted by creator A-Z", Toast.LENGTH_SHORT).show()
             }
-            "creator_desc" -> { newData.sortByDescending { it.advertisement.user.fullname }
+            "creator_desc" -> { newData.sortByDescending { it.second.advertisement.user.fullname }
                 if(showToast) Toast.makeText(context, "Sorted by creator Z-A", Toast.LENGTH_SHORT).show()
             }
-            "location_asc" -> { newData.sortBy { it.advertisement.user.location }
+            "location_asc" -> { newData.sortBy { it.second.advertisement.user.location }
                 if(showToast) Toast.makeText(context, "Sorted by location A-Z", Toast.LENGTH_SHORT).show()
             }
-            "location_desc" -> { newData.sortByDescending { it.advertisement.user.location }
+            "location_desc" -> { newData.sortByDescending { it.second.advertisement.user.location }
                 if(showToast) Toast.makeText(context, "Sorted by location Z-A", Toast.LENGTH_SHORT).show()
             }
             "date_desc" -> {
                 val sdf_date = SimpleDateFormat("EEE, d MMM yyyy")
                 val sdf_time = SimpleDateFormat("HH:mm")
-                val cmp = compareByDescending<AdvertisementWithChat> { sdf_date.parse(it.advertisement.date) }.thenByDescending { sdf_time.parse(it.advertisement.from) }
+                val cmp = compareByDescending<Pair<String, AdvertisementWithChat>> { sdf_date.parse(it.second.advertisement.date) }.thenByDescending { sdf_time.parse(it.second.advertisement.from) }
                 newData = newData.sortedWith(cmp).toMutableList()
                 if(showToast) {
                     Toast.makeText(context, "Sorted by most recent", Toast.LENGTH_SHORT).show()
@@ -204,7 +202,7 @@ class MyMessagesAdapter(val view: View, val vm: FirebaseVM, val context: Context
             "date_asc" -> {
                 val sdf_date = SimpleDateFormat("EEE, d MMM yyyy")
                 val sdf_time = SimpleDateFormat("HH:mm")
-                val cmp = compareBy<AdvertisementWithChat> { sdf_date.parse(it.advertisement.date) }.thenBy { sdf_time.parse(it.advertisement.from) }
+                val cmp = compareBy<Pair<String, AdvertisementWithChat>> { sdf_date.parse(it.second.advertisement.date) }.thenBy { sdf_time.parse(it.second.advertisement.from) }
                 newData = newData.sortedWith(cmp).toMutableList()
                 if(showToast) {
                     Toast.makeText(context, "Sorted by oldest", Toast.LENGTH_SHORT).show()
@@ -215,7 +213,7 @@ class MyMessagesAdapter(val view: View, val vm: FirebaseVM, val context: Context
     }
 }
 
-class MyDiffCallbackMyMessages(val old: List<AdvertisementWithChat>, val new: List<AdvertisementWithChat>): DiffUtil.Callback() {
+class MyDiffCallbackMyMessages(val old: List<Pair<String, AdvertisementWithChat>>, val new: List<Pair<String, AdvertisementWithChat>>): DiffUtil.Callback() {
     override fun getOldListSize(): Int = old.size
 
     override fun getNewListSize(): Int = new.size

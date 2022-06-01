@@ -2,13 +2,13 @@ package it.polito.ma.g14.timebank.models
 
 import java.sql.Timestamp
 
-data class Chat(
-    val advertisementID: String,
-    val clientUID: String,
-    val clientName: String,
-    val clientNotifications: Int,
-    val advertiserUID: String,
-    val advertiserName: String,
-    val advertiserNotifications: Int,
-    val chatMessages: List<ChatMessage>
-)
+class Chat{
+    var advertisementID = ""
+    var clientUID = ""
+    var clientName= ""
+    var clientNotifications = 0
+    var advertiserUID= ""
+    var advertiserName= ""
+    var advertiserNotifications = 0
+    var chatMessages = listOf<ChatMessage>()
+}

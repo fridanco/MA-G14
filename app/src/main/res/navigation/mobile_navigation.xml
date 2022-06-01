@@ -130,5 +130,10 @@
         android:name="it.polito.ma.g14.timebank.fragments.ChatFragment"
         android:label="fragment_chat"
         tools:layout="@layout/fragment_chat" />
+    <fragment
+        android:id="@+id/myMessages"
+        android:name="it.polito.ma.g14.timebank.fragments.MyMessagesFragment"
+        android:label="My messages"
+        tools:layout="@layout/fragment_my_messages" />
 
 </navigation>
