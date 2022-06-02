@@ -38,12 +38,18 @@ class Utils {
                     menu.findItem(R.id.location_desc).isVisible = false
                     menu.findItem(R.id.date_asc).isVisible = false
                     menu.findItem(R.id.date_desc).isVisible = false
-                    menu.findItem(R.id.creator_asc).isVisible = false
-                    menu.findItem(R.id.creator_desc).isVisible = false
                     menu.findItem(R.id.skill_asc).isVisible = true
                     menu.findItem(R.id.skill_desc).isVisible = true
                     menu.findItem(R.id.numAd_asc).isVisible = true
                     menu.findItem(R.id.numAd_desc).isVisible = true
+                    
+                    menu.findItem(R.id.myMsg_msg_desc).isVisible = false
+                    menu.findItem(R.id.myMsg_title_asc).isVisible = false
+                    menu.findItem(R.id.myMsg_title_desc).isVisible = false
+                    menu.findItem(R.id.myMsg_creator_asc).isVisible = false
+                    menu.findItem(R.id.myMsg_creator_desc).isVisible = false
+                    menu.findItem(R.id.myMsg_date_asc).isVisible = false
+                    menu.findItem(R.id.myMsg_date_desc).isVisible = false
                 }
                 R.id.myAdvertisements -> {
                     menu.findItem(R.id.app_bar_search).isVisible = true
@@ -62,12 +68,18 @@ class Utils {
                     menu.findItem(R.id.location_desc).isVisible = true
                     menu.findItem(R.id.date_asc).isVisible = true
                     menu.findItem(R.id.date_desc).isVisible = true
-                    menu.findItem(R.id.creator_asc).isVisible = true
-                    menu.findItem(R.id.creator_desc).isVisible = true
                     menu.findItem(R.id.skill_asc).isVisible = false
                     menu.findItem(R.id.skill_desc).isVisible = false
                     menu.findItem(R.id.numAd_asc).isVisible = false
                     menu.findItem(R.id.numAd_desc).isVisible = false
+
+                    menu.findItem(R.id.myMsg_msg_desc).isVisible = false
+                    menu.findItem(R.id.myMsg_title_asc).isVisible = false
+                    menu.findItem(R.id.myMsg_title_desc).isVisible = false
+                    menu.findItem(R.id.myMsg_creator_asc).isVisible = false
+                    menu.findItem(R.id.myMsg_creator_desc).isVisible = false
+                    menu.findItem(R.id.myMsg_date_asc).isVisible = false
+                    menu.findItem(R.id.myMsg_date_desc).isVisible = false
                 }
                 R.id.myAdvertisementEdit -> {
                     menu.findItem(R.id.app_bar_search).isVisible = false
@@ -89,6 +101,7 @@ class Utils {
                     menu.findItem(R.id.app_bar_add).isVisible = false
                     menu.findItem(R.id.app_bar_sort).isVisible = false
                     menu.findItem(R.id.app_bar_refresh).isVisible = false
+                    
                 }
                 R.id.onlineAdsListFragment -> {
                     menu.findItem(R.id.app_bar_search).isVisible = true
@@ -107,12 +120,18 @@ class Utils {
                     menu.findItem(R.id.location_desc).isVisible = true
                     menu.findItem(R.id.date_asc).isVisible = true
                     menu.findItem(R.id.date_desc).isVisible = true
-                    menu.findItem(R.id.creator_asc).isVisible = true
-                    menu.findItem(R.id.creator_desc).isVisible = true
                     menu.findItem(R.id.skill_asc).isVisible = false
                     menu.findItem(R.id.skill_desc).isVisible = false
                     menu.findItem(R.id.numAd_asc).isVisible = false
                     menu.findItem(R.id.numAd_desc).isVisible = false
+
+                    menu.findItem(R.id.myMsg_msg_desc).isVisible = false
+                    menu.findItem(R.id.myMsg_title_asc).isVisible = false
+                    menu.findItem(R.id.myMsg_title_desc).isVisible = false
+                    menu.findItem(R.id.myMsg_creator_asc).isVisible = false
+                    menu.findItem(R.id.myMsg_creator_desc).isVisible = false
+                    menu.findItem(R.id.myMsg_date_asc).isVisible = false
+                    menu.findItem(R.id.myMsg_date_desc).isVisible = false
                 }
                 R.id.onlineAdDetailsFragment -> {
                     menu.findItem(R.id.app_bar_search).isVisible = false
@@ -142,8 +161,29 @@ class Utils {
                     menu.findItem(R.id.app_bar_delete).isVisible = false
                     menu.findItem(R.id.app_bar_cancel).isVisible = false
                     menu.findItem(R.id.app_bar_add).isVisible = false
-                    menu.findItem(R.id.app_bar_sort).isVisible = false
+                    menu.findItem(R.id.app_bar_sort).isVisible = true
                     menu.findItem(R.id.app_bar_refresh).isVisible = false
+
+                    menu.findItem(R.id.title_asc).isVisible = false
+                    menu.findItem(R.id.title_desc).isVisible = false
+                    menu.findItem(R.id.creator_asc).isVisible = false
+                    menu.findItem(R.id.creator_desc).isVisible = false
+                    menu.findItem(R.id.location_asc).isVisible = false
+                    menu.findItem(R.id.location_desc).isVisible = false
+                    menu.findItem(R.id.date_asc).isVisible = false
+                    menu.findItem(R.id.date_desc).isVisible = false
+                    menu.findItem(R.id.skill_asc).isVisible = false
+                    menu.findItem(R.id.skill_desc).isVisible = false
+                    menu.findItem(R.id.numAd_asc).isVisible = false
+                    menu.findItem(R.id.numAd_desc).isVisible = false
+
+                    menu.findItem(R.id.myMsg_msg_desc).isVisible = true
+                    menu.findItem(R.id.myMsg_title_asc).isVisible = true
+                    menu.findItem(R.id.myMsg_title_desc).isVisible = true
+                    menu.findItem(R.id.myMsg_creator_asc).isVisible = true
+                    menu.findItem(R.id.myMsg_creator_desc).isVisible = true
+                    menu.findItem(R.id.myMsg_date_asc).isVisible = true
+                    menu.findItem(R.id.myMsg_date_desc).isVisible = true
                 }
                 R.id.myProfile -> {
                     val navHostFragment = (activity as FragmentActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
@@ -386,6 +426,33 @@ class Utils {
                         }
                         R.id.date_desc -> {
                             fragment.sortAdvertisements("date_desc")
+                        }
+                    }
+                }
+                R.id.myMessages -> {
+                    val navHostFragment = (activity as FragmentActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
+                    val fragment = navHostFragment!!.childFragmentManager.fragments[0] as MyMessagesFragment
+                    when(item.itemId) {
+                        R.id.myMsg_msg_desc -> {
+                            fragment.sortMessages("msg_desc")
+                        }
+                        R.id.myMsg_title_asc -> {
+                            fragment.sortMessages("title_asc")
+                        }
+                        R.id.myMsg_title_desc -> {
+                            fragment.sortMessages("title_desc")
+                        }
+                        R.id.myMsg_creator_asc -> {
+                            fragment.sortMessages("creator_asc")
+                        }
+                        R.id.myMsg_creator_desc -> {
+                            fragment.sortMessages("creator_desc")
+                        }
+                        R.id.myMsg_date_asc -> {
+                            fragment.sortMessages("date_asc")
+                        }
+                        R.id.myMsg_date_desc -> {
+                            fragment.sortMessages("date_desc")
                         }
                     }
                 }

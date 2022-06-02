@@ -98,6 +98,36 @@
                 android:id="@+id/numAd_asc"
                 android:textColor="?android:textColorPrimary"
                 android:title="Sort by least number of ads" />
+            <item
+                android:id="@+id/myMsg_msg_desc"
+                android:title="Sort by messages" />
+            <item
+                android:id="@+id/myMsg_title_asc"
+                android:textColor="?android:textColorPrimary"
+                android:title="Sort by ad title A-Z"
+                android:visible="true" />
+            <item
+                android:id="@+id/myMsg_title_desc"
+                android:textColor="?android:textColorPrimary"
+                android:title="Sort by ad title Z-A" />
+            <item
+                android:id="@+id/myMsg_creator_asc"
+                android:textColor="?android:textColorPrimary"
+                android:title="Sort by ad creator A-Z"
+                android:visible="true" />
+            <item
+                android:id="@+id/myMsg_creator_desc"
+                android:textColor="?android:textColorPrimary"
+                android:title="Sort by ad creator Z-A" />
+            <item
+                android:id="@+id/myMsg_date_desc"
+                android:textColor="?android:textColorPrimary"
+                android:title="Sort by most recent ad" />
+            <item
+                android:id="@+id/myMsg_date_asc"
+                android:textColor="?android:textColorPrimary"
+                android:title="Sort by oldest ad"
+                android:visible="true" />
 
         </menu>
     </item>

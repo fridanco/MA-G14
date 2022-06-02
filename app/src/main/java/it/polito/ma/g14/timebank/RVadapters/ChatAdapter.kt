@@ -87,7 +87,7 @@ class ChatAdapter(val view: View, val vm: FirebaseVM, val context: Context, val 
             val timeFormatter3 = SimpleDateFormat("dd MMM, HH:mm")
             val timeFormatter4 = SimpleDateFormat("dd MMM yyyy, HH:mm")
 
-            var timeString = ""
+            val timeString: String
 
             if (calendar.get(Calendar.YEAR) == today.get(Calendar.YEAR)
                 && calendar.get(Calendar.DAY_OF_YEAR) == today.get(Calendar.DAY_OF_YEAR)) {

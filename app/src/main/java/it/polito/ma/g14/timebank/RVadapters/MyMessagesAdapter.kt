@@ -164,13 +164,16 @@ class MyMessagesAdapter(val view: View, val vm: FirebaseVM, val context: Context
 
     override fun getItemCount(): Int = displayData.size
 
-    fun updateMessages(advertisementsWithChat: List<Pair<String, AdvertisementWithChat>>, sortBy: String){
+    fun updateMessages(advertisementsWithChat: List<Pair<String, AdvertisementWithChat>>, sortBy: String, filterBy: String){
         this.sortBy = sortBy
         colorIndex = 0
         data = advertisementsWithChat.toList()
+        val dataTmp = data
+        data = performFilter(data, filterBy)
         val newData = performSort(sortBy, false)
         val diffs = DiffUtil.calculateDiff(MyDiffCallbackMyMessages(displayData,newData))
         displayData = newData.toMutableList()
+        data = dataTmp
         diffs.dispatchUpdatesTo(this)
     }
 
@@ -180,35 +183,64 @@ class MyMessagesAdapter(val view: View, val vm: FirebaseVM, val context: Context
         }
         val newData: MutableList<Pair<String, AdvertisementWithChat>>
         val allData = performSort(sortBy, false)
-        if(text.isEmpty() || text.isBlank()){
-            newData = allData.toMutableList()
-        }
-        else{
-            newData = allData.filter {adWithMessage ->
-
-                if(adWithMessage.second.advertisement.title.contains(text, ignoreCase = true) ||
-                    adWithMessage.second.advertisement.location.contains(text, ignoreCase = true) ||
-                    adWithMessage.second.advertisement.description.contains(text, ignoreCase = true)){
-                    return@filter true
-                }
-                adWithMessage.second.messageList.forEach {
-                    if(it.recipientName.contains(text, ignoreCase = true)){
-                        return@filter true
-                    }
-                }
-                return@filter false
-
-            }.toMutableList()
-        }
+        newData = performFilter(allData, text).toMutableList()
         val diffs = DiffUtil.calculateDiff(MyDiffCallbackMyMessages(displayData, newData))
         displayData = newData
         diffs.dispatchUpdatesTo(this)
         return displayData.size
     }
 
+    fun performFilter(data: List<Pair<String, AdvertisementWithChat>>, filterBy: String) : List<Pair<String, AdvertisementWithChat>>{
+        return if(filterBy.isBlank()){
+            data
+        }
+        else{
+            data.filter {adWithMessage ->
+                if(adWithMessage.second.advertisement.title.contains(filterBy, ignoreCase = true) ||
+                    adWithMessage.second.advertisement.location.contains(filterBy, ignoreCase = true) ||
+                    adWithMessage.second.advertisement.description.contains(filterBy, ignoreCase = true)){
+                    return@filter true
+                }
+                adWithMessage.second.messageList.forEach {
+                    if(it.recipientName.contains(filterBy, ignoreCase = true)){
+                        return@filter true
+                    }
+                }
+                return@filter false
+            }
+        }
+    }
+
+    fun addSort(sortBy: String){
+        this.sortBy = sortBy
+        if(displayData.isEmpty()){
+            return
+        }
+        val dataTmp = data
+        data = displayData.toList()
+        val newData = performSort(sortBy)
+        data = dataTmp
+        val diffs = DiffUtil.calculateDiff(MyDiffCallbackMyMessages(displayData, newData))
+        displayData = newData.toMutableList()
+        diffs.dispatchUpdatesTo(this)
+    }
+
     fun performSort(sortBy: String, showToast: Boolean = true) : List<Pair<String, AdvertisementWithChat>>{
         var newData = data.toMutableList()
         when(sortBy){
+            "msg_desc" -> {
+                val cmp = compareByDescending<Pair<String, AdvertisementWithChat>> {
+                    it.second.containsUnreadMessage
+                }.thenByDescending {
+                    if(it.second.containsUnreadMessage) {
+                        it.second.lastUnreadMessageTimestamp
+                    }
+                    else{
+                        it.second.lastReadMessageTimestamp
+                    }
+                }
+                newData = newData.sortedWith(cmp).toMutableList()
+            }
             "title_asc" -> { newData.sortBy { it.second.advertisement.title }
                 if(showToast) Toast.makeText(context, "Sorted by title A-Z", Toast.LENGTH_SHORT).show()
             }
@@ -220,12 +252,6 @@ class MyMessagesAdapter(val view: View, val vm: FirebaseVM, val context: Context
             }
             "creator_desc" -> { newData.sortByDescending { it.second.advertisement.user.fullname }
                 if(showToast) Toast.makeText(context, "Sorted by creator Z-A", Toast.LENGTH_SHORT).show()
-            }
-            "location_asc" -> { newData.sortBy { it.second.advertisement.user.location }
-                if(showToast) Toast.makeText(context, "Sorted by location A-Z", Toast.LENGTH_SHORT).show()
-            }
-            "location_desc" -> { newData.sortByDescending { it.second.advertisement.user.location }
-                if(showToast) Toast.makeText(context, "Sorted by location Z-A", Toast.LENGTH_SHORT).show()
             }
             "date_desc" -> {
                 val sdf_date = SimpleDateFormat("EEE, d MMM yyyy")

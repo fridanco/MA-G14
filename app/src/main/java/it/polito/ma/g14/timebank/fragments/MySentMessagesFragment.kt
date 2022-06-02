@@ -20,7 +20,7 @@ import it.polito.ma.g14.timebank.models.FirebaseVM
 import it.polito.ma.g14.timebank.models.MySentMessagesVM
 import it.polito.ma.g14.timebank.utils.Utils
 
-class MySentMessagesFragment : Fragment() {
+class MySentMessagesFragment(val sortBy: String, val filterBy: String) : Fragment() {
 
     val sentMessagesVM by viewModels<MySentMessagesVM>()
     val firebaseVM by viewModels<FirebaseVM>()
@@ -29,7 +29,8 @@ class MySentMessagesFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
+        sentMessagesVM.setSortBy(sortBy)
+        sentMessagesVM.setFilterBy(filterBy)
     }
 
     override fun onCreateView(
@@ -37,8 +38,6 @@ class MySentMessagesFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_my_sent_messages, container, false)
-
-        requireActivity().invalidateOptionsMenu()
 
         sentMessagesVM.getReceivedMessages(Firebase.auth.currentUser!!.uid)
 
@@ -75,8 +74,17 @@ class MySentMessagesFragment : Fragment() {
                 rv.isVisible = true
                 emptyRv.isGone = true
                 val sortBy = sentMessagesVM.getSortBy()
-                adapter.updateMessages(it.toList(), sortBy)
+                val filterBy = sentMessagesVM.getFilterBy()
+                adapter.updateMessages(it.toList(), sortBy, filterBy)
             }
+        }
+
+        sentMessagesVM.sortBy.observe(viewLifecycleOwner){
+            adapter.addSort(it)
+        }
+
+        sentMessagesVM.filterBy.observe(viewLifecycleOwner){
+            adapter.addFilter(it)
         }
     }
 
