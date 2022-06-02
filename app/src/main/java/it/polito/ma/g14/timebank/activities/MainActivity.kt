@@ -88,7 +88,7 @@ class MainActivity : AppCompatActivity() {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
-            setOf(
+            setOf(R.id.nav_linkedAds,
                 R.id.onlineAdvertisementSkills, R.id.myAdvertisements, R.id.myProfile, R.id.nav_logout
             ), drawerLayout
         )

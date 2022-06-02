@@ -43,8 +43,12 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
     private val _onlineAdvertisements = MutableLiveData<Map<String, List<Advertisement>>>()
     val onlineAdvertisements: LiveData<Map<String, List<Advertisement>>> = _onlineAdvertisements
 
+    private val _followedAdvertisements = MutableLiveData<List<Advertisement>>()
+    val followedAdvertisements : LiveData<List<Advertisement>> = _followedAdvertisements
+
     private var profileListener : ListenerRegistration? = null
     private var myAdvertisementsListener: ListenerRegistration? = null
+    private var followedAdvertisementsListener: ListenerRegistration? = null
 
     val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     val storageRef = Firebase.storage("gs://mad2022-g14.appspot.com").reference
@@ -56,6 +60,23 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
             .get()
             .addOnSuccessListener { querySnapshot ->
                 _editProfile.value = querySnapshot.toObject(User::class.java)
+            }
+
+        followedAdvertisementsListener = db.collection("advertisements")
+            .whereEqualTo("followedby",uid).addSnapshotListener { result, exception ->
+                if(exception!=null){
+                    _followedAdvertisements.value = emptyList()}
+                else{
+                    if(result != null){
+                        val followedAds = result.mapNotNull { ads->
+                            ads.toObject(Advertisement::class.java)
+                        }
+                        _followedAdvertisements.value = followedAds
+                    }
+                }
+
+
+
             }
 
 
@@ -92,6 +113,8 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
                     }
                 }
             }
+
+
     }
 
     fun updateProfile(fullname: String, nickname: String, email: String, location: String, description: String, skills: List<String>,
