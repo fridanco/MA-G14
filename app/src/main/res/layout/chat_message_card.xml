@@ -74,7 +74,7 @@
                     android:layout_weight="1"
                     android:paddingStart="8dp"
                     android:text="Some name here"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
             </LinearLayout>
 
             <TextView

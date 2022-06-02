@@ -130,7 +130,7 @@ class Utils {
                     (activity as AppCompatActivity).supportActionBar!!.setTitle(fragment.advertiser_name)
 
                     menu.findItem(R.id.app_bar_pencil).isVisible = false
-                    menu.findItem(R.id.app_bar_search).isVisible = true
+                    menu.findItem(R.id.app_bar_search).isVisible = false
                     menu.findItem(R.id.app_bar_delete).isVisible = false
                     menu.findItem(R.id.app_bar_cancel).isVisible = false
                     menu.findItem(R.id.app_bar_add).isVisible = false

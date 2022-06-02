@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
@@ -100,7 +101,17 @@ class ChatFragment : Fragment() {
             else {
                 //rv.isVisible = true
                 emptyRv.isGone = true
-                adapter.updateChat(chatList)
+                val previousLastAdvertiserMsgIndex = adapter.updateChat(chatList)
+                if(previousLastAdvertiserMsgIndex!=-1){
+                    val item = rv.findViewHolderForAdapterPosition(previousLastAdvertiserMsgIndex)
+                    item?.let {
+                        val bookPanelView = it.itemView.findViewById<LinearLayout>(R.id.book_panel)
+                        if(bookPanelView!=null){
+                            bookPanelView.isGone = true
+                        }
+                    }
+                }
+                rv.scrollToPosition(adapter.displayData.size-1)
             }
         }
 
