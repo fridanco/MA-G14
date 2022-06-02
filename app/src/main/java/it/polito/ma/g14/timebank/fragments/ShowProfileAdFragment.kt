@@ -3,7 +3,6 @@ package it.polito.ma.g14.timebank.fragments
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.media.Rating
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
@@ -31,7 +30,7 @@ import kotlinx.coroutines.launch
 import org.w3c.dom.Text
 import java.io.ByteArrayOutputStream
 
-class ShowProfileFragment : Fragment() {
+class ShowProfileAdFragment : Fragment() {
 
     val vm by viewModels<FirebaseVM>()
 
@@ -42,7 +41,7 @@ class ShowProfileFragment : Fragment() {
     var skills = arrayListOf<String>()
     var description : String = ""
     var profilePicture : ByteArray? = null
-    var ratingProfile : Float = 0f
+    var ratingProfile : Float = 0F
     var n_ratings : Int = 0
 
     private var tv_fullname : TextView? = null
@@ -52,8 +51,8 @@ class ShowProfileFragment : Fragment() {
     private var tv_description : TextView? = null
     private var et_skills : ChipGroup? = null
     private var iv_profilePicture : ImageView? = null
-    private var tv_ratingProfile : RatingBar? = null
-    private var h_tv_ratingProfile : RatingBar? = null
+    private var tv_ratingProfile : TextView? = null
+    private var h_tv_ratingProfile : TextView? = null
     private var h_tv_fullname : TextView? = null
     private var h_tv_nickname : TextView? = null
     private var h_tv_email : TextView? = null
@@ -61,21 +60,20 @@ class ShowProfileFragment : Fragment() {
     private var h_tv_description : TextView? = null
     private var h_et_skills : ChipGroup? = null
     private var h_iv_profilePicture : ImageView? = null
-    private var tv_captionNoRatings : TextView? = null
-    private var h_tv_captionNoRatings : TextView? = null
     var otherUid : String? = null
 
     var isImageDownloaded = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
+        setHasOptionsMenu(false)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_show_profile, container, false)
+        val view = inflater.inflate(R.layout.fragment_show_profile_ad, container, false)
 
+        otherUid = requireArguments().getString("uid")
         requireActivity().invalidateOptionsMenu()
 
         val sv = view?.findViewById<ScrollView>(R.id.scrollView2)
@@ -102,8 +100,6 @@ class ShowProfileFragment : Fragment() {
 
         setViewsReferences()
 
-        //populateProfilePicture()
-
         val circularProgressDrawable = CircularProgressDrawable(requireContext())
         circularProgressDrawable.strokeWidth = 5f
         circularProgressDrawable.centerRadius = 30f
@@ -114,71 +110,65 @@ class ShowProfileFragment : Fragment() {
             .error(R.drawable.user)
 
 
+        vm.db.collection("users")
+            .document(otherUid.toString())
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                val user = querySnapshot.toObject(User::class.java)
+
+                user?.let {
+                    fullName = it.fullname
+                    email = it.email
+                    nickName = it.nickname
+                    location = it.location
+                    skills = it.skills as ArrayList<String>
+                    description = it.description
+                    ratingProfile = it.ratings
+                    n_ratings = it.n_ratings
 
 
-            vm.profile.observe(viewLifecycleOwner) {
-                //val coroutineScope = CoroutineScope(Dispatchers.IO)
-                lifecycleScope.launch(Dispatchers.IO) {
-                    try {
-                        val bitmap = Glide.with(requireContext())
-                            .asBitmap()
-                            .load(vm.storageRef.child(Firebase.auth.currentUser!!.uid))
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .skipMemoryCache(true)
-                            .apply(options)
-                            .submit()
-                            .get()
-                        val stream = ByteArrayOutputStream()
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
-                        profilePicture = stream.toByteArray()
-                        isImageDownloaded = true
-                        activity?.invalidateOptionsMenu()
-                    } catch (ex: Exception) {
-                        isImageDownloaded = true
-                        activity?.invalidateOptionsMenu()
-                    }
+                    populateProfileText(it)
+                    populateProfileSkills(it.skills)
                 }
 
-                iv_profilePicture?.let { it1 ->
-                    Glide.with(this).clear(it1)
-                    Glide.with(this)
-                        .load(vm.storageRef.child(Firebase.auth.currentUser!!.uid))
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .skipMemoryCache(true)
-                        .apply(options)
-                        .into(it1)
-                }
-                h_iv_profilePicture?.let { it2 ->
-                    Glide.with(this).clear(it2)
-                    Glide.with(this)
-                        .load(vm.storageRef.child(Firebase.auth.currentUser!!.uid))
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .skipMemoryCache(true)
-                        .apply(options)
-                        .into(it2)
-                }
-
-                fullName = it.fullname
-                email = it.email
-                nickName = it.nickname
-                location = it.location
-                skills = it.skills as ArrayList<String>
-                description = it.description
-                ratingProfile = it.ratings
-                n_ratings = it.n_ratings
-
-
-                populateProfileText(it)
-                populateProfileSkills(it.skills)
             }
 
-    }
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val bitmap = Glide.with(requireContext())
+                    .asBitmap()
+                    .load(vm.storageRef.child(otherUid.toString()))
+                    .apply(options)
+                    .submit()
+                    .get()
+                val stream = ByteArrayOutputStream()
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+                profilePicture = stream.toByteArray()
+                isImageDownloaded = true
+                activity?.invalidateOptionsMenu()
+            } catch (ex: Exception) {
+                isImageDownloaded = true
+                activity?.invalidateOptionsMenu()
+            }
+        }
 
-    override fun onPrepareOptionsMenu(menu: Menu) {
-        super.onPrepareOptionsMenu(menu)
-        Utils.manageActionBarItemsVisibility(requireActivity(), menu)
-    }
+        iv_profilePicture?.let { it1 ->
+            Glide.with(this).clear(it1)
+            Glide.with(this)
+                .load(vm.storageRef.child(otherUid.toString()))
+                .apply(options)
+                .into(it1)
+        }
+        h_iv_profilePicture?.let { it2 ->
+            Glide.with(this).clear(it2)
+            Glide.with(this)
+                .load(vm.storageRef.child(otherUid.toString()))
+                .apply(options)
+                .into(it2)
+        }
 
+
+    }
     private fun setViewsReferences(){
         tv_fullname = view?.findViewById<TextView>(R.id.textView4)
         tv_nickname = view?.findViewById<TextView>(R.id.textView5)
@@ -187,8 +177,7 @@ class ShowProfileFragment : Fragment() {
         tv_description = view?.findViewById<TextView>(R.id.textView19)
         et_skills = view?.findViewById<ChipGroup>(R.id.chipGroup)
         iv_profilePicture = view?.findViewById<ImageView>(R.id.imageView4)
-        tv_ratingProfile = view?.findViewById<RatingBar>(R.id.ratingBar)
-        tv_captionNoRatings = view?.findViewById<TextView>(R.id.textView84)
+        tv_ratingProfile = view?.findViewById<TextView>(R.id.textView85)
 
         h_tv_fullname = view?.findViewById<TextView>(R.id.textView)
         h_tv_nickname = view?.findViewById<TextView>(R.id.textView2)
@@ -197,11 +186,7 @@ class ShowProfileFragment : Fragment() {
         h_iv_profilePicture = view?.findViewById<ImageView>(R.id.imageView)
         h_tv_description = view?.findViewById<TextView>(R.id.textView20)
         h_et_skills = view?.findViewById<ChipGroup>(R.id.chipGroup2)
-        h_tv_ratingProfile = view?.findViewById<RatingBar>(R.id.ratingBar1)
-        h_tv_captionNoRatings = view?.findViewById<TextView>(R.id.textView85)
-
-        tv_ratingProfile?.max = 5
-        h_tv_ratingProfile?.max = 5
+        h_tv_ratingProfile = view?.findViewById<TextView>(R.id.textView86)
     }
 
     private fun populateProfileText(profile: User) {
@@ -209,22 +194,11 @@ class ShowProfileFragment : Fragment() {
         tv_nickname?.text = profile.nickname
         tv_email?.text = profile.email
         tv_location?.text = profile.location
-
+        tv_ratingProfile?.text = profile.ratings.toString() + "/5"
+        h_tv_ratingProfile?.text = profile.ratings.toString() + "/5"
         if(profile.n_ratings == 0){
-            tv_captionNoRatings?.isVisible = true
-            h_tv_captionNoRatings?.isVisible = true
-            tv_ratingProfile?.isGone = true
-            h_tv_ratingProfile?.isGone = true
-            tv_captionNoRatings?.text = "You have not received any rating yet"
-            h_tv_captionNoRatings?.text = "You have not received any rating yet"
-        }
-        else{
-            tv_captionNoRatings?.isGone = true
-            h_tv_captionNoRatings?.isGone = true
-            tv_ratingProfile?.isVisible = true
-            h_tv_ratingProfile?.isVisible = true
-            tv_ratingProfile?.rating = profile.ratings
-            h_tv_ratingProfile?.rating = profile.ratings
+            tv_ratingProfile?.text = "No ratings yet"
+            h_tv_ratingProfile?.text = "No ratings yet"
         }
 
 
@@ -271,29 +245,4 @@ class ShowProfileFragment : Fragment() {
             }
         }
     }
-
-    fun performProfileBackup() : User{
-        if(profilePicture?.isNotEmpty() == true) {
-            requireContext().openFileOutput("profile_picture", Context.MODE_PRIVATE).use {
-                it.write(profilePicture)
-            }
-        }
-        val userEmail = email
-        val userLocation = location
-        val userDescription = description
-        val skills = skills
-        val ratings = ratingProfile
-        val nratings = n_ratings
-        return User().apply {
-            this.fullname=fullName
-            this.nickname=nickName
-            this.email=userEmail
-            this.location=userLocation
-            this.description=userDescription
-            this.skills=skills
-            this.ratings=ratings
-            this.n_ratings=nratings
-        }
-    }
-
 }

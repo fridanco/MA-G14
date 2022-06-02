@@ -124,11 +124,34 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right" />
+        <action
+            android:id="@+id/action_onlineAdDetailsFragment_to_showProfileAdFragment"
+            app:destination="@id/showProfileAdFragment" />
     </fragment>
     <fragment
         android:id="@+id/chatFragment"
         android:name="it.polito.ma.g14.timebank.fragments.ChatFragment"
         android:label="fragment_chat"
         tools:layout="@layout/fragment_chat" />
+    <fragment
+        android:id="@+id/showProfileAdFragment"
+        android:name="it.polito.ma.g14.timebank.fragments.ShowProfileAdFragment"
+        android:label="fragment_show_profile_ad"
+        tools:layout="@layout/fragment_show_profile_ad" />
+
+    <fragment
+        android:id="@+id/myMessages"
+        android:name="it.polito.ma.g14.timebank.fragments.MyMessagesFragment"
+        android:label="My messages"
+        tools:layout="@layout/fragment_my_messages" >
+        <action
+            android:id="@+id/action_myMessages_to_chatFragment"
+            app:destination="@id/chatFragment" />
+        <action
+            android:id="@+id/action_myMessages_to_onlineAdDetailsFragment"
+            app:destination="@id/onlineAdDetailsFragment" />
+    </fragment>
+
+
 
 </navigation>

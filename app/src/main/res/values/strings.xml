@@ -17,6 +17,7 @@
     <string name="profile_show_location_label">Location</string>
     <string name="profile_show_description_label">Description</string>
     <string name="profile_show_skills_label">Your skills</string>
+    <string name="profile_ad_show_skills_label">Skills</string>
 
     <string name="profile_edit_fullname_label">Full name<font color='#FF0000'>*</font></string>
     <string name="profile_edit_nickname_label">Nickname<font color='#FF0000'>*</font></string>
@@ -31,10 +32,14 @@
     <string name="profile_location_placeholder">Location</string>
     <string name="profile_description_placeholder">Description</string>
     <string name="profile_skills_placeholder">Your skills</string>
+    <string name="profile_ad_skills_placeholder">Skills</string>
 
     <string name="profile_no_skills_selected">You have not selected any skill yet</string>
     <string name="profile_no_description">You have not provided any description yet</string>
     <string name="profile_add_skills">Add skills</string>
+
+    <string name="profile_ad_no_skills_selected">No skills available</string>
+    <string name="profile_ad_no_description">No description available</string>
 
     <string name="fullname_content_descriptor">Your fullname</string>
     <string name="nickname_content_descriptor">Your nickname</string>

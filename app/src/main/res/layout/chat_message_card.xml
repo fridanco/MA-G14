@@ -10,8 +10,8 @@
     android:backgroundTint="#EAEAEA"
     android:foregroundTint="#E6E6E6"
     android:orientation="horizontal"
-    android:paddingTop="8dp"
-    android:paddingBottom="8dp"
+    android:paddingTop="2dp"
+    android:paddingBottom="2dp"
     android:weightSum="10">
 
     <LinearLayout
@@ -48,7 +48,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:paddingBottom="4dp">
+                android:paddingBottom="2dp">
 
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="wrap_content"
@@ -83,8 +83,6 @@
                 android:layout_height="0dp"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
-                android:paddingStart="8dp"
-                android:paddingTop="4dp"
                 android:paddingBottom="2dp"
                 android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur maximus mi sit amet ipsum ultricies, vel laoreet ligula blandit. In tincidunt et nulla ac facilisis. Morbi ac lacus lacinia, pharetra velit et, vehicula nulla. Maecenas mattis magna vel dolor facilisis dignissim vel a felis. Vivamus molestie neque eros, in mattis nibh pretium sed. Nulla tempor eu ex non faucibus. Sed molestie ex quis urna tincidunt laoreet. Morbi non erat pellentesque, tristique leo non, cursus lorem. Quisque vitae finibus nisl, id condimentum lacus. Cras ac purus odio. Suspendisse pulvinar consectetur porta. Ut tortor tortor, posuere quis justo ac, euismod vehicula ante. Morbi quis urna at quam sagittis mattis"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
@@ -95,7 +93,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="end"
                 android:paddingEnd="8dp"
-                android:paddingBottom="8dp"
+                android:paddingBottom="2dp"
                 android:text="Today 09:35"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:textSize="10sp" />

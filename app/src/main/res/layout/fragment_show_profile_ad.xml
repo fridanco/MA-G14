@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.ShowProfileFragment"
+    tools:context=".fragments.ShowProfileAdFragment"
     tools:ignore="SpeakableTextPresentCheck">
 
     <ScrollView
@@ -125,13 +125,13 @@
                     android:gravity="center_horizontal"
                     android:paddingTop="8dp"
                     android:paddingBottom="12dp"
-                    android:text="@string/profile_no_description" />
+                    android:text="@string/profile_ad_no_description" />
 
                 <TextView
                     android:id="@+id/textView31"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/profile_show_skills_label" />
+                    android:text="@string/profile_ad_show_skills_label" />
 
                 <TextView
                     android:id="@+id/textView33"
@@ -140,7 +140,7 @@
                     android:gravity="center_horizontal"
                     android:paddingTop="8dp"
                     android:paddingBottom="8dp"
-                    android:text="@string/profile_no_skills_selected" />
+                    android:text="@string/profile_ad_no_skills_selected" />
 
                 <com.google.android.material.chip.ChipGroup
                     android:id="@+id/chipGroup"
@@ -154,24 +154,15 @@
                     android:id="@+id/textView83"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Your rating" />
-
-                <RatingBar
-                    android:id="@+id/ratingBar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:isIndicator="true"
-                    android:max="5"
-                    tools:ignore="SpeakableTextPresentCheck" />
+                    android:text="Rating" />
 
                 <TextView
                     android:id="@+id/textView85"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp"
-                   />
+                    android:paddingBottom="12dp"
+                    android:text="@string/profile_description_placeholder"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
             </LinearLayout>
 
