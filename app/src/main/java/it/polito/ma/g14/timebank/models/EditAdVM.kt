@@ -18,7 +18,6 @@ class EditAdVM(application:Application) : AndroidViewModel(application) {
     val newAdvertisement: LiveData<Advertisement> = _newAdvertisement
 
     private val _newAdvertisementSkillList = MutableLiveData<Pair<String, Boolean>>()
-    val newAdvertisementSkillList: LiveData<Pair<String, Boolean>> = _newAdvertisementSkillList
 
     val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     val storageRef = Firebase.storage("gs://mad2022-g14.appspot.com").reference

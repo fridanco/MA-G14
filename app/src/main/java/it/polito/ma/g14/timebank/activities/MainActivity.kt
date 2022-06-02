@@ -31,8 +31,6 @@ import it.polito.ma.g14.timebank.utils.Utils.ActionBarUtils.manageActionBarItemA
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var auth: FirebaseAuth
-
     private val vm by viewModels<FirebaseVM>()
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
@@ -117,7 +115,7 @@ class MainActivity : AppCompatActivity() {
                     val toast = Toast.makeText(this, "Please fill in all the mandatory fields", Toast.LENGTH_LONG)
                     toast.setGravity(Gravity.CENTER, 0, 0)
                     toast.show()
-                    return;
+                    return
                 }
                 else{
                     fragment.saveData()
@@ -130,7 +128,7 @@ class MainActivity : AppCompatActivity() {
                     val toast = Toast.makeText(this, "Please fill in all the mandatory fields", Toast.LENGTH_LONG)
                     toast.setGravity(Gravity.CENTER, 0, 0)
                     toast.show()
-                    return;
+                    return
                 }
                 else{
                     fragment.saveData()
@@ -149,12 +147,7 @@ class MainActivity : AppCompatActivity() {
             R.id.myMessages -> {
                 val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
                 val fragment = navHostFragment!!.childFragmentManager.fragments[0] as MyMessagesFragment
-                if (fragment.viewPager.currentItem == 0) {
-                    // If the user is currently looking at the first step, allow the system to handle the
-                    // Back button. This calls finish() on this activity and pops the back stack.
-                    super.onBackPressed()
-                } else {
-                    // Otherwise, select the previous step.
+                if (fragment.viewPager.currentItem != 0) {
                     fragment.viewPager.currentItem = fragment.viewPager.currentItem - 1
                 }
             }
@@ -173,7 +166,7 @@ class MainActivity : AppCompatActivity() {
                     val toast = Toast.makeText(this, "Please fill in all the mandatory fields", Toast.LENGTH_LONG)
                     toast.setGravity(Gravity.CENTER, 0, 0)
                     toast.show()
-                    return false;
+                    return false
                 }
                 else{
                     fragment.saveData()
@@ -186,7 +179,7 @@ class MainActivity : AppCompatActivity() {
                     val toast = Toast.makeText(this, "Please fill in all the mandatory fields", Toast.LENGTH_LONG)
                     toast.setGravity(Gravity.CENTER, 0, 0)
                     toast.show()
-                    return false;
+                    return false
                 }
                 else{
                     fragment.saveData()
@@ -205,12 +198,7 @@ class MainActivity : AppCompatActivity() {
             R.id.myMessages -> {
                 val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
                 val fragment = navHostFragment!!.childFragmentManager.fragments[0] as MyMessagesFragment
-                if (fragment.viewPager.currentItem == 0) {
-                    // If the user is currently looking at the first step, allow the system to handle the
-                    // Back button. This calls finish() on this activity and pops the back stack.
-                    super.onBackPressed()
-                } else {
-                    // Otherwise, select the previous step.
+                if (fragment.viewPager.currentItem != 0) {
                     fragment.viewPager.currentItem = fragment.viewPager.currentItem - 1
                 }
             }

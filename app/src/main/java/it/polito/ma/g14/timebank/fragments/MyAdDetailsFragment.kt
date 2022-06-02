@@ -15,7 +15,7 @@ import it.polito.ma.g14.timebank.models.FirebaseVM
 import it.polito.ma.g14.timebank.utils.Utils
 
 
-class MyAdDetailsFragment() : Fragment() {
+class MyAdDetailsFragment : Fragment() {
 
     val vm by viewModels<FirebaseVM>()
 
@@ -51,13 +51,13 @@ class MyAdDetailsFragment() : Fragment() {
 
         advertisementID = requireArguments().getString("advertisementID").toString()
 
-        tv_title = view.findViewById<TextView>(R.id.textView4)
-        tv_description = view.findViewById<TextView>(R.id.textView5)
-        tv_date = view.findViewById<TextView>(R.id.textView64)
-        tv_from = view.findViewById<TextView>(R.id.textView62)
-        tv_to = view.findViewById<TextView>(R.id.textView63)
-        tv_location = view.findViewById<TextView>(R.id.textView19)
-        skillContainer = view.findViewById<ChipGroup>(R.id.chipGroupMyAd)
+        tv_title = view.findViewById(R.id.textView4)
+        tv_description = view.findViewById(R.id.textView5)
+        tv_date = view.findViewById(R.id.textView64)
+        tv_from = view.findViewById(R.id.textView62)
+        tv_to = view.findViewById(R.id.textView63)
+        tv_location = view.findViewById(R.id.textView19)
+        skillContainer = view.findViewById(R.id.chipGroupMyAd)
 
         vm.myAdvertisements.observe(viewLifecycleOwner){ myAdvertisements ->
             val ad = myAdvertisements.find { it.id==advertisementID }

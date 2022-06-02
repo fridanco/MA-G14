@@ -1,4 +1,4 @@
-package it.polito.ma.g14.timebank.fragments
+package it.polito.ma.g14.timebank.RVadapters
 
 import android.content.Context
 import android.graphics.Color
@@ -17,7 +17,6 @@ import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.models.SkillAdvertisement
 
 class SkillAdvertisementAdapter(val view: View, val context: Context): RecyclerView.Adapter<SkillAdvertisementAdapter.ItemViewHolder>() {
-    var filter: Boolean = false
     var data = listOf<SkillAdvertisement>()
     var displayData = data.toMutableList()
     var colorList = mutableListOf("#FFFFFF")
@@ -34,9 +33,6 @@ class SkillAdvertisementAdapter(val view: View, val context: Context): RecyclerV
             skillAdvertisementContainer.findViewById<LinearLayout>(R.id.cardColor).setBackgroundColor(
                 Color.parseColor(color))
             skillAdvertisementContainer.findViewById<CardView>(R.id.cardView).setOnClickListener(action1)
-        }
-        fun unbind() {
-            skillAdvertisementContainer.setOnClickListener(null)
         }
     }
 
@@ -76,11 +72,10 @@ class SkillAdvertisementAdapter(val view: View, val context: Context): RecyclerV
         }
         val newData: MutableList<SkillAdvertisement>
         val allData = performSort(sortBy, false)
-        if(text.isEmpty() || text.isBlank()){
-            newData = allData.toMutableList()
-        }
-        else{
-            newData = allData.filter { it.skill.contains(text, ignoreCase = true) }.toMutableList()
+        newData = if(text.isEmpty() || text.isBlank()){
+            allData.toMutableList()
+        } else{
+            allData.filter { it.skill.contains(text, ignoreCase = true) }.toMutableList()
         }
         val diffs = DiffUtil.calculateDiff(MyDiffCallback(displayData, newData))
         displayData = newData
@@ -105,16 +100,16 @@ class SkillAdvertisementAdapter(val view: View, val context: Context): RecyclerV
     fun performSort(sortBy: String, showToast: Boolean = true) : List<SkillAdvertisement>{
         val newData = data.toMutableList()
         when(sortBy){
-            "skill_asc" -> { newData.sortBy { it.skill }; 
+            "skill_asc" -> { newData.sortBy { it.skill }
                 if(showToast) Toast.makeText(context, "Sorted by skill A-Z", Toast.LENGTH_SHORT).show()
             }
-            "skill_desc" -> { newData.sortByDescending { it.skill }; 
+            "skill_desc" -> { newData.sortByDescending { it.skill }
                 if(showToast) Toast.makeText(context, "Sorted by skill Z-A", Toast.LENGTH_SHORT).show()
             }
-            "numAd_asc" -> { newData.sortBy { it.numAdvertisements }; 
+            "numAd_asc" -> { newData.sortBy { it.numAdvertisements }
                 if(showToast) Toast.makeText(context, "Sorted by least number of ads", Toast.LENGTH_SHORT).show()
             }
-            "numAd_desc" -> { newData.sortByDescending { it.numAdvertisements }; 
+            "numAd_desc" -> { newData.sortByDescending { it.numAdvertisements }
                 if(showToast) Toast.makeText(context, "Sorted by most number of ads", Toast.LENGTH_SHORT).show()
             }
         }

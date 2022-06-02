@@ -27,7 +27,6 @@ class MyAdvertisementsAdapter(
     val vm: FirebaseVM,
     val context: Context
 ): RecyclerView.Adapter<MyAdvertisementsAdapter.ItemViewHolder>() {
-    var filter: Boolean = false
     var data = listOf<Advertisement>()
     var displayData = data.toMutableList()
     var colorList = mutableListOf("#FFFFFF")
@@ -63,11 +62,6 @@ class MyAdvertisementsAdapter(
             advertisementContainer.findViewById<CardView>(R.id.cardView).setOnClickListener(action1)
             advertisementContainer.findViewById<ImageButton>(R.id.imageButton3).setOnClickListener(action2)
             advertisementContainer.findViewById<ImageButton>(R.id.imageButton4).setOnClickListener(action3)
-        }
-        fun unbind() {
-            advertisementContainer.findViewById<CardView>(R.id.cardView).setOnClickListener(null)
-            advertisementContainer.findViewById<ImageButton>(R.id.imageButton3).setOnClickListener(null)
-            advertisementContainer.findViewById<ImageButton>(R.id.imageButton4).setOnClickListener(null)
         }
     }
 
@@ -118,11 +112,10 @@ class MyAdvertisementsAdapter(
         }
         val newData: MutableList<Advertisement>
         val allData = performSort(sortBy, false)
-        if(text.isEmpty() || text.isBlank()){
-            newData = allData.toMutableList()
-        }
-        else{
-            newData = allData.filter {ad ->
+        newData = if(text.isEmpty() || text.isBlank()){
+            allData.toMutableList()
+        } else{
+            allData.filter {ad ->
 
                 if(ad.title.contains(text, ignoreCase = true) ||
                     ad.location.contains(text, ignoreCase = true) ||

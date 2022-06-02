@@ -129,11 +129,10 @@ class EditProfileFragment : Fragment() {
             localVm.updateProfileSkills(it)
         }
 
-        if(arguments?.getBoolean("createAdSrc")!=null){
-            createAdSrc = arguments?.getBoolean("createAdSrc")!!
-        }
-        else{
-            createAdSrc = false
+        createAdSrc = if(arguments?.getBoolean("createAdSrc")!=null){
+            arguments?.getBoolean("createAdSrc")!!
+        } else{
+            false
         }
 
 
@@ -237,15 +236,12 @@ class EditProfileFragment : Fragment() {
 
             bitmap?.let {
                 val rotatedBitmap: Bitmap
-                when (orientation) {
-                    ExifInterface.ORIENTATION_ROTATE_90 -> rotatedBitmap =
-                        rotateImage(bitmap, 90)
-                    ExifInterface.ORIENTATION_ROTATE_180 -> rotatedBitmap =
-                        rotateImage(bitmap, 180)
-                    ExifInterface.ORIENTATION_ROTATE_270 -> rotatedBitmap =
-                        rotateImage(bitmap, 270)
-                    ExifInterface.ORIENTATION_NORMAL -> rotatedBitmap = bitmap
-                    else -> rotatedBitmap = bitmap
+                rotatedBitmap = when (orientation) {
+                    ExifInterface.ORIENTATION_ROTATE_90 -> rotateImage(bitmap, 90)
+                    ExifInterface.ORIENTATION_ROTATE_180 -> rotateImage(bitmap, 180)
+                    ExifInterface.ORIENTATION_ROTATE_270 -> rotateImage(bitmap, 270)
+                    ExifInterface.ORIENTATION_NORMAL -> bitmap
+                    else -> bitmap
                 }
                 val stream = ByteArrayOutputStream()
                 rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 20, stream)
@@ -288,25 +284,25 @@ class EditProfileFragment : Fragment() {
     }
 
     private fun setEditTextReferences(){
-        et_fullname = view?.findViewById<EditText>(R.id.editTextTextPersonName2)
-        et_nickname = view?.findViewById<EditText>(R.id.editTextTextPersonName3)
-        et_email = view?.findViewById<EditText>(R.id.editTextTextEmailAddress)
-        et_location = view?.findViewById<EditText>(R.id.editTextTextPersonName4)
-        et_description = view?.findViewById<EditText>(R.id.editTextTextMultiLine)
-        et_skills = view?.findViewById<ChipGroup>(R.id.chipGroup)
-        button_skills = view?.findViewById<Button>(R.id.button)
-        imgButton = view?.findViewById<ImageButton>(R.id.imageButton)
-        iv_profilePicture = view?.findViewById<ImageView>(R.id.imageView3)
+        et_fullname = view?.findViewById(R.id.editTextTextPersonName2)
+        et_nickname = view?.findViewById(R.id.editTextTextPersonName3)
+        et_email = view?.findViewById(R.id.editTextTextEmailAddress)
+        et_location = view?.findViewById(R.id.editTextTextPersonName4)
+        et_description = view?.findViewById(R.id.editTextTextMultiLine)
+        et_skills = view?.findViewById(R.id.chipGroup)
+        button_skills = view?.findViewById(R.id.button)
+        imgButton = view?.findViewById(R.id.imageButton)
+        iv_profilePicture = view?.findViewById(R.id.imageView3)
 
-        h_et_fullname = view?.findViewById<EditText>(R.id.editTextTextPersonName)
-        h_et_nickname = view?.findViewById<EditText>(R.id.editTextTextPersonName5)
-        h_et_email = view?.findViewById<EditText>(R.id.editTextTextEmailAddress2)
-        h_et_location = view?.findViewById<EditText>(R.id.editTextTextPersonName6)
-        h_et_description = view?.findViewById<EditText>(R.id.editTextTextMultiLine2)
-        h_et_skills = view?.findViewById<ChipGroup>(R.id.chipGroup2)
-        h_button_skills = view?.findViewById<Button>(R.id.button2)
-        imgButton2 = view?.findViewById<ImageButton>(R.id.imageButton2)
-        h_iv_profilePicture = view?.findViewById<ImageView>(R.id.imageView2)
+        h_et_fullname = view?.findViewById(R.id.editTextTextPersonName)
+        h_et_nickname = view?.findViewById(R.id.editTextTextPersonName5)
+        h_et_email = view?.findViewById(R.id.editTextTextEmailAddress2)
+        h_et_location = view?.findViewById(R.id.editTextTextPersonName6)
+        h_et_description = view?.findViewById(R.id.editTextTextMultiLine2)
+        h_et_skills = view?.findViewById(R.id.chipGroup2)
+        h_button_skills = view?.findViewById(R.id.button2)
+        imgButton2 = view?.findViewById(R.id.imageButton2)
+        h_iv_profilePicture = view?.findViewById(R.id.imageView2)
     }
 
     private fun populateProfileImage(){

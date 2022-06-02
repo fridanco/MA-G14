@@ -54,13 +54,13 @@ class OnlineAdsListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        swipeRefreshLayout = view.findViewById<SwipeRefreshLayout>(R.id.swipeLayoutAds)
+        swipeRefreshLayout = view.findViewById(R.id.swipeLayoutAds)
 
         val rv = view.findViewById<RecyclerView>(R.id.timeSlotRecyclerView)
         val emptyRv = view.findViewById<TextView>(R.id.textView60)
 
         //noinspection ResourceType
-        val colorList = listOf<String>(
+        val colorList = listOf(
             resources.getString(R.color.purple),
             resources.getString(R.color.orange),
             resources.getString(R.color.red),

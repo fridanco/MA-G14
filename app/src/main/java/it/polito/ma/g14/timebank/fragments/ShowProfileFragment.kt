@@ -6,10 +6,10 @@ import android.graphics.BitmapFactory
 import android.media.Rating
 import android.os.Bundle
 import android.view.*
-import androidx.fragment.app.Fragment
 import android.widget.*
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
@@ -20,15 +20,12 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.ktx.app
 import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.models.FirebaseVM
 import it.polito.ma.g14.timebank.models.User
 import it.polito.ma.g14.timebank.utils.Utils
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.w3c.dom.Text
 import java.io.ByteArrayOutputStream
 
 class ShowProfileFragment : Fragment() {
@@ -101,6 +98,7 @@ class ShowProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setViewsReferences()
+
 
         //populateProfilePicture()
 
@@ -202,6 +200,14 @@ class ShowProfileFragment : Fragment() {
 
         tv_ratingProfile?.max = 5
         h_tv_ratingProfile?.max = 5
+        h_tv_fullname = view?.findViewById(R.id.textView)
+        h_tv_nickname = view?.findViewById(R.id.textView2)
+        h_tv_email  = view?.findViewById(R.id.textView3)
+        h_tv_location = view?.findViewById(R.id.textView8)
+        h_iv_profilePicture = view?.findViewById(R.id.imageView)
+        h_tv_description = view?.findViewById(R.id.textView20)
+        h_et_skills = view?.findViewById(R.id.chipGroup2)
+        h_tv_ratingProfile = view?.findViewById(R.id.textView86)
     }
 
     private fun populateProfileText(profile: User) {

@@ -18,8 +18,6 @@ import it.polito.ma.g14.timebank.utils.Utils
 
 class MyMessagesFragment : Fragment() {
 
-    val myMessagesVM by viewModels<MyMessagesVM>()
-
     lateinit var tabLayout : TabLayout
     lateinit var viewPager : ViewPager2
 

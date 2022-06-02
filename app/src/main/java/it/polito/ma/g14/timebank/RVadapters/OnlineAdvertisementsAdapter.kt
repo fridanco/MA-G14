@@ -24,7 +24,6 @@ import it.polito.ma.g14.timebank.models.FirebaseVM
 import java.text.SimpleDateFormat
 
 class OnlineAdvertisementsAdapter(val view: View, val vm: FirebaseVM, val context: Context): RecyclerView.Adapter<OnlineAdvertisementsAdapter.ItemViewHolder>() {
-    var filter: Boolean = false
     var data = listOf<Advertisement>()
     var displayData = data.toMutableList()
     var colorList = mutableListOf("#FFFFFF")
@@ -65,9 +64,6 @@ class OnlineAdvertisementsAdapter(val view: View, val vm: FirebaseVM, val contex
             advertisementContainer.findViewById<LinearLayout>(R.id.cardColor).setBackgroundColor(Color.parseColor(color))
             advertisementContainer.findViewById<CardView>(R.id.cardView).setOnClickListener(action1)
         }
-        fun unbind() {
-            advertisementContainer.findViewById<CardView>(R.id.cardView).setOnClickListener(null)
-        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
@@ -104,11 +100,10 @@ class OnlineAdvertisementsAdapter(val view: View, val vm: FirebaseVM, val contex
         }
         val newData: MutableList<Advertisement>
         val allData = performSort(sortBy, false)
-        if(text.isEmpty() || text.isBlank()){
-            newData = allData.toMutableList()
-        }
-        else{
-            newData = allData.filter {ad ->
+        newData = if(text.isEmpty() || text.isBlank()){
+            allData.toMutableList()
+        } else{
+            allData.filter {ad ->
 
                 if(ad.title.contains(text, ignoreCase = true) ||
                     ad.location.contains(text, ignoreCase = true) ||

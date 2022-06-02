@@ -25,13 +25,10 @@ import com.google.firebase.ktx.Firebase
 import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.models.AdvertisementWithChat
 import it.polito.ma.g14.timebank.models.FirebaseVM
-import org.w3c.dom.Text
 import java.text.SimpleDateFormat
-import java.time.LocalDate
 import java.util.*
 
 class MyMessagesAdapter(val view: View, val vm: FirebaseVM, val context: Context, val type: String): RecyclerView.Adapter<MyMessagesAdapter.ItemViewHolder>() {
-    var filter: Boolean = false
     var data = listOf<Pair<String, AdvertisementWithChat>>()
     var displayData = data.toMutableList()
     var colorList = mutableListOf("#FFFFFF")
@@ -85,7 +82,7 @@ class MyMessagesAdapter(val view: View, val vm: FirebaseVM, val context: Context
 
                 val dateTime = Date(it.timestamp)
                 val calendar: Calendar = Calendar.getInstance()
-                calendar.setTime(dateTime)
+                calendar.time = dateTime
                 val today: Calendar = Calendar.getInstance()
                 val timeFormatter1 = SimpleDateFormat("HH:mm")
                 val timeFormatter2 = SimpleDateFormat("EEE")
@@ -150,9 +147,6 @@ class MyMessagesAdapter(val view: View, val vm: FirebaseVM, val context: Context
                 }
             }
         }
-        fun unbind() {
-            messageCard.findViewById<CardView>(R.id.cardView).setOnClickListener(null)
-        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
@@ -210,20 +204,6 @@ class MyMessagesAdapter(val view: View, val vm: FirebaseVM, val context: Context
         displayData = newData
         diffs.dispatchUpdatesTo(this)
         return displayData.size
-    }
-
-    fun addSort(sortBy: String){
-        this.sortBy = sortBy
-        if(displayData.isEmpty()){
-            return
-        }
-        val dataTmp = data
-        data = displayData.toList()
-        val newData = performSort(sortBy)
-        data = dataTmp
-        val diffs = DiffUtil.calculateDiff(MyDiffCallbackMyMessages(displayData, newData))
-        displayData = newData.toMutableList()
-        diffs.dispatchUpdatesTo(this)
     }
 
     fun performSort(sortBy: String, showToast: Boolean = true) : List<Pair<String, AdvertisementWithChat>>{

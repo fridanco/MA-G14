@@ -1,32 +1,28 @@
 package it.polito.ma.g14.timebank.fragments
 
-import android.content.Context
 import android.os.Bundle
 import android.text.Editable
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.ktx.storage
 import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.RVadapters.ChatAdapter
-import it.polito.ma.g14.timebank.models.*
+import it.polito.ma.g14.timebank.models.ChatVM
+import it.polito.ma.g14.timebank.models.FirebaseVM
 import it.polito.ma.g14.timebank.utils.Utils
 
 class ChatFragment : Fragment() {
@@ -45,10 +41,6 @@ class ChatFragment : Fragment() {
     var advertiser_name = ""
 
     lateinit var adapter: ChatAdapter
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -100,7 +92,17 @@ class ChatFragment : Fragment() {
             else {
                 //rv.isVisible = true
                 emptyRv.isGone = true
-                adapter.updateChat(chatList)
+                val previousLastAdvertiserMsgIndex = adapter.updateChat(chatList)
+                if(previousLastAdvertiserMsgIndex!=-1){
+                    val item = rv.findViewHolderForAdapterPosition(previousLastAdvertiserMsgIndex)
+                    item?.let {
+                        val bookPanelView = it.itemView.findViewById<LinearLayout>(R.id.book_panel)
+                        if(bookPanelView!=null){
+                            bookPanelView.isGone = true
+                        }
+                    }
+                }
+                rv.scrollToPosition(adapter.displayData.size-1)
             }
         }
 
