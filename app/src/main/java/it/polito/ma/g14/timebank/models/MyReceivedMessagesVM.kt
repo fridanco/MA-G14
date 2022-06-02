@@ -99,12 +99,9 @@ class MyReceivedMessagesVM : ViewModel() {
             }
     }
 
-    private val _sortBy = MutableLiveData<String>("date_desc")
+    private val _sortBy = MutableLiveData("date_desc")
     val sortBy : LiveData<String> = _sortBy
 
-    fun setSortBy(sort: String){
-        _sortBy.value = sort
-    }
     fun getSortBy() : String{
         return _sortBy.value ?: "date_desc"
     }

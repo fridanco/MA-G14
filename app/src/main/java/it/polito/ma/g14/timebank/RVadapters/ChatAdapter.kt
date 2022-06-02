@@ -22,7 +22,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class ChatAdapter(val view: View, val vm: FirebaseVM, val context: Context, val advertiserUID: String): RecyclerView.Adapter<ChatAdapter.ItemViewHolder>() {
-    var filter: Boolean = false
     var data = listOf<ChatMessage>()
     var displayData = data.toMutableList()
     var lastAdvertiserMsgIndex = -1
@@ -79,7 +78,7 @@ class ChatAdapter(val view: View, val vm: FirebaseVM, val context: Context, val 
 
             val dateTime = Date(chatMessage.timestamp)
             val calendar: Calendar = Calendar.getInstance()
-            calendar.setTime(dateTime)
+            calendar.time = dateTime
             val today: Calendar = Calendar.getInstance()
             val yesterday: Calendar = Calendar.getInstance()
             yesterday.add(Calendar.DATE, -1)
@@ -153,11 +152,10 @@ class ChatAdapter(val view: View, val vm: FirebaseVM, val context: Context, val 
             return 0
         }
         val newData: MutableList<ChatMessage>
-        if(text.isEmpty() || text.isBlank()){
-            newData = data.toMutableList()
-        }
-        else{
-            newData = data.filter {chatMessage ->
+        newData = if(text.isEmpty() || text.isBlank()){
+            data.toMutableList()
+        } else{
+            data.filter {chatMessage ->
                 if(chatMessage.message.contains(text, ignoreCase = true)){
                     return@filter true
                 }

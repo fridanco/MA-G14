@@ -2,13 +2,12 @@ package it.polito.ma.g14.timebank.fragments
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.*
-import androidx.fragment.app.Fragment
 import android.widget.*
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
@@ -19,15 +18,12 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.ktx.app
 import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.models.FirebaseVM
 import it.polito.ma.g14.timebank.models.User
 import it.polito.ma.g14.timebank.utils.Utils
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.w3c.dom.Text
 import java.io.ByteArrayOutputStream
 
 class ShowProfileFragment : Fragment() {
@@ -60,7 +56,6 @@ class ShowProfileFragment : Fragment() {
     private var h_tv_description : TextView? = null
     private var h_et_skills : ChipGroup? = null
     private var h_iv_profilePicture : ImageView? = null
-    var otherUid : String? = null
 
     var isImageDownloaded = false
 
@@ -180,23 +175,23 @@ class ShowProfileFragment : Fragment() {
     }
 
     private fun setViewsReferences(){
-        tv_fullname = view?.findViewById<TextView>(R.id.textView4)
-        tv_nickname = view?.findViewById<TextView>(R.id.textView5)
-        tv_email = view?.findViewById<TextView>(R.id.textView6)
-        tv_location = view?.findViewById<TextView>(R.id.textView7)
-        tv_description = view?.findViewById<TextView>(R.id.textView19)
-        et_skills = view?.findViewById<ChipGroup>(R.id.chipGroup)
-        iv_profilePicture = view?.findViewById<ImageView>(R.id.imageView4)
-        tv_ratingProfile = view?.findViewById<TextView>(R.id.textView85)
+        tv_fullname = view?.findViewById(R.id.textView4)
+        tv_nickname = view?.findViewById(R.id.textView5)
+        tv_email = view?.findViewById(R.id.textView6)
+        tv_location = view?.findViewById(R.id.textView7)
+        tv_description = view?.findViewById(R.id.textView19)
+        et_skills = view?.findViewById(R.id.chipGroup)
+        iv_profilePicture = view?.findViewById(R.id.imageView4)
+        tv_ratingProfile = view?.findViewById(R.id.textView85)
 
-        h_tv_fullname = view?.findViewById<TextView>(R.id.textView)
-        h_tv_nickname = view?.findViewById<TextView>(R.id.textView2)
-        h_tv_email  = view?.findViewById<TextView>(R.id.textView3)
-        h_tv_location = view?.findViewById<TextView>(R.id.textView8)
-        h_iv_profilePicture = view?.findViewById<ImageView>(R.id.imageView)
-        h_tv_description = view?.findViewById<TextView>(R.id.textView20)
-        h_et_skills = view?.findViewById<ChipGroup>(R.id.chipGroup2)
-        h_tv_ratingProfile = view?.findViewById<TextView>(R.id.textView86)
+        h_tv_fullname = view?.findViewById(R.id.textView)
+        h_tv_nickname = view?.findViewById(R.id.textView2)
+        h_tv_email  = view?.findViewById(R.id.textView3)
+        h_tv_location = view?.findViewById(R.id.textView8)
+        h_iv_profilePicture = view?.findViewById(R.id.imageView)
+        h_tv_description = view?.findViewById(R.id.textView20)
+        h_et_skills = view?.findViewById(R.id.chipGroup2)
+        h_tv_ratingProfile = view?.findViewById(R.id.textView86)
     }
 
     private fun populateProfileText(profile: User) {

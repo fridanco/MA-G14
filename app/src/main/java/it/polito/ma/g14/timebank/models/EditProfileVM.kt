@@ -1,27 +1,14 @@
 package it.polito.ma.g14.timebank.models
 
 import android.app.Application
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.io.ByteArrayOutputStream
-import java.io.InputStream
-import java.net.HttpURLConnection
-import java.net.URL
-import java.util.*
 
 class EditProfileVM(application:Application) : AndroidViewModel(application) {
 
@@ -30,7 +17,7 @@ class EditProfileVM(application:Application) : AndroidViewModel(application) {
 
     private val _editProfile = MutableLiveData<User>()
     val editProfile : LiveData<User> = _editProfile
-    private val _editProfileImage = MutableLiveData<ByteArray>(byteArrayOf())
+    private val _editProfileImage = MutableLiveData(byteArrayOf())
     val editProfileImage : LiveData<ByteArray> = _editProfileImage
 
     private var profileListener : ListenerRegistration? = null
@@ -47,7 +34,7 @@ class EditProfileVM(application:Application) : AndroidViewModel(application) {
                 _editProfile.value = querySnapshot.toObject(User::class.java)
             }
 
-        storageRef.child(uid!!).getBytes(5*1024*1024)
+        storageRef.child(uid).getBytes(5*1024*1024)
             .addOnSuccessListener { byteArray ->
                 if(_editProfileImage.value?.isEmpty() == true) {
                     _editProfileImage.value = byteArray
@@ -85,7 +72,7 @@ class EditProfileVM(application:Application) : AndroidViewModel(application) {
     }
 
     override fun onCleared() {
-        super.onCleared();
+        super.onCleared()
         profileListener?.remove()
     }
 }

@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import it.polito.ma.g14.timebank.R
+import it.polito.ma.g14.timebank.RVadapters.SkillAdvertisementAdapter
 import it.polito.ma.g14.timebank.models.AdSkillsVM
 import it.polito.ma.g14.timebank.models.FirebaseVM
 import it.polito.ma.g14.timebank.utils.Utils
@@ -56,7 +57,7 @@ class SkillAdvertisementListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        swipeRefreshLayout = view.findViewById<SwipeRefreshLayout>(R.id.swipeLayoutAdSkills)
+        swipeRefreshLayout = view.findViewById(R.id.swipeLayoutAdSkills)
 
         val rv = view.findViewById<RecyclerView>(R.id.recyclerViewSkillAdvertisementList)
         val emptyRv = view.findViewById<TextView>(R.id.textView66)
@@ -67,7 +68,7 @@ class SkillAdvertisementListFragment : Fragment() {
         name.text = "Hello Customer!"
 
         //noinspection ResourceType
-        val colorList = listOf<String>(
+        val colorList = listOf(
             resources.getString(R.color.purple),
             resources.getString(R.color.orange),
             resources.getString(R.color.red),
@@ -92,7 +93,7 @@ class SkillAdvertisementListFragment : Fragment() {
             }
         }
 
-        vm.skills.observe(viewLifecycleOwner) { it ->
+        vm.skills.observe(viewLifecycleOwner) {
             if (it.isEmpty()) {
                 rv.isGone = true
                 emptyRv.isVisible = true

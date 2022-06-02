@@ -30,7 +30,6 @@ class MyAdsListFragment : Fragment() {
     lateinit var adapter: MyAdvertisementsAdapter
 
     var operationType: String = ""
-    var selectedSkill: String = ""
 
     var sortByKey = "date_desc"
 
@@ -60,7 +59,7 @@ class MyAdsListFragment : Fragment() {
         val emptyRv = view.findViewById<TextView>(R.id.textView60)
 
         //noinspection ResourceType
-        val colorList = listOf<String>(
+        val colorList = listOf(
             resources.getString(R.color.purple),
             resources.getString(R.color.orange),
             resources.getString(R.color.red),
@@ -74,7 +73,7 @@ class MyAdsListFragment : Fragment() {
         rv.adapter = adapter
 
 
-        vm.myAdvertisements.observe(viewLifecycleOwner) { it ->
+        vm.myAdvertisements.observe(viewLifecycleOwner) {
             if(it.isEmpty()){
                 rv.isGone = true
                 emptyRv.isVisible = true

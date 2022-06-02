@@ -13,10 +13,8 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.ktx.auth
@@ -25,10 +23,9 @@ import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.models.Advertisement
 import it.polito.ma.g14.timebank.models.FirebaseVM
 import it.polito.ma.g14.timebank.utils.Utils
-import org.w3c.dom.Text
 
 
-class OnlineAdDetailsFragment() : Fragment() {
+class OnlineAdDetailsFragment : Fragment() {
 
     private val vm by viewModels<FirebaseVM>()
 
@@ -66,18 +63,18 @@ class OnlineAdDetailsFragment() : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        tv_title = view.findViewById<TextView>(R.id.textView4)
-        tv_description = view.findViewById<TextView>(R.id.textView5)
-        tv_date = view.findViewById<TextView>(R.id.textView64)
-        tv_from = view.findViewById<TextView>(R.id.textView62)
-        tv_to = view.findViewById<TextView>(R.id.textView63)
-        tv_location = view.findViewById<TextView>(R.id.textView19)
-        tv_fullname = view.findViewById<TextView>(R.id.textView77)
-        tv_user_description = view.findViewById<TextView>(R.id.textView74)
-        iv_profileImage = view.findViewById<ImageView>(R.id.imageView6)
+        tv_title = view.findViewById(R.id.textView4)
+        tv_description = view.findViewById(R.id.textView5)
+        tv_date = view.findViewById(R.id.textView64)
+        tv_from = view.findViewById(R.id.textView62)
+        tv_to = view.findViewById(R.id.textView63)
+        tv_location = view.findViewById(R.id.textView19)
+        tv_fullname = view.findViewById(R.id.textView77)
+        tv_user_description = view.findViewById(R.id.textView74)
+        iv_profileImage = view.findViewById(R.id.imageView6)
         btn_book = view.findViewById(R.id.button7)
         btn_chat = view.findViewById(R.id.button8)
-        user = view.findViewById<LinearLayout>(R.id.user_link)
+        user = view.findViewById(R.id.user_link)
 
         advertisement = requireArguments().getSerializable("advertisement") as Advertisement
 

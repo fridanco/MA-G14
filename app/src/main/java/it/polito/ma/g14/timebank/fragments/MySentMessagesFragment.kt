@@ -1,8 +1,6 @@
 package it.polito.ma.g14.timebank.fragments
 
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
@@ -10,18 +8,16 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.ktx.storage
 import it.polito.ma.g14.timebank.R
-import it.polito.ma.g14.timebank.RVadapters.MyAdvertisementsAdapter
 import it.polito.ma.g14.timebank.RVadapters.MyMessagesAdapter
-import it.polito.ma.g14.timebank.models.*
+import it.polito.ma.g14.timebank.models.FirebaseVM
+import it.polito.ma.g14.timebank.models.MySentMessagesVM
 import it.polito.ma.g14.timebank.utils.Utils
 
 class MySentMessagesFragment : Fragment() {
@@ -56,7 +52,7 @@ class MySentMessagesFragment : Fragment() {
         val emptyRv = view.findViewById<TextView>(R.id.emptySentMsgRV2)
 
         //noinspection ResourceType
-        val colorList = listOf<String>(
+        val colorList = listOf(
             resources.getString(R.color.purple),
             resources.getString(R.color.orange),
             resources.getString(R.color.red),
@@ -70,7 +66,7 @@ class MySentMessagesFragment : Fragment() {
         rv.adapter = adapter
 
 
-        sentMessagesVM.sentMessages.observe(viewLifecycleOwner) { it ->
+        sentMessagesVM.sentMessages.observe(viewLifecycleOwner) {
             if(it.isEmpty()){
                 rv.isGone = true
                 emptyRv.isVisible = true
@@ -82,10 +78,6 @@ class MySentMessagesFragment : Fragment() {
                 adapter.updateMessages(it.toList(), sortBy)
             }
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {

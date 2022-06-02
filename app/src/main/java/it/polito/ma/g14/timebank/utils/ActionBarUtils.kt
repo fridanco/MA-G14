@@ -20,8 +20,7 @@ class Utils {
 
         fun manageActionBarItemsVisibility(activity: Activity, menu: Menu) {
             val navController = activity.findNavController(R.id.nav_host_fragment_content_main)
-            val currDestinationID = navController.currentDestination?.id
-            when (currDestinationID) {
+            when (navController.currentDestination?.id) {
                 R.id.onlineAdvertisementSkills -> {
                     menu.findItem(R.id.app_bar_search).isVisible = true
                     menu.findItem(R.id.app_bar_pencil).isVisible = false
@@ -127,7 +126,7 @@ class Utils {
                 R.id.chatFragment -> {
                     val navHostFragment = (activity as FragmentActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
                     val fragment = navHostFragment!!.childFragmentManager.fragments[0] as ChatFragment
-                    (activity as AppCompatActivity).supportActionBar!!.setTitle(fragment.advertiser_name)
+                    (activity as AppCompatActivity).supportActionBar!!.title = fragment.advertiser_name
 
                     menu.findItem(R.id.app_bar_pencil).isVisible = false
                     menu.findItem(R.id.app_bar_search).isVisible = false
@@ -180,8 +179,7 @@ class Utils {
 
         fun manageActionBarItemActions(activity: Activity, item: MenuItem){
             val navController = activity.findNavController(R.id.nav_host_fragment_content_main)
-            val currDestinationID = navController.currentDestination?.id
-            when(currDestinationID){
+            when(navController.currentDestination?.id){
                 R.id.myAdvertisementEdit -> {
                     when(item.itemId){
                         R.id.app_bar_cancel -> {
@@ -393,10 +391,6 @@ class Utils {
                 }
             }
         }
-    }
-
-    fun manageActionBarNavigateUp(activity: Activity){
-
     }
 
 }

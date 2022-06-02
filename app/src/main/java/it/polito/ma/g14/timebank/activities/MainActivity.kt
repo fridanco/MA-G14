@@ -31,8 +31,6 @@ import it.polito.ma.g14.timebank.utils.Utils.ActionBarUtils.manageActionBarItemA
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var auth: FirebaseAuth
-
     private val vm by viewModels<FirebaseVM>()
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
@@ -117,7 +115,7 @@ class MainActivity : AppCompatActivity() {
                     val toast = Toast.makeText(this, "Please fill in all the mandatory fields", Toast.LENGTH_LONG)
                     toast.setGravity(Gravity.CENTER, 0, 0)
                     toast.show()
-                    return;
+                    return
                 }
                 else{
                     fragment.saveData()
@@ -130,7 +128,7 @@ class MainActivity : AppCompatActivity() {
                     val toast = Toast.makeText(this, "Please fill in all the mandatory fields", Toast.LENGTH_LONG)
                     toast.setGravity(Gravity.CENTER, 0, 0)
                     toast.show()
-                    return;
+                    return
                 }
                 else{
                     fragment.saveData()
@@ -168,7 +166,7 @@ class MainActivity : AppCompatActivity() {
                     val toast = Toast.makeText(this, "Please fill in all the mandatory fields", Toast.LENGTH_LONG)
                     toast.setGravity(Gravity.CENTER, 0, 0)
                     toast.show()
-                    return false;
+                    return false
                 }
                 else{
                     fragment.saveData()
@@ -181,7 +179,7 @@ class MainActivity : AppCompatActivity() {
                     val toast = Toast.makeText(this, "Please fill in all the mandatory fields", Toast.LENGTH_LONG)
                     toast.setGravity(Gravity.CENTER, 0, 0)
                     toast.show()
-                    return false;
+                    return false
                 }
                 else{
                     fragment.saveData()

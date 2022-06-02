@@ -1,9 +1,6 @@
 package it.polito.ma.g14.timebank.models
 
 import android.app.Application
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -14,13 +11,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.io.ByteArrayOutputStream
-import java.io.InputStream
-import java.net.HttpURLConnection
-import java.net.URL
 import java.util.*
 
 class FirebaseVM(application:Application) : AndroidViewModel(application) {
@@ -29,9 +19,7 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
     val profile : LiveData<User> = _profile
 
     private val _editProfile = MutableLiveData<User>()
-    val editProfile : LiveData<User> = _editProfile
     private val _editProfileImage = MutableLiveData<ByteArray>()
-    val editProfileImage : LiveData<ByteArray> = _editProfileImage
 
     private val _skills = MutableLiveData<List<SkillAdvertisement>>()
     val skills: LiveData<List<SkillAdvertisement>> = _skills
@@ -59,7 +47,7 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
 
 
 
-        profileListener = db.collection("users").document(uid!!)
+        profileListener = db.collection("users").document(uid)
             .addSnapshotListener{ result, exception ->
                 if (exception != null) {
                     User()
@@ -120,18 +108,6 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
             db.collection("users").document(Firebase.auth.currentUser!!.uid)
                 .set(user)
         }
-    }
-
-    fun updateProfileSkills(skills: List<String>){
-        db.collection("users").document(Firebase.auth.currentUser!!.uid)
-            .update("skills",skills)
-    }
-
-    fun removeProfileSkill(skills: List<String>, skillToRemove: String){
-        val newSkills = skills as MutableList
-        newSkills.remove(skillToRemove)
-        db.collection("users").document(Firebase.auth.currentUser!!.uid)
-            .update("skills", newSkills)
     }
 
     fun updateAdvertisementSkillsList(){
@@ -246,7 +222,7 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
             null
         }
         .addOnSuccessListener {
-            Log.d("Timebank FIREBASE", "Advertisement with ID: ${advertisementID} deleted & numAdvertisements decremented")
+            Log.d("Timebank FIREBASE", "Advertisement with ID: $advertisementID deleted & numAdvertisements decremented")
             updateAdvertisementSkillsList()
             updateAdvertisementList()
         }
@@ -256,12 +232,8 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
 
     }
 
-    fun getProfileValue(): User {
-        return _profile.value ?: User()
-    }
-
     override fun onCleared() {
-        super.onCleared();
+        super.onCleared()
         profileListener?.remove()
         myAdvertisementsListener?.remove()
     }

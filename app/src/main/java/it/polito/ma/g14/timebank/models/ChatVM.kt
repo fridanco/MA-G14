@@ -22,10 +22,6 @@ class ChatVM : ViewModel() {
 
     lateinit var chatMessagesListener : ListenerRegistration
 
-    fun setChat(chat: List<ChatMessage>){
-        _chat.value = chat
-    }
-
     fun getChatMessages(chatID: String, client_uid: String, advertiser_uid: String, advertisementID: String){
         val uid = Firebase.auth.currentUser!!.uid
         chatMessagesListener = db.collection("chats").document(chatID)

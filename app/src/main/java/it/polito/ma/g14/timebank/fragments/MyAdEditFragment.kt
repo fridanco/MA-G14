@@ -29,7 +29,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class MyAdEditFragment() : Fragment() {
+class MyAdEditFragment : Fragment() {
 
     val vm by viewModels<FirebaseVM>()
     val editAdVM by viewModels<EditAdVM>()
@@ -110,7 +110,7 @@ class MyAdEditFragment() : Fragment() {
         et_from = view.findViewById<EditText>(R.id.textView62)
         et_to = view.findViewById<EditText>(R.id.textView63)
         et_location = view.findViewById<EditText>(R.id.textView58)
-        et_skills = view.findViewById<LinearLayout>(R.id.editTimeslotSkillsContainer)
+        et_skills = view.findViewById(R.id.editTimeslotSkillsContainer)
 
         h_et_title = view.findViewById<EditText>(R.id.textView42)
         h_et_description = view.findViewById<EditText>(R.id.textView44)
@@ -118,7 +118,7 @@ class MyAdEditFragment() : Fragment() {
         h_et_from = view.findViewById<EditText>(R.id.textView67)
         h_et_to = view.findViewById<EditText>(R.id.textView68)
         h_et_location = view.findViewById<EditText>(R.id.textView49)
-        h_et_skills = view.findViewById<LinearLayout>(R.id.editTimeslotSkillsContainer)
+        h_et_skills = view.findViewById(R.id.editTimeslotSkillsContainer)
 
         if(operationType=="add_time_slot") {
 
@@ -433,8 +433,8 @@ class MyAdEditFragment() : Fragment() {
         return true
     }
 
-    val dateSetListener = object : DatePickerDialog.OnDateSetListener {
-        override fun onDateSet(view: DatePicker, year: Int, monthOfYear: Int, dayOfMonth: Int) {
+    val dateSetListener =
+        DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
             val cal = Calendar.getInstance()
 
             cal.set(Calendar.YEAR, year)
@@ -448,10 +448,9 @@ class MyAdEditFragment() : Fragment() {
             h_et_date?.text = formattedDate
             h_et_date?.error = null
         }
-    }
 
-    val fromTimeSetListener = object : TimePickerDialog.OnTimeSetListener {
-        override fun onTimeSet(view: TimePicker, hourOfDay: Int, minute: Int) {
+    val fromTimeSetListener =
+        TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
             val calFrom = Calendar.getInstance()
 
             calFrom.set(Calendar.HOUR_OF_DAY, hourOfDay)
@@ -478,34 +477,31 @@ class MyAdEditFragment() : Fragment() {
                 }
             }
         }
-    }
 
-    val toTimeSetListener = object : TimePickerDialog.OnTimeSetListener {
-        override fun onTimeSet(view: TimePicker, hourOfDay: Int, minute: Int) {
-            val calTo = Calendar.getInstance()
+    val toTimeSetListener = TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
+        val calTo = Calendar.getInstance()
 
-            calTo.set(Calendar.HOUR_OF_DAY, hourOfDay)
-            calTo.set(Calendar.MINUTE, minute)
+        calTo.set(Calendar.HOUR_OF_DAY, hourOfDay)
+        calTo.set(Calendar.MINUTE, minute)
 
-            val formattedDate = SimpleDateFormat("HH:mm").format(calTo.time)
-            to = formattedDate
-            et_to?.text = formattedDate
-            et_to?.error = null
-            h_et_to?.text = formattedDate
-            h_et_to?.error = null
+        val formattedDate = SimpleDateFormat("HH:mm").format(calTo.time)
+        to = formattedDate
+        et_to?.text = formattedDate
+        et_to?.error = null
+        h_et_to?.text = formattedDate
+        h_et_to?.error = null
 
-            if(from.isNotEmpty()) {
-                val calFrom = Calendar.getInstance()
-                calTo.time = SimpleDateFormat("HH:mm").parse(to)
-                calFrom.time = SimpleDateFormat("HH:mm").parse(from)
-                //if TO earlier than FROM
-                if(calFrom >= calTo){
-                    from = formattedDate
-                    et_from?.text = formattedDate
-                    et_from?.error = null
-                    h_et_from?.text = formattedDate
-                    h_et_from?.error = null
-                }
+        if(from.isNotEmpty()) {
+            val calFrom = Calendar.getInstance()
+            calTo.time = SimpleDateFormat("HH:mm").parse(to)
+            calFrom.time = SimpleDateFormat("HH:mm").parse(from)
+            //if TO earlier than FROM
+            if(calFrom >= calTo){
+                from = formattedDate
+                et_from?.text = formattedDate
+                et_from?.error = null
+                h_et_from?.text = formattedDate
+                h_et_from?.error = null
             }
         }
     }

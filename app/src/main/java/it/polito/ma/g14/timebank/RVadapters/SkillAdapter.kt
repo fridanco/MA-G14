@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.models.SkillEntry
 
+@Suppress("DEPRECATED_SMARTCAST")
 class SkillAdapter(val data: MutableList<SkillEntry>): RecyclerView.Adapter<SkillAdapter.ItemViewHolder>() {
-    var filter: Boolean = false
     var displayData = data.toMutableList()
     var checked_skills = mutableListOf<String>()
 
@@ -22,9 +22,6 @@ class SkillAdapter(val data: MutableList<SkillEntry>): RecyclerView.Adapter<Skil
             this.skill.text = skillEntry.name
             this.skill.isChecked = skillEntry.active
             this.skill.setOnClickListener(action)
-        }
-        fun unbind() {
-            skill.setOnClickListener(null)
         }
     }
 
@@ -42,11 +39,11 @@ class SkillAdapter(val data: MutableList<SkillEntry>): RecyclerView.Adapter<Skil
             val pos = data.indexOf(item)
             if (pos!=-1) {
                 if(!(holder.itemView as CheckedTextView).isChecked){
-                    (holder.itemView as CheckedTextView).isChecked = true
+                    (holder.itemView).isChecked = true
                     checked_skills.add(data[pos].name)
                 }
                 else{
-                    (holder.itemView as CheckedTextView).isChecked = false
+                    (holder.itemView).isChecked = false
                     checked_skills.remove(data[pos].name)
                 }
 
@@ -59,11 +56,10 @@ class SkillAdapter(val data: MutableList<SkillEntry>): RecyclerView.Adapter<Skil
 
     fun addFilter(text: String) {
         val newData: MutableList<SkillEntry>
-        if(text.isEmpty() || text.isBlank()){
-            newData = data
-        }
-        else{
-            newData = data.filter { it.name.contains(text, ignoreCase = true) } as MutableList<SkillEntry>
+        newData = if(text.isEmpty() || text.isBlank()){
+            data
+        } else{
+            data.filter { it.name.contains(text, ignoreCase = true) } as MutableList<SkillEntry>
         }
         val diffs = DiffUtil.calculateDiff(MyDiffCallbackSkills(displayData, newData))
         displayData = newData

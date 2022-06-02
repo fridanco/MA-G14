@@ -1,7 +1,5 @@
 package it.polito.ma.g14.timebank.models
 
-import java.sql.Timestamp
-
 class Chat{
     var advertisementID = ""
     var clientUID = ""
