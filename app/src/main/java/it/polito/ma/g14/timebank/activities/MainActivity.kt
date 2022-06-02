@@ -149,12 +149,7 @@ class MainActivity : AppCompatActivity() {
             R.id.myMessages -> {
                 val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
                 val fragment = navHostFragment!!.childFragmentManager.fragments[0] as MyMessagesFragment
-                if (fragment.viewPager.currentItem == 0) {
-                    // If the user is currently looking at the first step, allow the system to handle the
-                    // Back button. This calls finish() on this activity and pops the back stack.
-                    super.onBackPressed()
-                } else {
-                    // Otherwise, select the previous step.
+                if (fragment.viewPager.currentItem != 0) {
                     fragment.viewPager.currentItem = fragment.viewPager.currentItem - 1
                 }
             }
@@ -205,12 +200,7 @@ class MainActivity : AppCompatActivity() {
             R.id.myMessages -> {
                 val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
                 val fragment = navHostFragment!!.childFragmentManager.fragments[0] as MyMessagesFragment
-                if (fragment.viewPager.currentItem == 0) {
-                    // If the user is currently looking at the first step, allow the system to handle the
-                    // Back button. This calls finish() on this activity and pops the back stack.
-                    super.onBackPressed()
-                } else {
-                    // Otherwise, select the previous step.
+                if (fragment.viewPager.currentItem != 0) {
                     fragment.viewPager.currentItem = fragment.viewPager.currentItem - 1
                 }
             }
