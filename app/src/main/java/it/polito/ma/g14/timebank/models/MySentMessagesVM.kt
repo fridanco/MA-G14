@@ -35,8 +35,8 @@ class MySentMessagesVM : ViewModel() {
                     val chatList = querySnapshot.mapNotNull { it.toObject(Chat::class.java) }
                     chatList.forEach{ chat ->
                         val chatMessageWithCounter = ChatMessageWithCounter(
-                            chat.clientUID,
-                            chat.clientName,
+                            chat.advertiserUID,
+                            chat.advertiserName,
                             chat.chatMessages.last().message,
                             chat.chatMessages.last().senderName,
                             chat.chatMessages.last().senderUID,

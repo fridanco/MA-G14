@@ -1,6 +1,7 @@
 package it.polito.ma.g14.timebank.RVadapters
 
 import android.content.Context
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -53,15 +54,13 @@ class ChatAdapter(val view: View, val vm: FirebaseVM, val context: Context, val 
 
             //Not me
             if(chatMessage.senderUID != myUID) {
-//                chatMessageContainer.findViewById<LinearLayout>(R.id.spacerLeft).isGone = true
-//                chatMessageContainer.findViewById<LinearLayout>(R.id.spacerRight).isVisible = true
+                chatMessageContainer.gravity = Gravity.LEFT
                 chatMessageContainer.findViewById<TextView>(R.id.msg_sender).text = chatMessage.senderName
                 //TODO:chatMessageContainer.findViewById<CardView>(R.id.cardView).setBackgroundColor(Color.parseColor("#00000A"))
             }
             //Me
             else{
-                chatMessageContainer.findViewById<LinearLayout>(R.id.spacerRight).isGone = true
-                chatMessageContainer.findViewById<LinearLayout>(R.id.spacerLeft).isVisible = true
+                chatMessageContainer.gravity = Gravity.RIGHT
                 chatMessageContainer.findViewById<TextView>(R.id.msg_sender).text = "You"
                 //TODO:chatMessageContainer.findViewById<CardView>(R.id.cardView).setBackgroundColor(Color.parseColor("#0A0000"))
             }
