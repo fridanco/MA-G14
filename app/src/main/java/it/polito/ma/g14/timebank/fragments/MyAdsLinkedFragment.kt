@@ -71,7 +71,7 @@ class MyAdsLinkedFragment : Fragment() {
         override fun createFragment(position: Int): Fragment {
             return when(position){
                 0 -> FollowedAdsFragment()
-                else -> OnlineAdsListFragment()
+                else -> MyCompletedAdsFragment()
             }
         }
 

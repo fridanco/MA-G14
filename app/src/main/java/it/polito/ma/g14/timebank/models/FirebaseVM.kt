@@ -34,9 +34,13 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
     private val _followedAdvertisements = MutableLiveData<List<Advertisement>>()
     val followedAdvertisements : LiveData<List<Advertisement>> = _followedAdvertisements
 
+    private val _completedAdvertisements = MutableLiveData<List<Advertisement>>()
+    val completedAdvertisements: LiveData<List<Advertisement>> = _completedAdvertisements
+
     private var profileListener : ListenerRegistration? = null
     private var myAdvertisementsListener: ListenerRegistration? = null
     private var followedAdvertisementsListener: ListenerRegistration? = null
+    private var completedAdvertisementsListener: ListenerRegistration? = null
 
     val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     val storageRef = Firebase.storage("gs://mad2022-g14.appspot.com").reference
@@ -66,6 +70,24 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
 
 
             }
+        completedAdvertisementsListener = db.collection("advertisements")
+            .whereEqualTo("uid",uid)
+            .whereEqualTo("status","completed")
+            .addSnapshotListener { result,exception ->
+                if(exception!=null){
+                    _completedAdvertisements.value = emptyList()
+                }
+                else{
+                    if(result!=null){
+                        val completedads = result.mapNotNull { ads->
+                            ads.toObject(Advertisement::class.java)
+                        }
+
+                        _completedAdvertisements.value = completedads
+                    }
+                }
+
+        }
 
 
 
