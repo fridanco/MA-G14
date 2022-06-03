@@ -72,7 +72,7 @@ class OnlineAdsListFragment : Fragment() {
         )
 
         rv.layoutManager = LinearLayoutManager(requireContext())
-        adapter = OnlineAdvertisementsAdapter(view, vm, requireContext())
+        adapter = OnlineAdvertisementsAdapter(view, vm, requireContext(),"online")
         adapter.colorList = colorList as MutableList<String>
         rv.adapter = adapter
 

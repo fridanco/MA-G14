@@ -49,7 +49,7 @@ class MyCompletedAdsFragment : Fragment() {
         )
         val rv = view.findViewById<RecyclerView>(R.id.rv_completedAds)
         rv.layoutManager = LinearLayoutManager(requireContext())
-        adapter = OnlineAdvertisementsAdapter(view,vm,requireContext())
+        adapter = OnlineAdvertisementsAdapter(view,vm,requireContext(),"linked")
         adapter.colorList = colorList as MutableList<String>
         rv.adapter = adapter
 

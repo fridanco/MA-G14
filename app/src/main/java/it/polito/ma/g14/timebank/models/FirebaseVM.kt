@@ -39,6 +39,7 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
 
     private var profileListener : ListenerRegistration? = null
     private var myAdvertisementsListener: ListenerRegistration? = null
+
     private var followedAdvertisementsListener: ListenerRegistration? = null
     private var completedAdvertisementsListener: ListenerRegistration? = null
 
@@ -55,7 +56,7 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
             }
 
         followedAdvertisementsListener = db.collection("advertisements")
-            .whereEqualTo("followedby",uid).addSnapshotListener { result, exception ->
+            .whereEqualTo("bookedby",uid).addSnapshotListener { result, exception ->
                 if(exception!=null){
                     _followedAdvertisements.value = emptyList()}
                 else{
@@ -218,6 +219,42 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
             .addOnFailureListener { e ->
                 Log.w("Timebank FIREBASE", "Error adding advertisement", e)
             }
+    }
+
+
+    fun rateAdvertiser(advertisement: Advertisement, rating: Float,rateText : String, uidDst : String){
+        db.collection("advertisements").document(advertisement.id).update("rating",rating)
+        db.collection("advertisements").document(advertisement.id).update("textRating",rateText)
+        db.runTransaction { transaction ->
+            val userRef = db.collection("users").document(uidDst)
+            val user = transaction.get(userRef).toObject(User::class.java)
+            user?.let {
+                val finalnumberRating : Int = user.n_ratings + 1
+                val finalRating : Float = (user.ratings * user.n_ratings + rating ) / finalnumberRating
+                user.apply {
+                    user.ratings = finalRating
+                    user.n_ratings = finalnumberRating
+                }
+                transaction.set(userRef,user)
+            }
+
+
+
+        }
+
+//        var rate : Float = db.collection("users").document(uidDst).get("ratings")
+//        var n_rate : Int = db.collection("users").document()
+
+    }
+
+
+    fun updateAdvertisementStatus(advertisement: Advertisement,status: String){
+        db.collection("advertisements").document(advertisement.id).update("status",status)
+
+    }
+
+    fun updateAdvertisementsBooked(advertisement: Advertisement,uid:String){
+        db.collection("advertisements").document(advertisement.id).update("bookedby",uid)
     }
 
     fun updateAdvertisement(advertisement: Advertisement){

@@ -12,6 +12,7 @@ class User : Serializable {
     var location : String = ""
     var description : String = ""
     var skills : List<String> = emptyList()
-    var ratings : Float = 0F
-    var n_ratings : Int = 0
+    var ratingsCustomer : List<Rating> = emptyList()
+    var ratingsAdvertiser : List<Rating> = emptyList()
+
 }

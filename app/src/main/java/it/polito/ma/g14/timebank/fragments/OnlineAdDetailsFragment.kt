@@ -23,6 +23,7 @@ import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.models.Advertisement
 import it.polito.ma.g14.timebank.models.FirebaseVM
 import it.polito.ma.g14.timebank.utils.Utils
+import org.w3c.dom.Text
 
 
 class OnlineAdDetailsFragment : Fragment() {
@@ -40,6 +41,7 @@ class OnlineAdDetailsFragment : Fragment() {
     lateinit var iv_profileImage : ImageView
     lateinit var btn_book : Button
     lateinit var btn_chat : Button
+    lateinit var btn_markAsComplete : Button
     lateinit var user: LinearLayout
 
     lateinit var advertisement : Advertisement
@@ -74,6 +76,7 @@ class OnlineAdDetailsFragment : Fragment() {
         iv_profileImage = view.findViewById(R.id.imageView6)
         btn_book = view.findViewById(R.id.button7)
         btn_chat = view.findViewById(R.id.button8)
+        btn_markAsComplete = view.findViewById(R.id.button10)
         user = view.findViewById(R.id.user_link)
 
         advertisement = requireArguments().getSerializable("advertisement") as Advertisement
@@ -92,23 +95,57 @@ class OnlineAdDetailsFragment : Fragment() {
             tv_user_description.text = "No description provided"
         }
 
-        if(advertisement.uid != Firebase.auth.currentUser!!.uid) {
-            view.findViewById<LinearLayout>(R.id.bookChatContainer).isVisible = true
+        when (advertisement.status){
+            "free" ->{
+                //If the adv is free -> it shows the ui for booking
+                if(advertisement.uid != Firebase.auth.currentUser!!.uid) {
+                    view.findViewById<LinearLayout>(R.id.bookChatContainer).isVisible = true
 
-            btn_book.setOnClickListener {
-                bookSlot()
-            }
-            btn_chat.setOnClickListener {
-                startChat()
-            }
+                    btn_book.setOnClickListener {
+                        bookSlot()
+                    }
+                    btn_chat.setOnClickListener {
+                        startChat()
+                    }
 
-            user.setOnClickListener {
-                redirect(advertisement.uid)
+                    user.setOnClickListener {
+                        redirect(advertisement.uid)
+                    }
+                }
+                else{
+                    view.findViewById<LinearLayout>(R.id.bookChatContainer).isGone = true
+                }
+
+            }
+            "booked"->{
+                view.findViewById<LinearLayout>(R.id.bookChatContainer).isGone = true
+                if(advertisement.bookedby == Firebase.auth.currentUser!!.uid){
+                    view.findViewById<LinearLayout>(R.id.MarkAsCompleteLayout).isVisible = true
+                    btn_markAsComplete.setOnClickListener {
+                        markAsComplete()
+                    }
+                }
+                else{
+                    view.findViewById<TextView>(R.id.textView88).isVisible = true
+                    view.findViewById<TextView>(R.id.textView88).text =  "You can't book this anymore"
+                    }
+                }
+            "complete"->{
+                view.findViewById<LinearLayout>(R.id.bookChatContainer).isGone = true
+                val userId : String = Firebase.auth.currentUser!!.uid
+                if(advertisement.bookedby == userId ||
+                        advertisement.uid == userId ){
+                    view.findViewById<LinearLayout>(R.id.ratingSlotLayout).isVisible = true
+
+
+
+
+                }
+
+
             }
         }
-        else{
-            view.findViewById<LinearLayout>(R.id.bookChatContainer).isGone = true
-        }
+
 
         val profileImageRef = vm.storageRef.child(advertisement.uid)
 
@@ -130,9 +167,26 @@ class OnlineAdDetailsFragment : Fragment() {
         Utils.manageActionBarItemsVisibility(requireActivity(), menu)
     }
 
-    fun bookSlot(){
+    fun rateYourAdvertiser(){
+
+        if(advertisement.uid == )
+
 
     }
+
+    fun bookSlot(){
+        vm.updateAdvertisementStatus(advertisement, "booked")
+        vm.updateAdvertisementsBooked(advertisement,Firebase.auth.currentUser!!.uid)
+
+    }
+
+    fun markAsComplete(){
+        vm.updateAdvertisementStatus(advertisement,"complete")
+
+
+    }
+
+
 
     fun startChat(){
         val bundle = bundleOf(

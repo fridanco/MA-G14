@@ -23,7 +23,7 @@ import it.polito.ma.g14.timebank.models.Advertisement
 import it.polito.ma.g14.timebank.models.FirebaseVM
 import java.text.SimpleDateFormat
 
-class OnlineAdvertisementsAdapter(val view: View, val vm: FirebaseVM, val context: Context): RecyclerView.Adapter<OnlineAdvertisementsAdapter.ItemViewHolder>() {
+class OnlineAdvertisementsAdapter(val view: View, val vm: FirebaseVM, val context: Context, val sourceUser : String): RecyclerView.Adapter<OnlineAdvertisementsAdapter.ItemViewHolder>() {
     var data = listOf<Advertisement>()
     var displayData = data.toMutableList()
     var colorList = mutableListOf("#FFFFFF")
@@ -78,7 +78,13 @@ class OnlineAdvertisementsAdapter(val view: View, val vm: FirebaseVM, val contex
 
         holder.bind(advertisement, context, vm, colorList[(colorIndex++)%colorList.size]) {
             val bundle = bundleOf("advertisement" to advertisement)
-            view.findNavController().navigate(R.id.action_onlineAdsListFragment_to_onlineAdDetailsFragment, bundle)
+            if(sourceUser == "online") {
+                view.findNavController().navigate(R.id.action_onlineAdsListFragment_to_onlineAdDetailsFragment, bundle)
+            }
+            else {
+                view.findNavController().navigate(R.id.action_nav_linkedAds_to_onlineAdDetailsFragment, bundle)
+            }
+
         }
     }
 
