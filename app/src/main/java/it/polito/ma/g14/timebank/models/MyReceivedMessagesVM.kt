@@ -82,18 +82,7 @@ class MyReceivedMessagesVM : ViewModel() {
                             }
                             messagesMap[it.key] = advertisementWithChat
                         }
-                        val cmp = compareByDescending<Pair<String, AdvertisementWithChat>> {
-                            it.second.containsUnreadMessage
-                        }.thenByDescending {
-                            if(it.second.containsUnreadMessage) {
-                                it.second.lastUnreadMessageTimestamp
-                            }
-                            else{
-                                it.second.lastReadMessageTimestamp
-                            }
-                        }
-
-                        _receivedMessages.postValue(messagesMap.toList().sortedWith(cmp))
+                        _receivedMessages.postValue(messagesMap.toList())
                     }
                 }
             }
@@ -104,6 +93,21 @@ class MyReceivedMessagesVM : ViewModel() {
 
     fun getSortBy() : String{
         return _sortBy.value ?: "date_desc"
+    }
+
+    fun setSortBy(sortKey: String) {
+        _sortBy.value = sortKey
+    }
+
+    private val _filterBy = MutableLiveData("")
+    val filterBy : LiveData<String> = _filterBy
+
+    fun getFilterBy() : String{
+        return _filterBy.value ?: ""
+    }
+
+    fun setFilterBy(sortKey: String) {
+        _filterBy.value = sortKey
     }
 
 }

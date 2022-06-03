@@ -19,7 +19,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.firebase.ui.auth.AuthUI
 import com.google.android.material.navigation.NavigationView
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import it.polito.ma.g14.timebank.R
@@ -257,6 +256,10 @@ class MainActivity : AppCompatActivity() {
             R.id.myProfileSkills -> {
                 val fragment = navHostFragment!!.childFragmentManager.fragments[0] as ChooseSkillsFragment
                 fragment.searchSkills(query)
+            }
+            R.id.myMessages -> {
+                val fragment = navHostFragment!!.childFragmentManager.fragments[0] as MyMessagesFragment
+                fragment.addFilter(query)
             }
         }
     }

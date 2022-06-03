@@ -20,7 +20,7 @@ import it.polito.ma.g14.timebank.models.FirebaseVM
 import it.polito.ma.g14.timebank.models.MyReceivedMessagesVM
 import it.polito.ma.g14.timebank.utils.Utils
 
-class MyReceivedMessagesFragment : Fragment() {
+class MyReceivedMessagesFragment(val sortBy: String, val filterBy: String) : Fragment() {
 
     val receivedMessagesVM by viewModels<MyReceivedMessagesVM>()
     val firebaseVM by viewModels<FirebaseVM>()
@@ -29,7 +29,8 @@ class MyReceivedMessagesFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
+        receivedMessagesVM.setSortBy(sortBy)
+        receivedMessagesVM.setFilterBy(filterBy)
     }
 
     override fun onCreateView(
@@ -37,8 +38,6 @@ class MyReceivedMessagesFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_my_received_messages, container, false)
-
-        requireActivity().invalidateOptionsMenu()
 
         receivedMessagesVM.getReceivedMessages(Firebase.auth.currentUser!!.uid)
 
@@ -70,12 +69,49 @@ class MyReceivedMessagesFragment : Fragment() {
             if(it.isEmpty()){
                 rv.isGone = true
                 emptyRv.isVisible = true
+                emptyRv.text = "You have not received any message yet"
             }
             else {
+                val sortBy = receivedMessagesVM.getSortBy()
+                val filterBy = receivedMessagesVM.getFilterBy()
+                if(adapter.updateMessages(it.toList(), sortBy, filterBy)>0){
+                    rv.isVisible = true
+                    emptyRv.isGone = true
+                }
+                else{
+                    rv.isGone = true
+                    emptyRv.isVisible = true
+                    emptyRv.text = "No messages match your search"
+                }
+            }
+        }
+
+        receivedMessagesVM.sortBy.observe(viewLifecycleOwner){
+            if(adapter.addSort(it)>0){
                 rv.isVisible = true
                 emptyRv.isGone = true
-                val sortBy = receivedMessagesVM.getSortBy()
-                adapter.updateMessages(it, sortBy)
+            }
+            else{
+                rv.isGone = true
+                emptyRv.isVisible = true
+                if(receivedMessagesVM.getFilterBy().isNotBlank()) {
+                    emptyRv.text = "No messages match your search"
+                }
+                else{
+                    emptyRv.text = "You have not received any message yet"
+                }
+            }
+        }
+
+        receivedMessagesVM.filterBy.observe(viewLifecycleOwner){
+            if(adapter.addFilter(it)>0){
+                rv.isVisible = true
+                emptyRv.isGone = true
+            }
+            else{
+                rv.isGone = true
+                emptyRv.isVisible = true
+                emptyRv.text = "No messages match your search"
             }
         }
     }
