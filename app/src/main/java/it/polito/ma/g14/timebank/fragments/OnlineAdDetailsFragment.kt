@@ -5,10 +5,7 @@ import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.core.os.bundleOf
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
@@ -23,6 +20,7 @@ import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.models.Advertisement
 import it.polito.ma.g14.timebank.models.FirebaseVM
 import it.polito.ma.g14.timebank.utils.Utils
+import it.polito.ma.g14.timebank.models.Rating
 import org.w3c.dom.Text
 
 
@@ -42,6 +40,7 @@ class OnlineAdDetailsFragment : Fragment() {
     lateinit var btn_book : Button
     lateinit var btn_chat : Button
     lateinit var btn_markAsComplete : Button
+    lateinit var btn_submitRate : Button
     lateinit var user: LinearLayout
 
     lateinit var advertisement : Advertisement
@@ -77,6 +76,7 @@ class OnlineAdDetailsFragment : Fragment() {
         btn_book = view.findViewById(R.id.button7)
         btn_chat = view.findViewById(R.id.button8)
         btn_markAsComplete = view.findViewById(R.id.button10)
+        btn_submitRate = view.findViewById<Button>(R.id.button9)
         user = view.findViewById(R.id.user_link)
 
         advertisement = requireArguments().getSerializable("advertisement") as Advertisement
@@ -136,7 +136,22 @@ class OnlineAdDetailsFragment : Fragment() {
                 if(advertisement.bookedby == userId ||
                         advertisement.uid == userId ){
                     view.findViewById<LinearLayout>(R.id.ratingSlotLayout).isVisible = true
+                    //todo: Do the Rating object
 
+
+                    btn_submitRate.setOnClickListener {
+                        val rating = Rating().apply{
+                            this.rating = view.findViewById<RatingBar>(R.id.ratingBar2).rating
+                            this.advertisement = advertisement
+                            this.textRating = view.findViewById<TextView>(R.id.RateTextId).text.toString()
+                            this.raterUid = Firebase.auth.currentUser!!.uid
+                            if(advertisement.uid == Firebase.auth.currentUser!!.uid){
+                                this.raterName = advertisement.bookedby
+                            }
+                        }
+
+                        rateYourAdvertiser()
+                    }
 
 
 
@@ -168,8 +183,9 @@ class OnlineAdDetailsFragment : Fragment() {
     }
 
     fun rateYourAdvertiser(){
+       // rateYourAdvertiser(rating)
 
-        if(advertisement.uid == )
+
 
 
     }
@@ -182,8 +198,6 @@ class OnlineAdDetailsFragment : Fragment() {
 
     fun markAsComplete(){
         vm.updateAdvertisementStatus(advertisement,"complete")
-
-
     }
 
 

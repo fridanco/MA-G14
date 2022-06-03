@@ -129,7 +129,7 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
     }
 
     fun updateProfile(fullname: String, nickname: String, email: String, location: String, description: String, skills: List<String>,
-                      profileImage: ByteArray,ratingProfile : Float, n_rating:Int){
+                      profileImage: ByteArray,ratingCustomer : List<Rating>, ratingAdvertisement: List<Rating>){
         val user = User().apply {
             this.fullname = fullname
             this.nickname = nickname
@@ -137,8 +137,8 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
             this.location = location
             this.description = description
             this.skills = skills
-            this.ratings = ratingProfile
-            this.n_ratings = n_rating
+            this.ratingsCustomer = ratingCustomer
+            this.ratingsAdvertiser = ratingAdvertisement
         }
 
 
@@ -222,29 +222,9 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
     }
 
 
-    fun rateAdvertiser(advertisement: Advertisement, rating: Float,rateText : String, uidDst : String){
-        db.collection("advertisements").document(advertisement.id).update("rating",rating)
-        db.collection("advertisements").document(advertisement.id).update("textRating",rateText)
-        db.runTransaction { transaction ->
-            val userRef = db.collection("users").document(uidDst)
-            val user = transaction.get(userRef).toObject(User::class.java)
-            user?.let {
-                val finalnumberRating : Int = user.n_ratings + 1
-                val finalRating : Float = (user.ratings * user.n_ratings + rating ) / finalnumberRating
-                user.apply {
-                    user.ratings = finalRating
-                    user.n_ratings = finalnumberRating
-                }
-                transaction.set(userRef,user)
-            }
-
-
-
-        }
-
-//        var rate : Float = db.collection("users").document(uidDst).get("ratings")
-//        var n_rate : Int = db.collection("users").document()
-
+    fun rateAdvertiser(rating: Rating){
+        db.collection("advertisements").document(rating.advertisement.id).update("rating",rating)
+        db.collection ("users").document(rating.advertisement.uid).update("ratingsAdvertiser",FieldValue.arrayUnion(rating))
     }
 
 

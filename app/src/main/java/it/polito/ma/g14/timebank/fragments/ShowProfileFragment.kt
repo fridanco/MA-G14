@@ -40,7 +40,10 @@ class ShowProfileFragment : Fragment() {
     var description : String = ""
     var profilePicture : ByteArray? = null
     var ratingProfile : Float = 0f
-    var n_ratings : Int = 0
+    var ratingAdvertisement : List<it.polito.ma.g14.timebank.models.Rating> = listOf()
+    var ratingCustomer: List<it.polito.ma.g14.timebank.models.Rating> = listOf()
+
+
 
     private var tv_fullname : TextView? = null
     private var tv_nickname : TextView? = null
@@ -162,8 +165,20 @@ class ShowProfileFragment : Fragment() {
                 location = it.location
                 skills = it.skills as ArrayList<String>
                 description = it.description
-                ratingProfile = it.ratings
-                n_ratings = it.n_ratings
+                ratingAdvertisement = it.ratingsAdvertiser
+                ratingCustomer = it.ratingsCustomer
+
+
+
+                if(it.ratingsAdvertiser.isNotEmpty()){
+                    it.ratingsAdvertiser.forEach { rate->
+                        ratingProfile+=rate.rating
+                    }
+                    ratingProfile /= it.ratingsAdvertiser.size
+                }
+
+
+
 
 
                 populateProfileText(it)
@@ -216,7 +231,8 @@ class ShowProfileFragment : Fragment() {
         tv_email?.text = profile.email
         tv_location?.text = profile.location
 
-        if(profile.n_ratings == 0){
+
+        if(profile.ratingsAdvertiser.isEmpty()){
             tv_captionNoRatings?.isVisible = true
             h_tv_captionNoRatings?.isVisible = true
             tv_ratingProfile?.isGone = true
@@ -229,8 +245,8 @@ class ShowProfileFragment : Fragment() {
             h_tv_captionNoRatings?.isGone = true
             tv_ratingProfile?.isVisible = true
             h_tv_ratingProfile?.isVisible = true
-            tv_ratingProfile?.rating = profile.ratings
-            h_tv_ratingProfile?.rating = profile.ratings
+            tv_ratingProfile?.rating = ratingProfile
+            h_tv_ratingProfile?.rating = ratingProfile
         }
 
 
@@ -288,8 +304,9 @@ class ShowProfileFragment : Fragment() {
         val userLocation = location
         val userDescription = description
         val skills = skills
-        val ratings = ratingProfile
-        val nratings = n_ratings
+        val ratingAdv = ratingAdvertisement
+        val ratingCus = ratingCustomer
+
         return User().apply {
             this.fullname=fullName
             this.nickname=nickName
@@ -297,8 +314,9 @@ class ShowProfileFragment : Fragment() {
             this.location=userLocation
             this.description=userDescription
             this.skills=skills
-            this.ratings=ratings
-            this.n_ratings=nratings
+            this.ratingsAdvertiser = ratingAdv
+            this.ratingsCustomer = ratingCus
+
         }
     }
 

@@ -19,6 +19,7 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.models.FirebaseVM
+import it.polito.ma.g14.timebank.models.Rating
 import it.polito.ma.g14.timebank.models.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -35,8 +36,9 @@ class ShowProfileAdFragment : Fragment() {
     var skills = arrayListOf<String>()
     var description : String = ""
     var profilePicture : ByteArray? = null
-    var ratingProfile : Float = 0F
-    var n_ratings : Int = 0
+    var ratingAdvertisement : List<Rating> = listOf()
+    var ratingProfile : Float = 0f
+    var ratingCustomer : List<Rating> = listOf()
 
     private var tv_fullname : TextView? = null
     private var tv_nickname : TextView? = null
@@ -45,8 +47,8 @@ class ShowProfileAdFragment : Fragment() {
     private var tv_description : TextView? = null
     private var et_skills : ChipGroup? = null
     private var iv_profilePicture : ImageView? = null
-    private var tv_ratingProfile : TextView? = null
-    private var h_tv_ratingProfile : TextView? = null
+    private var tv_ratingProfile : RatingBar? = null
+    private var h_tv_ratingProfile : RatingBar? = null
     private var h_tv_fullname : TextView? = null
     private var h_tv_nickname : TextView? = null
     private var h_tv_email : TextView? = null
@@ -54,6 +56,8 @@ class ShowProfileAdFragment : Fragment() {
     private var h_tv_description : TextView? = null
     private var h_et_skills : ChipGroup? = null
     private var h_iv_profilePicture : ImageView? = null
+    private var tv_captionNoRatings : TextView? = null
+    private var h_tv_captionNoRatings : TextView? = null
     var otherUid : String? = null
 
     var isImageDownloaded = false
@@ -117,8 +121,8 @@ class ShowProfileAdFragment : Fragment() {
                     location = it.location
                     skills = it.skills as ArrayList<String>
                     description = it.description
-                    ratingProfile = it.ratings
-                    n_ratings = it.n_ratings
+                    ratingAdvertisement = it.ratingsAdvertiser
+                    ratingCustomer = it.ratingsCustomer
 
 
                     populateProfileText(it)
@@ -171,7 +175,8 @@ class ShowProfileAdFragment : Fragment() {
         tv_description = view?.findViewById(R.id.textView19)
         et_skills = view?.findViewById(R.id.chipGroup)
         iv_profilePicture = view?.findViewById(R.id.imageView4)
-        tv_ratingProfile = view?.findViewById(R.id.textView85)
+        tv_ratingProfile = view?.findViewById<RatingBar>(R.id.ratingBar)
+        tv_captionNoRatings = view?.findViewById<TextView>(R.id.textView84)
 
         h_tv_fullname = view?.findViewById(R.id.textView)
         h_tv_nickname = view?.findViewById(R.id.textView2)
@@ -180,7 +185,11 @@ class ShowProfileAdFragment : Fragment() {
         h_iv_profilePicture = view?.findViewById(R.id.imageView)
         h_tv_description = view?.findViewById(R.id.textView20)
         h_et_skills = view?.findViewById(R.id.chipGroup2)
-        h_tv_ratingProfile = view?.findViewById(R.id.textView86)
+        h_tv_ratingProfile = view?.findViewById<RatingBar>(R.id.ratingBar1)
+        h_tv_captionNoRatings = view?.findViewById<TextView>(R.id.textView85)
+
+        tv_ratingProfile?.max = 5
+        h_tv_ratingProfile?.max = 5
     }
 
     private fun populateProfileText(profile: User) {
@@ -188,12 +197,24 @@ class ShowProfileAdFragment : Fragment() {
         tv_nickname?.text = profile.nickname
         tv_email?.text = profile.email
         tv_location?.text = profile.location
-        tv_ratingProfile?.text = profile.ratings.toString() + "/5"
-        h_tv_ratingProfile?.text = profile.ratings.toString() + "/5"
-        if(profile.n_ratings == 0){
-            tv_ratingProfile?.text = "No ratings yet"
-            h_tv_ratingProfile?.text = "No ratings yet"
+
+        if(profile.ratingsAdvertiser.isEmpty()){
+            tv_captionNoRatings?.isVisible = true
+            h_tv_captionNoRatings?.isVisible = true
+            tv_ratingProfile?.isGone = true
+            h_tv_ratingProfile?.isGone = true
+            tv_captionNoRatings?.text = "You have not received any rating yet"
+            h_tv_captionNoRatings?.text = "You have not received any rating yet"
         }
+        else{
+            tv_captionNoRatings?.isGone = true
+            h_tv_captionNoRatings?.isGone = true
+            tv_ratingProfile?.isVisible = true
+            h_tv_ratingProfile?.isVisible = true
+            tv_ratingProfile?.rating = ratingProfile
+            h_tv_ratingProfile?.rating = ratingProfile
+        }
+
 
 
 

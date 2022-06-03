@@ -151,18 +151,27 @@
                 </com.google.android.material.chip.ChipGroup>
 
                 <TextView
-                    android:id="@+id/textView83"
+                    android:id="@+id/textView95"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Rating" />
+                    android:text="Your rating" />
+
+                <RatingBar
+                    android:id="@+id/ratingBar5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:isIndicator="true"
+                    android:max="5"
+                    tools:ignore="SpeakableTextPresentCheck" />
 
                 <TextView
-                    android:id="@+id/textView85"
+                    android:id="@+id/textView96"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="12dp"
-                    android:text="@string/profile_description_placeholder"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                    android:gravity="center_horizontal"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp" />
 
             </LinearLayout>
 

@@ -152,8 +152,8 @@ class EditProfileFragment : Fragment() {
             location = it.location
             description = it.description
             skills = it.skills as ArrayList<String>
-            ratingProfile = it.ratings
-            n_ratings = it.n_ratings
+
+
 
             populateProfileEditText(it)
             populateProfileSkills(it.skills)

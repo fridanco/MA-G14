@@ -17,4 +17,5 @@ class Advertisement : Serializable {
     var status : String = "free"
     var skills : List<String> = emptyList()
     var user : AdvertisementUser = AdvertisementUser()
+    var rating: Rating? = null
 }
