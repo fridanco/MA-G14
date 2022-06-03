@@ -69,22 +69,50 @@ class MySentMessagesFragment(val sortBy: String, val filterBy: String) : Fragmen
             if(it.isEmpty()){
                 rv.isGone = true
                 emptyRv.isVisible = true
+                emptyRv.text = "You have not received any message yet"
             }
             else {
-                rv.isVisible = true
-                emptyRv.isGone = true
                 val sortBy = sentMessagesVM.getSortBy()
                 val filterBy = sentMessagesVM.getFilterBy()
-                adapter.updateMessages(it.toList(), sortBy, filterBy)
+                if(adapter.updateMessages(it.toList(), sortBy, filterBy)>0){
+                    rv.isVisible = true
+                    emptyRv.isGone = true
+                }
+                else{
+                    rv.isGone = true
+                    emptyRv.isVisible = true
+                    emptyRv.text = "No messages match your search"
+                }
             }
         }
 
         sentMessagesVM.sortBy.observe(viewLifecycleOwner){
-            adapter.addSort(it)
+            if(adapter.addSort(it)>0){
+                rv.isVisible = true
+                emptyRv.isGone = true
+            }
+            else{
+                rv.isGone = true
+                emptyRv.isVisible = true
+                if(sentMessagesVM.getFilterBy().isNotBlank()) {
+                    emptyRv.text = "No messages match your search"
+                }
+                else{
+                    emptyRv.text = "You have not received any message yet"
+                }
+            }
         }
 
         sentMessagesVM.filterBy.observe(viewLifecycleOwner){
-            adapter.addFilter(it)
+            if(adapter.addFilter(it)>0){
+                rv.isVisible = true
+                emptyRv.isGone = true
+            }
+            else{
+                rv.isGone = true
+                emptyRv.isVisible = true
+                emptyRv.text = "No messages match your search"
+            }
         }
     }
 

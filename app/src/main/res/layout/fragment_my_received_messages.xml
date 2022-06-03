@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="48dp"
-        android:text="You have no received messages" />
+        android:text="You have not received any message yet" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/receivedMsgRV"

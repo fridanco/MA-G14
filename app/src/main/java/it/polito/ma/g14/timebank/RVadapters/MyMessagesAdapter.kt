@@ -164,7 +164,7 @@ class MyMessagesAdapter(val view: View, val vm: FirebaseVM, val context: Context
 
     override fun getItemCount(): Int = displayData.size
 
-    fun updateMessages(advertisementsWithChat: List<Pair<String, AdvertisementWithChat>>, sortBy: String, filterBy: String){
+    fun updateMessages(advertisementsWithChat: List<Pair<String, AdvertisementWithChat>>, sortBy: String, filterBy: String) : Int{
         this.sortBy = sortBy
         colorIndex = 0
         data = advertisementsWithChat.toList()
@@ -175,6 +175,7 @@ class MyMessagesAdapter(val view: View, val vm: FirebaseVM, val context: Context
         displayData = newData.toMutableList()
         data = dataTmp
         diffs.dispatchUpdatesTo(this)
+        return newData.size
     }
 
     fun addFilter(text: String) : Int {
@@ -187,7 +188,7 @@ class MyMessagesAdapter(val view: View, val vm: FirebaseVM, val context: Context
         val diffs = DiffUtil.calculateDiff(MyDiffCallbackMyMessages(displayData, newData))
         displayData = newData
         diffs.dispatchUpdatesTo(this)
-        return displayData.size
+        return newData.size
     }
 
     fun performFilter(data: List<Pair<String, AdvertisementWithChat>>, filterBy: String) : List<Pair<String, AdvertisementWithChat>>{
@@ -211,10 +212,10 @@ class MyMessagesAdapter(val view: View, val vm: FirebaseVM, val context: Context
         }
     }
 
-    fun addSort(sortBy: String){
+    fun addSort(sortBy: String) : Int{
         this.sortBy = sortBy
         if(displayData.isEmpty()){
-            return
+            return 0
         }
         val dataTmp = data
         data = displayData.toList()
@@ -223,6 +224,7 @@ class MyMessagesAdapter(val view: View, val vm: FirebaseVM, val context: Context
         val diffs = DiffUtil.calculateDiff(MyDiffCallbackMyMessages(displayData, newData))
         displayData = newData.toMutableList()
         diffs.dispatchUpdatesTo(this)
+        return newData.size
     }
 
     fun performSort(sortBy: String, showToast: Boolean = true) : List<Pair<String, AdvertisementWithChat>>{
