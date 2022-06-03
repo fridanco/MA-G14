@@ -8,7 +8,8 @@ class Advertisement : Serializable {
     var id : String = ""
     var uid : String = ""
     var title : String = ""
-    var bookedby : String = " "
+    var bookedByUID : String = ""
+    var bookedByName : String = ""
     var description : String = ""
     var date : String = ""
     var from : String = ""
@@ -17,5 +18,6 @@ class Advertisement : Serializable {
     var status : String = "free"
     var skills : List<String> = emptyList()
     var user : AdvertisementUser = AdvertisementUser()
-    var rating: Rating? = null
+    var advertiserRating: Rating? = null
+    var clientRating: Rating? = null
 }

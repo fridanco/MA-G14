@@ -121,8 +121,8 @@ class ShowProfileAdFragment : Fragment() {
                     location = it.location
                     skills = it.skills as ArrayList<String>
                     description = it.description
-                    ratingAdvertisement = it.ratingsAdvertiser
-                    ratingCustomer = it.ratingsCustomer
+                    ratingAdvertisement = it.ratingsAsAdvertiser
+                    ratingCustomer = it.ratingsAsClient
 
 
                     populateProfileText(it)
@@ -198,7 +198,7 @@ class ShowProfileAdFragment : Fragment() {
         tv_email?.text = profile.email
         tv_location?.text = profile.location
 
-        if(profile.ratingsAdvertiser.isEmpty()){
+        if(profile.ratingsAsAdvertiser.isEmpty()){
             tv_captionNoRatings?.isVisible = true
             h_tv_captionNoRatings?.isVisible = true
             tv_ratingProfile?.isGone = true

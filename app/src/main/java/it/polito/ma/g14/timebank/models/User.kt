@@ -12,7 +12,7 @@ class User : Serializable {
     var location : String = ""
     var description : String = ""
     var skills : List<String> = emptyList()
-    var ratingsCustomer : List<Rating> = emptyList()
-    var ratingsAdvertiser : List<Rating> = emptyList()
+    var ratingsAsClient : List<Rating> = emptyList()
+    var ratingsAsAdvertiser : List<Rating> = emptyList()
 
 }

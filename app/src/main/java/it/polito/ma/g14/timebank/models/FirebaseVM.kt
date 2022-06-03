@@ -9,7 +9,6 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
-import com.google.firebase.firestore.SetOptions
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import java.util.*
@@ -129,7 +128,7 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
     }
 
     fun updateProfile(fullname: String, nickname: String, email: String, location: String, description: String, skills: List<String>,
-                      profileImage: ByteArray,ratingCustomer : List<Rating>, ratingAdvertisement: List<Rating>){
+                      profileImage: ByteArray,ratingsAsClient : List<Rating>, ratingsAsAdvertiser: List<Rating>){
         val user = User().apply {
             this.fullname = fullname
             this.nickname = nickname
@@ -137,8 +136,8 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
             this.location = location
             this.description = description
             this.skills = skills
-            this.ratingsCustomer = ratingCustomer
-            this.ratingsAdvertiser = ratingAdvertisement
+            this.ratingsAsClient = ratingsAsClient
+            this.ratingsAsAdvertiser = ratingsAsAdvertiser
         }
 
 
@@ -222,20 +221,7 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
     }
 
 
-    fun rateAdvertiser(rating: Rating){
-        db.collection("advertisements").document(rating.advertisement.id).update("rating",rating)
-        db.collection ("users").document(rating.advertisement.uid).update("ratingsAdvertiser",FieldValue.arrayUnion(rating))
-    }
 
-
-    fun updateAdvertisementStatus(advertisement: Advertisement,status: String){
-        db.collection("advertisements").document(advertisement.id).update("status",status)
-
-    }
-
-    fun updateAdvertisementsBooked(advertisement: Advertisement,uid:String){
-        db.collection("advertisements").document(advertisement.id).update("bookedby",uid)
-    }
 
     fun updateAdvertisement(advertisement: Advertisement){
         advertisement.apply{

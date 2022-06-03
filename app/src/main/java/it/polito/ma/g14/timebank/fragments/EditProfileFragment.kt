@@ -30,6 +30,7 @@ import com.google.android.material.chip.ChipGroup
 import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.models.EditProfileVM
 import it.polito.ma.g14.timebank.models.FirebaseVM
+import it.polito.ma.g14.timebank.models.Rating
 import it.polito.ma.g14.timebank.models.User
 import it.polito.ma.g14.timebank.utils.Utils
 import java.io.ByteArrayOutputStream
@@ -53,8 +54,8 @@ class EditProfileFragment : Fragment() {
     var skills : ArrayList<String> = arrayListOf()
     var description : String = ""
     var profilePicture : ByteArray? = null
-    var ratingProfile : Float = 0f
-    var n_ratings : Int = 0
+    var ratingsAsClient : List<Rating> = listOf()
+    var ratingsAsAdvertiser : List<Rating> = listOf()
 
     var et_fullname : EditText? = null
     var et_nickname : EditText? = null
@@ -152,7 +153,8 @@ class EditProfileFragment : Fragment() {
             location = it.location
             description = it.description
             skills = it.skills as ArrayList<String>
-
+            ratingsAsClient = it.ratingsAsClient
+            ratingsAsAdvertiser = it.ratingsAsAdvertiser
 
 
             populateProfileEditText(it)
@@ -550,7 +552,7 @@ class EditProfileFragment : Fragment() {
             byteArray = it
         }
 
-        vm.updateProfile(fullName, nickName, email, location, description, skills, byteArray,ratingProfile,n_ratings)
+        vm.updateProfile(fullName, nickName, email, location, description, skills, byteArray, ratingsAsClient, ratingsAsAdvertiser)
         Toast.makeText(requireContext(), "Profile updated", Toast.LENGTH_SHORT).show()
 
     }

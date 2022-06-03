@@ -4,6 +4,8 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
@@ -29,6 +31,42 @@ class OnlineAdDetailsVM(application:Application) : AndroidViewModel(application)
                     _advertisement.postValue(it)
                 }
             }
+    }
+
+    fun rateAdvertiser(rating: Rating){
+        db.collection("advertisements").document(rating.advertisement.id).update("advertiserRating",rating)
+        db.collection ("users").document(rating.advertisement.uid).update("ratingsAdvertiser",
+            FieldValue.arrayUnion(rating))
+    }
+
+    fun rateClient(rating: Rating){
+        db.collection("advertisements").document(rating.advertisement.id).update("clientRating",rating)
+        db.collection ("users").document(rating.advertisement.uid).update("ratingsClient",
+            FieldValue.arrayUnion(rating))
+    }
+
+
+    fun updateAdvertisementStatus(advertisement: Advertisement,status: String){
+        db.collection("advertisements").document(advertisement.id).update("status",status)
+    }
+
+    fun updateAdvertisementsBooked(advertisement: Advertisement,uid:String){
+
+        db.runTransaction { transaction ->
+            val clientRef = db.collection("users").document(Firebase.auth.currentUser!!.uid)
+            val client = transaction.get(clientRef).toObject(User::class.java)
+
+            client?.let {
+                val advertisementRef = db.collection("advertisements").document(advertisement.id)
+                advertisement.apply {
+                    this.bookedByUID = Firebase.auth.currentUser!!.uid
+                    this.bookedByName = client.fullname
+                    this.status = "booked"
+                }
+
+                transaction.set(advertisementRef,advertisement)
+            }
+        }
     }
 
 }

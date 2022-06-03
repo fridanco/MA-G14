@@ -19,32 +19,33 @@ import com.google.firebase.ktx.Firebase
 import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.models.Advertisement
 import it.polito.ma.g14.timebank.models.FirebaseVM
-import it.polito.ma.g14.timebank.utils.Utils
+import it.polito.ma.g14.timebank.models.OnlineAdDetailsVM
 import it.polito.ma.g14.timebank.models.Rating
-import org.w3c.dom.Text
+import it.polito.ma.g14.timebank.utils.Utils
 
 
 class OnlineAdDetailsFragment : Fragment() {
 
+    private val onlineAdDetailsVM by viewModels<OnlineAdDetailsVM>()
     private val vm by viewModels<FirebaseVM>()
 
-    lateinit var tv_title : TextView
-    lateinit var tv_description : TextView
-    lateinit var tv_date : TextView
-    lateinit var tv_from : TextView
-    lateinit var tv_to : TextView
-    lateinit var tv_location : TextView
-    lateinit var tv_fullname : TextView
-    lateinit var tv_user_description : TextView
-    lateinit var iv_profileImage : ImageView
-    lateinit var btn_book : Button
-    lateinit var btn_chat : Button
-    lateinit var btn_markAsComplete : Button
-    lateinit var btn_submitRate : Button
+    lateinit var tv_title: TextView
+    lateinit var tv_description: TextView
+    lateinit var tv_date: TextView
+    lateinit var tv_from: TextView
+    lateinit var tv_to: TextView
+    lateinit var tv_location: TextView
+    lateinit var tv_fullname: TextView
+    lateinit var tv_user_description: TextView
+    lateinit var iv_profileImage: ImageView
+    lateinit var btn_book: Button
+    lateinit var btn_chat: Button
+    lateinit var btn_markAsComplete: Button
+    lateinit var btn_submitRate: Button
     lateinit var user: LinearLayout
 
-    lateinit var advertisement : Advertisement
-
+    lateinit var shownAdvertisement: Advertisement
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -57,6 +58,10 @@ class OnlineAdDetailsFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_online_ad_details, container, false)
         requireActivity().invalidateOptionsMenu()
+
+        val advertisement = requireArguments().getSerializable("advertisement") as Advertisement
+
+        onlineAdDetailsVM.getAdvertisement(advertisement.id)
 
         return view
     }
@@ -79,102 +84,136 @@ class OnlineAdDetailsFragment : Fragment() {
         btn_submitRate = view.findViewById<Button>(R.id.button9)
         user = view.findViewById(R.id.user_link)
 
-        advertisement = requireArguments().getSerializable("advertisement") as Advertisement
+        onlineAdDetailsVM.advertisement.observe(viewLifecycleOwner) { advertisement ->
 
-        tv_title.text = advertisement.title
-        tv_description.text = advertisement.description
-        tv_date.text = advertisement.date
-        tv_from.text = advertisement.from
-        tv_to.text = advertisement.to
-        tv_location.text = advertisement.location
-        tv_fullname.text = "By ${advertisement.user.fullname}"
-        if(advertisement.user.description.isNotEmpty()) {
-            tv_user_description.text = advertisement.user.description
-        }
-        else{
-            tv_user_description.text = "No description provided"
-        }
+            shownAdvertisement = advertisement
+            
+            val profileImageRef = vm.storageRef.child(advertisement.uid)
 
-        when (advertisement.status){
-            "free" ->{
-                //If the adv is free -> it shows the ui for booking
-                if(advertisement.uid != Firebase.auth.currentUser!!.uid) {
-                    view.findViewById<LinearLayout>(R.id.bookChatContainer).isVisible = true
+            val options: RequestOptions = RequestOptions()
+                .placeholder(R.drawable.user)
+                .error(R.drawable.user)
 
-                    btn_book.setOnClickListener {
-                        bookSlot()
-                    }
-                    btn_chat.setOnClickListener {
-                        startChat()
-                    }
+            Glide.with(requireContext())
+                .load(profileImageRef)
+                .apply(options)
+                .into(iv_profileImage)
 
-                    user.setOnClickListener {
-                        redirect(advertisement.uid)
-                    }
-                }
-                else{
-                    view.findViewById<LinearLayout>(R.id.bookChatContainer).isGone = true
-                }
 
+            tv_title.text = advertisement.title
+            tv_description.text = advertisement.description
+            tv_date.text = advertisement.date
+            tv_from.text = advertisement.from
+            tv_to.text = advertisement.to
+            tv_location.text = advertisement.location
+            tv_fullname.text = "By ${advertisement.user.fullname}"
+            if (advertisement.user.description.isNotEmpty()) {
+                tv_user_description.text = advertisement.user.description
             }
-            "booked"->{
-                view.findViewById<LinearLayout>(R.id.bookChatContainer).isGone = true
-                if(advertisement.bookedby == Firebase.auth.currentUser!!.uid){
-                    view.findViewById<LinearLayout>(R.id.MarkAsCompleteLayout).isVisible = true
-                    btn_markAsComplete.setOnClickListener {
-                        markAsComplete()
-                    }
-                }
-                else{
-                    view.findViewById<TextView>(R.id.textView88).isVisible = true
-                    view.findViewById<TextView>(R.id.textView88).text =  "You can't book this anymore"
-                    }
-                }
-            "complete"->{
-                view.findViewById<LinearLayout>(R.id.bookChatContainer).isGone = true
-                val userId : String = Firebase.auth.currentUser!!.uid
-                if(advertisement.bookedby == userId ||
-                        advertisement.uid == userId ){
-                    view.findViewById<LinearLayout>(R.id.ratingSlotLayout).isVisible = true
-                    //todo: Do the Rating object
+            else {
+                tv_user_description.text = "No description provided"
+            }
 
+            val bookingPanel = view.findViewById<LinearLayout>(R.id.bookChatContainer)
+            val ratingPanel = view.findViewById<LinearLayout>(R.id.ratingSlotLayout)
+            val completedPanel = view.findViewById<LinearLayout>(R.id.completedSlotLayout)
 
-                    btn_submitRate.setOnClickListener {
-                        val rating = Rating().apply{
-                            this.rating = view.findViewById<RatingBar>(R.id.ratingBar2).rating
-                            this.advertisement = advertisement
-                            this.textRating = view.findViewById<TextView>(R.id.RateTextId).text.toString()
-                            this.raterUid = Firebase.auth.currentUser!!.uid
-                            if(advertisement.uid == Firebase.auth.currentUser!!.uid){
-                                this.raterName = advertisement.bookedby
-                            }
+            when (advertisement.status) {
+                //If the adv is free -> it shows the ui for booking
+                "free" -> {
+                    ratingPanel.isGone = true
+                    completedPanel.isGone = true
+                    //If i am the client show the booking panel
+                    if (advertisement.uid != Firebase.auth.currentUser!!.uid) {
+                        bookingPanel.isVisible = true
+
+                        btn_book.setOnClickListener {
+                            bookSlot()
+                        }
+                        btn_chat.setOnClickListener {
+                            startChat()
                         }
 
-                        rateYourAdvertiser()
+                        user.setOnClickListener {
+                            redirectToAdvertiserProfile(advertisement.uid)
+                        }
+                    }
+                    //if i am the advertiser do not show booking panel
+                    else {
+                        bookingPanel.isGone = true
                     }
 
+                }
+                "booked" -> {
+                    bookingPanel.isGone = true
+                    ratingPanel.isGone = true
 
+                    val bookedAdTextView = view.findViewById<TextView>(R.id.textView88)
+
+                    //If i am the one who booked the advertisement
+                    if (advertisement.bookedByUID == Firebase.auth.currentUser!!.uid) {
+                        completedPanel.isVisible = true
+
+                        bookedAdTextView.text = "You successfully booked this advertisement"
+                        completedPanel.findViewById<Button>(R.id.button10).isVisible = true
+                        btn_markAsComplete.setOnClickListener {
+                            markAsComplete()
+                        }
+                    }
+                    else {
+                        bookedAdTextView.text = "Sorry! This advertisement has been already booked."
+                        completedPanel.findViewById<Button>(R.id.button10).isGone = true
+                    }
 
                 }
+                "complete" -> {
+                    bookingPanel.isGone = true
+                    completedPanel.isGone = true
 
+                    val userId: String = Firebase.auth.currentUser!!.uid
 
+                    if (advertisement.bookedByUID == userId || advertisement.uid == userId) {
+                        ratingPanel.isVisible = true
+
+                        btn_submitRate.setOnClickListener {
+                            if(view.findViewById<RatingBar>(R.id.ratingBar2).rating==0f){
+                                Toast.makeText(requireContext(),"Please select a rating",Toast.LENGTH_SHORT).show()
+                                return@setOnClickListener
+                            }
+                            if(view.findViewById<TextView>(R.id.RateTextId).text.toString().isBlank()){
+                                Toast.makeText(requireContext(),"Please provide a review",Toast.LENGTH_SHORT).show()
+                                return@setOnClickListener
+                            }
+
+                            val rating = Rating().apply {
+                                this.rating = view.findViewById<RatingBar>(R.id.ratingBar2).rating
+                                this.advertisement = advertisement
+                                this.textRating = view.findViewById<TextView>(R.id.RateTextId).text.toString()
+                                this.raterUid = Firebase.auth.currentUser!!.uid
+                                this.timestamp = System.currentTimeMillis()
+
+                                //if i am the advertiser
+                                if (advertisement.uid == Firebase.auth.currentUser!!.uid) {
+                                    this.raterName = advertisement.user.fullname
+                                }
+                                //if i am the client
+                                else{
+                                    this.raterName = advertisement.bookedByName
+                                }
+                            }
+
+                            if(advertisement.uid == Firebase.auth.currentUser!!.uid) {
+                                submitRating(rating, "asAdvertiser")
+                            }
+                            else{
+                                submitRating(rating, "asClient")
+                            }
+                        }
+                    }
+                }
             }
         }
-
-
-        val profileImageRef = vm.storageRef.child(advertisement.uid)
-
-        val options: RequestOptions = RequestOptions()
-            .placeholder(R.drawable.user)
-            .error(R.drawable.user)
-
-        Glide.with(requireContext())
-            .load(profileImageRef)
-            .apply(options)
-            .into(iv_profileImage)
-
     }
-
 
 
     override fun onPrepareOptionsMenu(menu: Menu) {
@@ -182,36 +221,34 @@ class OnlineAdDetailsFragment : Fragment() {
         Utils.manageActionBarItemsVisibility(requireActivity(), menu)
     }
 
-    fun rateYourAdvertiser(){
-       // rateYourAdvertiser(rating)
-
-
-
-
+    private fun submitRating(rating: Rating, type: String) {
+        if(type=="asAdvertiser"){
+            onlineAdDetailsVM.rateClient(rating)
+        }
+        else{
+            onlineAdDetailsVM.rateAdvertiser(rating)
+        }
     }
 
-    fun bookSlot(){
-        vm.updateAdvertisementStatus(advertisement, "booked")
-        vm.updateAdvertisementsBooked(advertisement,Firebase.auth.currentUser!!.uid)
-
+    private fun bookSlot() {
+        onlineAdDetailsVM.updateAdvertisementsBooked(shownAdvertisement, Firebase.auth.currentUser!!.uid)
     }
 
-    fun markAsComplete(){
-        vm.updateAdvertisementStatus(advertisement,"complete")
+    private fun markAsComplete() {
+        onlineAdDetailsVM.updateAdvertisementStatus(shownAdvertisement, "complete")
     }
 
 
-
-    fun startChat(){
+    private fun startChat() {
         val bundle = bundleOf(
-            "advertisementID" to advertisement.id,
-            "advertiserUID" to advertisement.uid,
-            "advertiserName" to advertisement.user.fullname)
+            "advertisementID" to shownAdvertisement.id,
+            "advertiserUID" to shownAdvertisement.uid,
+            "advertiserName" to shownAdvertisement.user.fullname
+        )
         view?.findNavController()?.navigate(R.id.action_onlineAdDetailsFragment_to_chatFragment, bundle)
     }
 
-    fun redirect(uid: String){
-        val navController = activity?.findNavController(R.id.nav_host_fragment_content_main)
+    private fun redirectToAdvertiserProfile(uid: String) {
         val bundle = bundleOf("uid" to uid)
         view?.findNavController()?.navigate(R.id.action_onlineAdDetailsFragment_to_showProfileAdFragment, bundle)
 

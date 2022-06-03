@@ -2,8 +2,6 @@ package it.polito.ma.g14.timebank.fragments
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.media.Rating
 import android.os.Bundle
 import android.view.*
 import android.widget.*
@@ -165,16 +163,16 @@ class ShowProfileFragment : Fragment() {
                 location = it.location
                 skills = it.skills as ArrayList<String>
                 description = it.description
-                ratingAdvertisement = it.ratingsAdvertiser
-                ratingCustomer = it.ratingsCustomer
+                ratingAdvertisement = it.ratingsAsAdvertiser
+                ratingCustomer = it.ratingsAsClient
 
 
 
-                if(it.ratingsAdvertiser.isNotEmpty()){
-                    it.ratingsAdvertiser.forEach { rate->
+                if(it.ratingsAsAdvertiser.isNotEmpty()){
+                    it.ratingsAsAdvertiser.forEach { rate->
                         ratingProfile+=rate.rating
                     }
-                    ratingProfile /= it.ratingsAdvertiser.size
+                    ratingProfile /= it.ratingsAsAdvertiser.size
                 }
 
 
@@ -232,7 +230,7 @@ class ShowProfileFragment : Fragment() {
         tv_location?.text = profile.location
 
 
-        if(profile.ratingsAdvertiser.isEmpty()){
+        if(profile.ratingsAsAdvertiser.isEmpty()){
             tv_captionNoRatings?.isVisible = true
             h_tv_captionNoRatings?.isVisible = true
             tv_ratingProfile?.isGone = true
@@ -314,8 +312,8 @@ class ShowProfileFragment : Fragment() {
             this.location=userLocation
             this.description=userDescription
             this.skills=skills
-            this.ratingsAdvertiser = ratingAdv
-            this.ratingsCustomer = ratingCus
+            this.ratingsAsAdvertiser = ratingAdv
+            this.ratingsAsClient = ratingCus
 
         }
     }
