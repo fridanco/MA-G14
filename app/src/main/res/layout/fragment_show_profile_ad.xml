@@ -151,27 +151,41 @@
                 </com.google.android.material.chip.ChipGroup>
 
                 <TextView
-                    android:id="@+id/textView95"
+                    android:id="@+id/textView92"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Your rating" />
+                    android:text="Ratings &amp; reviews" />
 
-                <RatingBar
-                    android:id="@+id/ratingBar5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:isIndicator="true"
-                    android:max="5"
-                    tools:ignore="SpeakableTextPresentCheck" />
-
-                <TextView
-                    android:id="@+id/textView96"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp" />
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <com.google.android.material.tabs.TabLayout
+                        android:id="@+id/ratingTabLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="4dp">
+
+                        <com.google.android.material.tabs.TabItem
+                            android:id="@+id/tabRatingAsAdvertiser"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="As advertiser" />
+
+                        <com.google.android.material.tabs.TabItem
+                            android:id="@+id/tabRatingAsClient"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="As client" />
+
+                    </com.google.android.material.tabs.TabLayout>
+
+                    <androidx.viewpager2.widget.ViewPager2
+                        android:id="@+id/ratingViewPager"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+                </LinearLayout>
 
             </LinearLayout>
 

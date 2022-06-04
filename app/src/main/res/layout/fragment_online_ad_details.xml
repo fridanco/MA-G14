@@ -182,14 +182,28 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textColor="?android:textColorPrimary" />
 
+        <TextView
+            android:id="@+id/textView82"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Required skill" />
+
+        <TextView
+            android:id="@+id/textView91"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="12dp"
+            android:text="Some skill"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="?android:textColorPrimary" />
+
         <LinearLayout
             android:id="@+id/completedSlotLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:visibility="gone">
+            android:paddingBottom="8dp">
 
             <TextView
                 android:id="@+id/textView88"
@@ -215,8 +229,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:visibility="gone">
+            android:paddingBottom="8dp">
 
             <TextView
                 android:id="@+id/textView90"
@@ -269,8 +282,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:visibility="gone">
+            android:paddingBottom="8dp">
 
             <Button
                 android:id="@+id/button7"
@@ -299,6 +311,31 @@
                     android:layout_weight="1"
                     android:text="Start  chat" />
             </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ratingDoneContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+            <ImageView
+                android:id="@+id/imageView7"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:src="@drawable/fui_ic_check_circle_black_128dp" />
+
+            <TextView
+                android:id="@+id/textView93"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="Congratulations! You have already rated &amp; reviewed the client."
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textSize="22sp" />
         </LinearLayout>
 
     </LinearLayout>

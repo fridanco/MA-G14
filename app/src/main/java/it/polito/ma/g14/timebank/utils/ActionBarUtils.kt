@@ -142,6 +142,15 @@ class Utils {
                     menu.findItem(R.id.app_bar_sort).isVisible = false
                     menu.findItem(R.id.app_bar_refresh).isVisible = false
                 }
+                R.id.nav_linkedAds -> {
+                    menu.findItem(R.id.app_bar_search).isVisible = false
+                    menu.findItem(R.id.app_bar_pencil).isVisible = false
+                    menu.findItem(R.id.app_bar_delete).isVisible = false
+                    menu.findItem(R.id.app_bar_cancel).isVisible = false
+                    menu.findItem(R.id.app_bar_add).isVisible = false
+                    menu.findItem(R.id.app_bar_sort).isVisible = false
+                    menu.findItem(R.id.app_bar_refresh).isVisible = false
+                }
                 R.id.chatFragment -> {
                     val navHostFragment = (activity as FragmentActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
                     val fragment = navHostFragment!!.childFragmentManager.fragments[0] as ChatFragment
@@ -192,6 +201,15 @@ class Utils {
                     menu.findItem(R.id.app_bar_search).isVisible = false
                     menu.findItem(R.id.app_bar_delete).isVisible = false
                     menu.findItem(R.id.app_bar_cancel).isVisible = false
+                    menu.findItem(R.id.app_bar_add).isVisible = false
+                    menu.findItem(R.id.app_bar_sort).isVisible = false
+                    menu.findItem(R.id.app_bar_refresh).isVisible = false
+                }
+                R.id.showProfileAdFragment -> {
+                    menu.findItem(R.id.app_bar_pencil).isVisible = false
+                    menu.findItem(R.id.app_bar_search).isVisible = false
+                    menu.findItem(R.id.app_bar_delete).isVisible = false
+                    menu.findItem(R.id.app_bar_cancel).isVisible = true
                     menu.findItem(R.id.app_bar_add).isVisible = false
                     menu.findItem(R.id.app_bar_sort).isVisible = false
                     menu.findItem(R.id.app_bar_refresh).isVisible = false
@@ -315,6 +333,13 @@ class Utils {
                             val profileBackup = fragment.performProfileBackup()
                             val bundle = bundleOf("createAdSrc" to false)
                             navController.navigate(R.id.action_nav_profile_to_edit_profile, bundle)
+                        }
+                    }
+                }
+                R.id.showProfileAdFragment -> {
+                    when(item.itemId){
+                        R.id.app_bar_cancel -> {
+                            navController.popBackStack()
                         }
                     }
                 }

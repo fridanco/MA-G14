@@ -175,6 +175,7 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
 
     fun updateAdvertisementList(){
         db.collection("advertisements")
+            .whereEqualTo("status","free")
             .get()
             .addOnSuccessListener { querySnapshot ->
                 val adsMap = mutableMapOf<String, MutableList<Advertisement>>()

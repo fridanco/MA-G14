@@ -2,12 +2,12 @@ package it.polito.ma.g14.timebank.fragments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -49,7 +49,7 @@ class MyCompletedAdsFragment : Fragment() {
         )
         val rv = view.findViewById<RecyclerView>(R.id.rv_completedAds)
         rv.layoutManager = LinearLayoutManager(requireContext())
-        adapter = OnlineAdvertisementsAdapter(view,vm,requireContext(),"linked")
+        adapter = OnlineAdvertisementsAdapter(view,vm,requireContext(),"linked", null)
         adapter.colorList = colorList as MutableList<String>
         rv.adapter = adapter
 

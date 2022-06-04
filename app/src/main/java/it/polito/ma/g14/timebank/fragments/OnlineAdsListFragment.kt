@@ -57,6 +57,8 @@ class OnlineAdsListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        selectedSkill = requireArguments().getString("selectedSkill").toString()
+
         swipeRefreshLayout = view.findViewById(R.id.swipeLayoutAds)
 
         val rv = view.findViewById<RecyclerView>(R.id.timeSlotRecyclerView)
@@ -72,12 +74,9 @@ class OnlineAdsListFragment : Fragment() {
         )
 
         rv.layoutManager = LinearLayoutManager(requireContext())
-        adapter = OnlineAdvertisementsAdapter(view, vm, requireContext(),"online")
+        adapter = OnlineAdvertisementsAdapter(view, vm, requireContext(), "online", selectedSkill)
         adapter.colorList = colorList as MutableList<String>
         rv.adapter = adapter
-
-
-        selectedSkill = requireArguments().getString("selectedSkill").toString()
 
         vm.onlineAdvertisements.observe(viewLifecycleOwner){ advertisementsMap ->
             val ads: List<Advertisement> = advertisementsMap[selectedSkill] ?: listOf()
