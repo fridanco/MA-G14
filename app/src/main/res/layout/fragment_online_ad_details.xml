@@ -188,7 +188,8 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:paddingTop="8dp"
-            android:paddingBottom="8dp">
+            android:paddingBottom="8dp"
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/textView88"
@@ -215,7 +216,7 @@
             android:orientation="vertical"
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/textView90"
@@ -268,7 +269,8 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:paddingTop="8dp"
-            android:paddingBottom="8dp">
+            android:paddingBottom="8dp"
+            android:visibility="gone">
 
             <Button
                 android:id="@+id/button7"

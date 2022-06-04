@@ -123,6 +123,7 @@ class OnlineAdDetailsFragment : Fragment() {
                 "free" -> {
                     ratingPanel.isGone = true
                     completedPanel.isGone = true
+
                     //If i am the client show the booking panel
                     if (advertisement.uid != Firebase.auth.currentUser!!.uid) {
                         bookingPanel.isVisible = true

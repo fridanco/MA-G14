@@ -55,7 +55,7 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
             }
 
         followedAdvertisementsListener = db.collection("advertisements")
-            .whereEqualTo("bookedby",uid).addSnapshotListener { result, exception ->
+            .whereEqualTo("bookedByUID",uid).addSnapshotListener { result, exception ->
                 if(exception!=null){
                     _followedAdvertisements.value = emptyList()}
                 else{
@@ -180,10 +180,12 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
                 val adsMap = mutableMapOf<String, MutableList<Advertisement>>()
 
                 querySnapshot.mapNotNull { it.toObject(Advertisement::class.java) }.forEach { advertisement ->
-                    advertisement.skills.forEach{ skill ->
-                        adsMap.getOrPut(skill){
-                            mutableListOf()
-                        }.add(advertisement)
+                    if(advertisement.status == "free"){
+                        advertisement.skills.forEach{ skill ->
+                            adsMap.getOrPut(skill){
+                                mutableListOf()
+                            }.add(advertisement)
+                        }
                     }
                 }
 
