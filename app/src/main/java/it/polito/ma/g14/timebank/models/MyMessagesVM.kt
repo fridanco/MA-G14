@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 
 class MyMessagesVM : ViewModel() {
 
-    private val _sortBy = MutableLiveData("msg_desc")
+    private val _sortBy = MutableLiveData<String>()
     val sortBy : LiveData<String> = _sortBy
 
     fun setSortBy(sort: String){
@@ -16,7 +16,7 @@ class MyMessagesVM : ViewModel() {
         return _sortBy.value ?: "msg_desc"
     }
 
-    private val _filterBy = MutableLiveData("")
+    private val _filterBy = MutableLiveData<String>()
     val filterBy : LiveData<String> = _filterBy
 
     fun getFilterBy() : String{

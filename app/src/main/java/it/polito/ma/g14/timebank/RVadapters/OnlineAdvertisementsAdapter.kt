@@ -1,8 +1,8 @@
 package it.polito.ma.g14.timebank.RVadapters
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
-import android.provider.Settings.Global.getString
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,18 +12,20 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.core.os.bundleOf
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.google.common.io.Resources
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.models.Advertisement
 import it.polito.ma.g14.timebank.models.FirebaseVM
 import java.text.SimpleDateFormat
+import java.util.*
 
 class OnlineAdvertisementsAdapter(val view: View, val vm: FirebaseVM, val context: Context, val sourceUser: String, val selectedSkill: String?): RecyclerView.Adapter<OnlineAdvertisementsAdapter.ItemViewHolder>() {
     var data = listOf<Advertisement>()
@@ -38,7 +40,8 @@ class OnlineAdvertisementsAdapter(val view: View, val vm: FirebaseVM, val contex
         var colorHash : HashMap <String,Int> = hashMapOf<String,Int>("free" to R.color.green, "booked" to R.color.orange, "completed" to R.color.black)
         private val advertisementContainer = v.findViewById<LinearLayout>(R.id.online_ad_card)
 
-        fun bind(advertisement: Advertisement, context: Context, vm: FirebaseVM, color: String, action1: (v: View) -> Unit) {
+        @SuppressLint("SetTextI18n")
+        fun bind(advertisement: Advertisement, context: Context, vm: FirebaseVM, sourceUser: String, color: String, action1: (v: View) -> Unit) {
             val userIcon = advertisementContainer.findViewById<ImageView>(R.id.imageView6)
 
             val profileImageRef = vm.storageRef.child(advertisement.uid)
@@ -70,6 +73,99 @@ class OnlineAdvertisementsAdapter(val view: View, val vm: FirebaseVM, val contex
             advertisementContainer.findViewById<TextView>(R.id.textView19).text = advertisement.location
             advertisementContainer.findViewById<LinearLayout>(R.id.cardColor).setBackgroundColor(Color.parseColor(color))
             advertisementContainer.findViewById<CardView>(R.id.cardView).setOnClickListener(action1)
+
+            val advertisementHistoryContainer = advertisementContainer.findViewById<LinearLayout>(R.id.advertisementHistoryContainer)
+            if(sourceUser=="linked"){
+                advertisementHistoryContainer.isVisible = true
+
+                val uid = Firebase.auth.currentUser!!.uid
+                val bookedAt = advertisementHistoryContainer.findViewById<TextView>(R.id.bookedAt)
+                val completedAt = advertisementHistoryContainer.findViewById<TextView>(R.id.completedAt)
+                val yourRating = advertisementHistoryContainer.findViewById<TextView>(R.id.yourRating)
+                val otherRating = advertisementHistoryContainer.findViewById<TextView>(R.id.otherRating)
+
+                if(advertisement.bookedTimestamp!=-1L){
+                    bookedAt.isVisible = true
+                    bookedAt.text = "• ${timestampToString(advertisement.bookedTimestamp)}: Booked by ${advertisement.bookedByName}"
+                }
+                else{
+                    bookedAt.isGone = false
+                }
+                if(advertisement.completedTimestamp!=-1L){
+                    completedAt.isVisible = true
+                    completedAt.text = "• ${timestampToString(advertisement.completedTimestamp)}: Job completed"
+                }
+                else{
+                    completedAt.isGone = true
+                }
+                if(advertisement.advertiserRating!=null){
+                    yourRating.isVisible = true
+                    //I am the advertiser
+                    if(uid==advertisement.uid){
+                        yourRating.text = "• ${timestampToString(advertisement.advertiserRating!!.timestamp)}: Your rated ${advertisement.bookedByName} with ${advertisement.advertiserRating!!.rating.toInt()} stars"
+                    }
+                    //I am the client
+                    else{
+                        yourRating.text = "• ${timestampToString(advertisement.advertiserRating!!.timestamp)}: ${advertisement.user.fullname} rated you with ${advertisement.advertiserRating!!.rating.toInt()} stars"
+                    }
+                }
+                else{
+                    yourRating.isGone = true
+                }
+                if(advertisement.clientRating!=null){
+                    otherRating.isVisible = true
+                    //I am the advertiser
+                    if(uid==advertisement.uid){
+                        otherRating.text = "• ${timestampToString(advertisement.clientRating!!.timestamp)}: ${advertisement.bookedByName} rated you with ${advertisement.clientRating!!.rating.toInt()} stars"
+                    }
+                    //I am the client
+                    else{
+                        otherRating.text = "• ${timestampToString(advertisement.clientRating!!.timestamp)}: You rated ${advertisement.user.fullname} with ${advertisement.clientRating!!.rating.toInt()} stars"
+                    }
+                }
+                else{
+                    otherRating.isGone = true
+                }
+            }
+            else{
+                advertisementHistoryContainer.isGone = true
+            }
+        }
+
+        @SuppressLint("SimpleDateFormat")
+        fun timestampToString(timestamp: Long) : String {
+            val dateTime = Date(timestamp)
+            val calendar: Calendar = Calendar.getInstance()
+            calendar.time = dateTime
+            val today: Calendar = Calendar.getInstance()
+            val timeFormatter1 = SimpleDateFormat("HH:mm")
+            val timeFormatter2 = SimpleDateFormat("EEE")
+            val timeFormatter3 = SimpleDateFormat("EEE dd")
+            val timeFormatter4 = SimpleDateFormat("MMM")
+            val timeFormatter5 = SimpleDateFormat("MMM yyyy")
+
+            var timeString = ""
+
+            if (calendar.get(Calendar.YEAR) == today.get(Calendar.YEAR)
+                && calendar.get(Calendar.DAY_OF_YEAR) == today.get(Calendar.DAY_OF_YEAR)) {
+                timeString = timeFormatter1.format(dateTime)
+            }
+            else if (calendar.get(Calendar.YEAR) == today.get(Calendar.YEAR)
+                && calendar.get(Calendar.WEEK_OF_YEAR) == today.get(Calendar.WEEK_OF_YEAR)) {
+                timeString = timeFormatter2.format(dateTime)
+            }
+            else if(calendar.get(Calendar.YEAR)==today.get(Calendar.YEAR)
+                && calendar.get(Calendar.MONTH)==today.get(Calendar.MONTH)) {
+                timeString = timeFormatter3.format(dateTime)
+            }
+            else if(calendar.get(Calendar.YEAR)==today.get(Calendar.YEAR)) {
+                timeString = timeFormatter4.format(dateTime)
+            }
+            else{
+                timeString = timeFormatter5.format(dateTime)
+            }
+
+            return timeString
         }
     }
 
@@ -83,7 +179,7 @@ class OnlineAdvertisementsAdapter(val view: View, val vm: FirebaseVM, val contex
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val advertisement = displayData[position]
 
-        holder.bind(advertisement, context, vm, colorList[(colorIndex++)%colorList.size]) {
+        holder.bind(advertisement, context, vm, sourceUser, colorList[(colorIndex++)%colorList.size]) {
 
             val advertisementSkill = if(selectedSkill!=null) {
                 selectedSkill

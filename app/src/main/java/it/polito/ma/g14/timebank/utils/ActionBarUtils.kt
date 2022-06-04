@@ -291,7 +291,7 @@ class Utils {
                 R.id.onlineAdDetailsFragment -> {
                     when(item.itemId){
                         R.id.app_bar_cancel -> {
-                            navController.popBackStack(R.id.onlineAdsListFragment, false)
+                            navController.popBackStack()
                         }
                     }
                 }

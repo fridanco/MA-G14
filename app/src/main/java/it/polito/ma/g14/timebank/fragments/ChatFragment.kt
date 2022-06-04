@@ -49,7 +49,7 @@ class ChatFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_chat, container, false)
 
-        requireArguments().getSerializable("advertisement") as Advertisement
+        advertisement = requireArguments().getSerializable("advertisement") as Advertisement
         advertisementSkill = requireArguments().getString("advertisementSkill").toString()
         client_uid = requireArguments().getString("clientUID") ?: Firebase.auth.currentUser!!.uid
 

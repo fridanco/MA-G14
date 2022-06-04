@@ -136,6 +136,7 @@ class OnlineAdDetailsFragment : Fragment() {
                 redirectToAdvertiserProfile(advertisement.uid)
             }
 
+            val advertisementStatus = view.findViewById<TextView>(R.id.textView95)
             val bookingPanel = view.findViewById<LinearLayout>(R.id.bookChatContainer)
             val ratingPanel = view.findViewById<LinearLayout>(R.id.ratingSlotLayout)
             val completedPanel = view.findViewById<LinearLayout>(R.id.completedSlotLayout)
@@ -152,6 +153,16 @@ class OnlineAdDetailsFragment : Fragment() {
                 when (advertisement.status) {
                     //If the adv is free -> it shows the ui for booking
                     "booked" -> {
+
+                        //I booked the advertisement
+                        if(advertisement.bookedByUID==Firebase.auth.currentUser!!.uid){
+                            advertisementStatus.text = "Booked by you"
+                        }
+                        //A client booked the advertisement
+                        else{
+                            advertisementStatus.text = "Booked by ${advertisement.bookedByName}"
+                        }
+
                         bookingPanel.isGone = true
                         ratingPanel.isGone = true
 
@@ -174,6 +185,9 @@ class OnlineAdDetailsFragment : Fragment() {
 
                     }
                     "complete" -> {
+
+                        advertisementStatus.text = "Job completed"
+
                         bookingPanel.isGone = true
                         completedPanel.isGone = true
 
@@ -237,6 +251,8 @@ class OnlineAdDetailsFragment : Fragment() {
                     }
                     //FREE
                     else -> {
+                        advertisementStatus.text = "Available for booking"
+
                         ratingPanel.isGone = true
                         completedPanel.isGone = true
 
@@ -263,6 +279,19 @@ class OnlineAdDetailsFragment : Fragment() {
                 ratingPanel.isGone = true
                 completedPanel.isGone = true
 
+                if(advertisement.advertiserRating==null && advertisement.clientRating==null){
+                    advertisementStatus.text = "Awaiting client & advertiser ratings"
+                }
+                else if(advertisement.advertiserRating==null){
+                    advertisementStatus.text = "Awaiting advertiser rating"
+                }
+                else if(advertisement.clientRating==null){
+                    advertisementStatus.text = "Awaiting client rating"
+                }
+                else{
+                    advertisementStatus.text = "Successfully completed"
+                }
+
                 ratingDonePanel.isVisible = true
                 if(iAmAdvertiser){
                     ratingDonePanel.findViewById<TextView>(R.id.textView93).text = "Congratulations! You have already rated & reviewed the client."
@@ -287,14 +316,17 @@ class OnlineAdDetailsFragment : Fragment() {
         else{
             onlineAdDetailsVM.rateAdvertiser(rating)
         }
+        Toast.makeText(requireContext(),"Rating submitted",Toast.LENGTH_SHORT).show()
     }
 
     private fun bookSlot() {
         onlineAdDetailsVM.updateAdvertisementBooked(shownAdvertisement, shownAdvertisementSkill, Firebase.auth.currentUser!!.uid)
+        Toast.makeText(requireContext(),"Advertisement booked",Toast.LENGTH_SHORT).show()
     }
 
     private fun markAsComplete() {
         onlineAdDetailsVM.updateAdvertisementCompleted(shownAdvertisement)
+        Toast.makeText(requireContext(),"Advertisement marked as completed",Toast.LENGTH_SHORT).show()
     }
 
     private fun startChat() {

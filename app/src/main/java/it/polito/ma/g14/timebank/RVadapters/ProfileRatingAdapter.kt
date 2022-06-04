@@ -111,9 +111,9 @@ class ProfileRatingAdapter(val view: View, val context: Context, val uid: String
     override fun getItemCount(): Int = displayData.size
 
     fun updateRatings(ratings: List<Rating>){
-        ratings.sortedByDescending { it.timestamp }
-        val diffs = DiffUtil.calculateDiff(MyDiffCallbackProfileRating(displayData, ratings))
-        displayData = ratings.toMutableList()
+        val newData = ratings.sortedByDescending { it.timestamp }
+        val diffs = DiffUtil.calculateDiff(MyDiffCallbackProfileRating(displayData, newData))
+        displayData = newData.toMutableList()
         diffs.dispatchUpdatesTo(this)
     }
 }

@@ -197,6 +197,21 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textColor="?android:textColorPrimary" />
 
+        <TextView
+            android:id="@+id/textView96"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Advertisement status" />
+
+        <TextView
+            android:id="@+id/textView95"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="12dp"
+            android:text="Booked by Someone"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="?android:textColorPrimary" />
+
         <LinearLayout
             android:id="@+id/completedSlotLayout"
             android:layout_width="match_parent"
