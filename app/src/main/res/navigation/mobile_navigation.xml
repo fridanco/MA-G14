@@ -68,6 +68,9 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right" />
+        <action
+            android:id="@+id/action_myProfile_to_showProfileAdFragment"
+            app:destination="@id/showProfileAdFragment" />
     </fragment>
 
     <fragment
@@ -144,8 +147,15 @@
     <fragment
         android:id="@+id/showProfileAdFragment"
         android:name="it.polito.ma.g14.timebank.fragments.ShowProfileAdFragment"
-        android:label="fragment_show_profile_ad"
-        tools:layout="@layout/fragment_show_profile_ad" />
+        android:label="Profile details"
+        tools:layout="@layout/fragment_show_profile_ad">
+        <action
+            android:id="@+id/action_showProfileAdFragment_self"
+            app:destination="@id/showProfileAdFragment" />
+        <action
+            android:id="@+id/action_showProfileAdFragment_to_myProfile"
+            app:destination="@id/myProfile" />
+    </fragment>
 
     <fragment
         android:id="@+id/myMessages"
@@ -159,7 +169,6 @@
             android:id="@+id/action_myMessages_to_onlineAdDetailsFragment"
             app:destination="@id/onlineAdDetailsFragment" />
     </fragment>
-
 
 
 </navigation>

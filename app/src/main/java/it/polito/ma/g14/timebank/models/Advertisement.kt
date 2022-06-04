@@ -8,6 +8,7 @@ class Advertisement : Serializable {
     var id : String = ""
     var uid : String = ""
     var title : String = ""
+    var bookedSkill: String = ""
     var bookedByUID : String = ""
     var bookedByName : String = ""
     var description : String = ""

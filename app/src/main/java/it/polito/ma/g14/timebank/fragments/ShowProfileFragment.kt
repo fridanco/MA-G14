@@ -8,14 +8,19 @@ import android.widget.*
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import it.polito.ma.g14.timebank.R
@@ -26,7 +31,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 
-class ShowProfileFragment : Fragment() {
+class ShowProfileFragment() : Fragment() {
 
     val vm by viewModels<FirebaseVM>()
 
@@ -50,8 +55,6 @@ class ShowProfileFragment : Fragment() {
     private var tv_description : TextView? = null
     private var et_skills : ChipGroup? = null
     private var iv_profilePicture : ImageView? = null
-    private var tv_ratingProfile : RatingBar? = null
-    private var h_tv_ratingProfile : RatingBar? = null
     private var h_tv_fullname : TextView? = null
     private var h_tv_nickname : TextView? = null
     private var h_tv_email : TextView? = null
@@ -59,9 +62,10 @@ class ShowProfileFragment : Fragment() {
     private var h_tv_description : TextView? = null
     private var h_et_skills : ChipGroup? = null
     private var h_iv_profilePicture : ImageView? = null
-    private var tv_captionNoRatings : TextView? = null
-    private var h_tv_captionNoRatings : TextView? = null
-    var otherUid : String? = null
+
+    lateinit var tabLayout : TabLayout
+    lateinit var viewPager : ViewPager2
+    lateinit var pagerAdapter: FragmentStateAdapter
 
     var isImageDownloaded = false
 
@@ -100,8 +104,16 @@ class ShowProfileFragment : Fragment() {
 
         setViewsReferences()
 
+        tabLayout = view.findViewById(R.id.ratingTabLayout)
 
-        //populateProfilePicture()
+        viewPager = view.findViewById(R.id.ratingViewPager)
+        pagerAdapter = ScreenSlidePagerAdapter(requireActivity())
+        viewPager.adapter = pagerAdapter
+
+        val tabText = listOf("As advertiser", "As client")
+        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+            tab.text = tabText[position]
+        }.attach()
 
         val circularProgressDrawable = CircularProgressDrawable(requireContext())
         circularProgressDrawable.strokeWidth = 5f
@@ -112,77 +124,85 @@ class ShowProfileFragment : Fragment() {
             .placeholder(circularProgressDrawable)
             .error(R.drawable.user)
 
-
-
-
-            vm.profile.observe(viewLifecycleOwner) {
-                //val coroutineScope = CoroutineScope(Dispatchers.IO)
-                lifecycleScope.launch(Dispatchers.IO) {
-                    try {
-                        val bitmap = Glide.with(requireContext())
-                            .asBitmap()
-                            .load(vm.storageRef.child(Firebase.auth.currentUser!!.uid))
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .skipMemoryCache(true)
-                            .apply(options)
-                            .submit()
-                            .get()
-                        val stream = ByteArrayOutputStream()
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
-                        profilePicture = stream.toByteArray()
-                        isImageDownloaded = true
-                        activity?.invalidateOptionsMenu()
-                    } catch (ex: Exception) {
-                        isImageDownloaded = true
-                        activity?.invalidateOptionsMenu()
-                    }
-                }
-
-                iv_profilePicture?.let { it1 ->
-                    Glide.with(this).clear(it1)
-                    Glide.with(this)
+        vm.profile.observe(viewLifecycleOwner) {
+            //val coroutineScope = CoroutineScope(Dispatchers.IO)
+            lifecycleScope.launch(Dispatchers.IO) {
+                try {
+                    val bitmap = Glide.with(requireContext())
+                        .asBitmap()
                         .load(vm.storageRef.child(Firebase.auth.currentUser!!.uid))
                         .diskCacheStrategy(DiskCacheStrategy.NONE)
                         .skipMemoryCache(true)
                         .apply(options)
-                        .into(it1)
+                        .submit()
+                        .get()
+                    val stream = ByteArrayOutputStream()
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+                    profilePicture = stream.toByteArray()
+                    isImageDownloaded = true
+                    activity?.invalidateOptionsMenu()
+                } catch (ex: Exception) {
+                    isImageDownloaded = true
+                    activity?.invalidateOptionsMenu()
                 }
-                h_iv_profilePicture?.let { it2 ->
-                    Glide.with(this).clear(it2)
-                    Glide.with(this)
-                        .load(vm.storageRef.child(Firebase.auth.currentUser!!.uid))
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .skipMemoryCache(true)
-                        .apply(options)
-                        .into(it2)
-                }
-
-                fullName = it.fullname
-                email = it.email
-                nickName = it.nickname
-                location = it.location
-                skills = it.skills as ArrayList<String>
-                description = it.description
-                ratingAdvertisement = it.ratingsAsAdvertiser
-                ratingCustomer = it.ratingsAsClient
-
-
-
-                if(it.ratingsAsAdvertiser.isNotEmpty()){
-                    it.ratingsAsAdvertiser.forEach { rate->
-                        ratingProfile+=rate.rating
-                    }
-                    ratingProfile /= it.ratingsAsAdvertiser.size
-                }
-
-
-
-
-
-                populateProfileText(it)
-                populateProfileSkills(it.skills)
             }
 
+            iv_profilePicture?.let { it1 ->
+                Glide.with(this).clear(it1)
+                Glide.with(this)
+                    .load(vm.storageRef.child(Firebase.auth.currentUser!!.uid))
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true)
+                    .apply(options)
+                    .into(it1)
+            }
+            h_iv_profilePicture?.let { it2 ->
+                Glide.with(this).clear(it2)
+                Glide.with(this)
+                    .load(vm.storageRef.child(Firebase.auth.currentUser!!.uid))
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true)
+                    .apply(options)
+                    .into(it2)
+            }
+
+            fullName = it.fullname
+            email = it.email
+            nickName = it.nickname
+            location = it.location
+            skills = it.skills as ArrayList<String>
+            description = it.description
+            ratingAdvertisement = it.ratingsAsAdvertiser
+            ratingCustomer = it.ratingsAsClient
+
+
+
+            if(it.ratingsAsAdvertiser.isNotEmpty()){
+                it.ratingsAsAdvertiser.forEach { rate->
+                    ratingProfile+=rate.rating
+                }
+                ratingProfile /= it.ratingsAsAdvertiser.size
+            }
+
+            populateProfileText(it)
+            populateProfileSkills(it.skills)
+        }
+
+    }
+
+    private inner class ScreenSlidePagerAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa) {
+
+        val uid = Firebase.auth.currentUser!!.uid
+        val fragmentList = listOf<Fragment>(
+            ShowProfileRatingFragment(uid, "asAdvertiser"),
+            ShowProfileRatingFragment(uid, "asClient")
+        )
+
+        override fun getItemCount(): Int = fragmentList.size
+
+        override fun createFragment(position: Int): Fragment {
+            return fragmentList[position]
+        }
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
@@ -198,8 +218,6 @@ class ShowProfileFragment : Fragment() {
         tv_description = view?.findViewById<TextView>(R.id.textView19)
         et_skills = view?.findViewById<ChipGroup>(R.id.chipGroup)
         iv_profilePicture = view?.findViewById<ImageView>(R.id.imageView4)
-        tv_ratingProfile = view?.findViewById<RatingBar>(R.id.ratingBar)
-        tv_captionNoRatings = view?.findViewById<TextView>(R.id.textView84)
 
         h_tv_fullname = view?.findViewById<TextView>(R.id.textView)
         h_tv_nickname = view?.findViewById<TextView>(R.id.textView2)
@@ -208,11 +226,7 @@ class ShowProfileFragment : Fragment() {
         h_iv_profilePicture = view?.findViewById<ImageView>(R.id.imageView)
         h_tv_description = view?.findViewById<TextView>(R.id.textView20)
         h_et_skills = view?.findViewById<ChipGroup>(R.id.chipGroup2)
-        h_tv_ratingProfile = view?.findViewById<RatingBar>(R.id.ratingBar1)
-        h_tv_captionNoRatings = view?.findViewById<TextView>(R.id.textView85)
 
-        tv_ratingProfile?.max = 5
-        h_tv_ratingProfile?.max = 5
         h_tv_fullname = view?.findViewById(R.id.textView)
         h_tv_nickname = view?.findViewById(R.id.textView2)
         h_tv_email  = view?.findViewById(R.id.textView3)
@@ -220,7 +234,6 @@ class ShowProfileFragment : Fragment() {
         h_iv_profilePicture = view?.findViewById(R.id.imageView)
         h_tv_description = view?.findViewById(R.id.textView20)
         h_et_skills = view?.findViewById(R.id.chipGroup2)
-        h_tv_ratingProfile = view?.findViewById(R.id.textView86)
     }
 
     private fun populateProfileText(profile: User) {
@@ -228,26 +241,6 @@ class ShowProfileFragment : Fragment() {
         tv_nickname?.text = profile.nickname
         tv_email?.text = profile.email
         tv_location?.text = profile.location
-
-
-        if(profile.ratingsAsAdvertiser.isEmpty()){
-            tv_captionNoRatings?.isVisible = true
-            h_tv_captionNoRatings?.isVisible = true
-            tv_ratingProfile?.isGone = true
-            h_tv_ratingProfile?.isGone = true
-            tv_captionNoRatings?.text = "You have not received any rating yet"
-            h_tv_captionNoRatings?.text = "You have not received any rating yet"
-        }
-        else{
-            tv_captionNoRatings?.isGone = true
-            h_tv_captionNoRatings?.isGone = true
-            tv_ratingProfile?.isVisible = true
-            h_tv_ratingProfile?.isVisible = true
-            tv_ratingProfile?.rating = ratingProfile
-            h_tv_ratingProfile?.rating = ratingProfile
-        }
-
-
 
         h_tv_fullname?.text = profile.fullname
         h_tv_nickname?.text = profile.nickname
@@ -314,7 +307,6 @@ class ShowProfileFragment : Fragment() {
             this.skills=skills
             this.ratingsAsAdvertiser = ratingAdv
             this.ratingsAsClient = ratingCus
-
         }
     }
 

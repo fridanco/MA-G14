@@ -2,25 +2,29 @@ package it.polito.ma.g14.timebank.fragments
 
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.ViewTreeObserver
+import android.view.*
 import android.widget.*
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.models.FirebaseVM
-import it.polito.ma.g14.timebank.models.Rating
 import it.polito.ma.g14.timebank.models.User
+import it.polito.ma.g14.timebank.utils.Utils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
@@ -36,9 +40,6 @@ class ShowProfileAdFragment : Fragment() {
     var skills = arrayListOf<String>()
     var description : String = ""
     var profilePicture : ByteArray? = null
-    var ratingAdvertisement : List<Rating> = listOf()
-    var ratingProfile : Float = 0f
-    var ratingCustomer : List<Rating> = listOf()
 
     private var tv_fullname : TextView? = null
     private var tv_nickname : TextView? = null
@@ -47,8 +48,6 @@ class ShowProfileAdFragment : Fragment() {
     private var tv_description : TextView? = null
     private var et_skills : ChipGroup? = null
     private var iv_profilePicture : ImageView? = null
-    private var tv_ratingProfile : RatingBar? = null
-    private var h_tv_ratingProfile : RatingBar? = null
     private var h_tv_fullname : TextView? = null
     private var h_tv_nickname : TextView? = null
     private var h_tv_email : TextView? = null
@@ -56,15 +55,18 @@ class ShowProfileAdFragment : Fragment() {
     private var h_tv_description : TextView? = null
     private var h_et_skills : ChipGroup? = null
     private var h_iv_profilePicture : ImageView? = null
-    private var tv_captionNoRatings : TextView? = null
-    private var h_tv_captionNoRatings : TextView? = null
+
     var otherUid : String? = null
+
+    lateinit var tabLayout : TabLayout
+    lateinit var viewPager : ViewPager2
+    lateinit var pagerAdapter: FragmentStateAdapter
 
     var isImageDownloaded = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(false)
+        setHasOptionsMenu(true)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -72,6 +74,7 @@ class ShowProfileAdFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_show_profile_ad, container, false)
 
         otherUid = requireArguments().getString("uid")
+
         requireActivity().invalidateOptionsMenu()
 
         val sv = view?.findViewById<ScrollView>(R.id.scrollView2)
@@ -98,6 +101,17 @@ class ShowProfileAdFragment : Fragment() {
 
         setViewsReferences()
 
+        tabLayout = view.findViewById(R.id.ratingTabLayout)
+
+        viewPager = view.findViewById(R.id.ratingViewPager)
+        pagerAdapter = ScreenSlidePagerAdapter(requireActivity())
+        viewPager.adapter = pagerAdapter
+
+        val tabText = listOf("As advertiser", "As client")
+        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+            tab.text = tabText[position]
+        }.attach()
+
         val circularProgressDrawable = CircularProgressDrawable(requireContext())
         circularProgressDrawable.strokeWidth = 5f
         circularProgressDrawable.centerRadius = 30f
@@ -106,7 +120,6 @@ class ShowProfileAdFragment : Fragment() {
         val options: RequestOptions = RequestOptions()
             .placeholder(circularProgressDrawable)
             .error(R.drawable.user)
-
 
         vm.db.collection("users")
             .document(otherUid.toString())
@@ -121,9 +134,6 @@ class ShowProfileAdFragment : Fragment() {
                     location = it.location
                     skills = it.skills as ArrayList<String>
                     description = it.description
-                    ratingAdvertisement = it.ratingsAsAdvertiser
-                    ratingCustomer = it.ratingsAsClient
-
 
                     populateProfileText(it)
                     populateProfileSkills(it.skills)
@@ -164,9 +174,28 @@ class ShowProfileAdFragment : Fragment() {
                 .apply(options)
                 .into(it2)
         }
-
-
     }
+
+    private inner class ScreenSlidePagerAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa) {
+
+        val uid = Firebase.auth.currentUser!!.uid
+        val fragmentList = listOf<Fragment>(
+            ShowProfileRatingFragment(otherUid.toString(), "asAdvertiser"),
+            ShowProfileRatingFragment(otherUid.toString(), "asClient")
+        )
+
+        override fun getItemCount(): Int = fragmentList.size
+
+        override fun createFragment(position: Int): Fragment {
+            return fragmentList[position]
+        }
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
+        Utils.manageActionBarItemsVisibility(requireActivity(), menu)
+    }
+
     private fun setViewsReferences(){
         tv_fullname = view?.findViewById(R.id.textView4)
         tv_nickname = view?.findViewById(R.id.textView5)
@@ -175,8 +204,6 @@ class ShowProfileAdFragment : Fragment() {
         tv_description = view?.findViewById(R.id.textView19)
         et_skills = view?.findViewById(R.id.chipGroup)
         iv_profilePicture = view?.findViewById(R.id.imageView4)
-        tv_ratingProfile = view?.findViewById<RatingBar>(R.id.ratingBar)
-        tv_captionNoRatings = view?.findViewById<TextView>(R.id.textView84)
 
         h_tv_fullname = view?.findViewById(R.id.textView)
         h_tv_nickname = view?.findViewById(R.id.textView2)
@@ -185,11 +212,7 @@ class ShowProfileAdFragment : Fragment() {
         h_iv_profilePicture = view?.findViewById(R.id.imageView)
         h_tv_description = view?.findViewById(R.id.textView20)
         h_et_skills = view?.findViewById(R.id.chipGroup2)
-        h_tv_ratingProfile = view?.findViewById<RatingBar>(R.id.ratingBar1)
-        h_tv_captionNoRatings = view?.findViewById<TextView>(R.id.textView85)
 
-        tv_ratingProfile?.max = 5
-        h_tv_ratingProfile?.max = 5
     }
 
     private fun populateProfileText(profile: User) {
@@ -197,26 +220,6 @@ class ShowProfileAdFragment : Fragment() {
         tv_nickname?.text = profile.nickname
         tv_email?.text = profile.email
         tv_location?.text = profile.location
-
-        if(profile.ratingsAsAdvertiser.isEmpty()){
-            tv_captionNoRatings?.isVisible = true
-            h_tv_captionNoRatings?.isVisible = true
-            tv_ratingProfile?.isGone = true
-            h_tv_ratingProfile?.isGone = true
-            tv_captionNoRatings?.text = "You have not received any rating yet"
-            h_tv_captionNoRatings?.text = "You have not received any rating yet"
-        }
-        else{
-            tv_captionNoRatings?.isGone = true
-            h_tv_captionNoRatings?.isGone = true
-            tv_ratingProfile?.isVisible = true
-            h_tv_ratingProfile?.isVisible = true
-            tv_ratingProfile?.rating = ratingProfile
-            h_tv_ratingProfile?.rating = ratingProfile
-        }
-
-
-
 
         h_tv_fullname?.text = profile.fullname
         h_tv_nickname?.text = profile.nickname

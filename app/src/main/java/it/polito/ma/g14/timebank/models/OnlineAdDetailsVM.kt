@@ -34,14 +34,14 @@ class OnlineAdDetailsVM(application:Application) : AndroidViewModel(application)
     }
 
     fun rateAdvertiser(rating: Rating){
-        db.collection("advertisements").document(rating.advertisement.id).update("advertiserRating",rating)
-        db.collection ("users").document(rating.advertisement.uid).update("ratingsAdvertiser",
+        db.collection("advertisements").document(rating.advertisement.id).update("clientRating",rating)
+        db.collection ("users").document(rating.advertisement.uid).update("ratingsAsAdvertiser",
             FieldValue.arrayUnion(rating))
     }
 
     fun rateClient(rating: Rating){
-        db.collection("advertisements").document(rating.advertisement.id).update("clientRating",rating)
-        db.collection ("users").document(rating.advertisement.uid).update("ratingsClient",
+        db.collection("advertisements").document(rating.advertisement.id).update("advertiserRating",rating)
+        db.collection ("users").document(rating.advertisement.uid).update("ratingsAsClient",
             FieldValue.arrayUnion(rating))
     }
 
@@ -50,7 +50,7 @@ class OnlineAdDetailsVM(application:Application) : AndroidViewModel(application)
         db.collection("advertisements").document(advertisement.id).update("status",status)
     }
 
-    fun updateAdvertisementsBooked(advertisement: Advertisement,uid:String){
+    fun updateAdvertisementsBooked(advertisement: Advertisement, advertisementSkill: String, uid:String){
 
         db.runTransaction { transaction ->
             val clientRef = db.collection("users").document(Firebase.auth.currentUser!!.uid)
@@ -58,13 +58,21 @@ class OnlineAdDetailsVM(application:Application) : AndroidViewModel(application)
 
             client?.let {
                 val advertisementRef = db.collection("advertisements").document(advertisement.id)
+                val adSkills = advertisement.skills
+
                 advertisement.apply {
+                    this.bookedSkill = advertisementSkill
                     this.bookedByUID = Firebase.auth.currentUser!!.uid
                     this.bookedByName = client.fullname
                     this.status = "booked"
                 }
 
                 transaction.set(advertisementRef,advertisement)
+
+                adSkills.forEach { adSkill ->
+                    val skillRef = db.collection("skillAdvertisements").document(adSkill)
+                    transaction.update(skillRef,"numAdvertisements",FieldValue.increment(-1))
+                }
             }
         }
     }

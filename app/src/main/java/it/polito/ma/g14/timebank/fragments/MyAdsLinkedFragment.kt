@@ -1,18 +1,18 @@
 package it.polito.ma.g14.timebank.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import it.polito.ma.g14.timebank.R
-
+import it.polito.ma.g14.timebank.utils.Utils
 
 
 class MyAdsLinkedFragment : Fragment() {
@@ -24,12 +24,21 @@ class MyAdsLinkedFragment : Fragment() {
 
     lateinit var pagerAdapter: FragmentStateAdapter
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_my_ads_linked, container, false)
+        val view = inflater.inflate(R.layout.fragment_my_ads_linked, container, false)
+
+        requireActivity().invalidateOptionsMenu()
+
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -74,8 +83,11 @@ class MyAdsLinkedFragment : Fragment() {
                 else -> MyCompletedAdsFragment()
             }
         }
-
     }
 
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
+        Utils.manageActionBarItemsVisibility(requireActivity(), menu)
+    }
 
 }
