@@ -2,6 +2,7 @@ package it.polito.ma.g14.timebank.RVadapters
 
 import android.content.Context
 import android.graphics.Color
+import android.provider.Settings.Global.getString
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.google.common.io.Resources
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import it.polito.ma.g14.timebank.R
@@ -33,6 +35,7 @@ class OnlineAdvertisementsAdapter(val view: View, val vm: FirebaseVM, val contex
     private var sortBy = ""
 
     class ItemViewHolder(v: View): RecyclerView.ViewHolder(v) {
+        var colorHash : HashMap <String,Int> = hashMapOf<String,Int>("free" to R.color.green, "booked" to R.color.orange, "completed" to R.color.black)
         private val advertisementContainer = v.findViewById<LinearLayout>(R.id.online_ad_card)
 
         fun bind(advertisement: Advertisement, context: Context, vm: FirebaseVM, color: String, action1: (v: View) -> Unit) {
@@ -56,6 +59,10 @@ class OnlineAdvertisementsAdapter(val view: View, val vm: FirebaseVM, val contex
             else{
                 advertisementContainer.findViewById<TextView>(R.id.textView74).text = "By You"
             }
+            val status :TextView = advertisementContainer.findViewById(R.id.textView92)
+            status.text = advertisement.status
+
+            colorHash[advertisement.status]?.let { status.setTextColor(it) }
             advertisementContainer.findViewById<TextView>(R.id.textView4).text = advertisement.title
             advertisementContainer.findViewById<TextView>(R.id.textView5).text = advertisement.description
             advertisementContainer.findViewById<TextView>(R.id.textView6).text = advertisement.date
