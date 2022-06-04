@@ -11,6 +11,8 @@ class Advertisement : Serializable {
     var bookedSkill: String = ""
     var bookedByUID : String = ""
     var bookedByName : String = ""
+    var bookedTimestamp: Long = -1
+    var completedTimestamp: Long = -1
     var description : String = ""
     var date : String = ""
     var from : String = ""

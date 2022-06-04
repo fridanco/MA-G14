@@ -290,13 +290,12 @@ class OnlineAdDetailsFragment : Fragment() {
     }
 
     private fun bookSlot() {
-        onlineAdDetailsVM.updateAdvertisementsBooked(shownAdvertisement, shownAdvertisementSkill, Firebase.auth.currentUser!!.uid)
+        onlineAdDetailsVM.updateAdvertisementBooked(shownAdvertisement, shownAdvertisementSkill, Firebase.auth.currentUser!!.uid)
     }
 
     private fun markAsComplete() {
-        onlineAdDetailsVM.updateAdvertisementStatus(shownAdvertisement, "complete")
+        onlineAdDetailsVM.updateAdvertisementCompleted(shownAdvertisement)
     }
-
 
     private fun startChat() {
         val bundle = bundleOf(

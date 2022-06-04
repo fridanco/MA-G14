@@ -45,13 +45,11 @@ class OnlineAdDetailsVM(application:Application) : AndroidViewModel(application)
             FieldValue.arrayUnion(rating))
     }
 
-
-    fun updateAdvertisementStatus(advertisement: Advertisement,status: String){
-        db.collection("advertisements").document(advertisement.id).update("status",status)
+    fun updateAdvertisementCompleted(advertisement: Advertisement){
+        db.collection("advertisements").document(advertisement.id).update("status","complete","completedTimestamp", System.currentTimeMillis())
     }
 
-    fun updateAdvertisementsBooked(advertisement: Advertisement, advertisementSkill: String, uid:String){
-
+    fun updateAdvertisementBooked(advertisement: Advertisement, advertisementSkill: String, uid:String){
         db.runTransaction { transaction ->
             val clientRef = db.collection("users").document(Firebase.auth.currentUser!!.uid)
             val client = transaction.get(clientRef).toObject(User::class.java)
@@ -64,6 +62,7 @@ class OnlineAdDetailsVM(application:Application) : AndroidViewModel(application)
                     this.bookedSkill = advertisementSkill
                     this.bookedByUID = Firebase.auth.currentUser!!.uid
                     this.bookedByName = client.fullname
+                    this.bookedTimestamp = System.currentTimeMillis()
                     this.status = "booked"
                 }
 
