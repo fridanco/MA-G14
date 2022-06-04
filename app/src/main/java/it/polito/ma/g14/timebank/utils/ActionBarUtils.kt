@@ -154,7 +154,7 @@ class Utils {
                 R.id.chatFragment -> {
                     val navHostFragment = (activity as FragmentActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
                     val fragment = navHostFragment!!.childFragmentManager.fragments[0] as ChatFragment
-                    (activity as AppCompatActivity).supportActionBar!!.title = fragment.advertiser_name
+                    (activity as AppCompatActivity).supportActionBar!!.title = fragment.advertisement.user.fullname
 
                     menu.findItem(R.id.app_bar_pencil).isVisible = false
                     menu.findItem(R.id.app_bar_search).isVisible = false

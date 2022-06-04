@@ -41,6 +41,7 @@ class MySentMessagesVM : ViewModel() {
                             chat.chatMessages.last().senderName,
                             chat.chatMessages.last().senderUID,
                             chat.chatMessages.last().timestamp,
+                            chat.interestedSkill,
                             chat.clientNotifications
                         )
                         if(!messageWithCounterMap.containsKey(chat.advertisementID)){

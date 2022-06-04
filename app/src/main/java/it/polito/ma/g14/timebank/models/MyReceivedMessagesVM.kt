@@ -30,6 +30,7 @@ class MyReceivedMessagesVM : ViewModel() {
                 }
 
                 val messagesMap = mutableMapOf<String, AdvertisementWithChat>()
+
                 val messageWithCounterMap = mutableMapOf<String, MutableList<ChatMessageWithCounter>>()
                 value?.let { querySnapshot ->
                     val chatList = querySnapshot.mapNotNull { it.toObject(Chat::class.java) }
@@ -41,6 +42,7 @@ class MyReceivedMessagesVM : ViewModel() {
                             chat.chatMessages.last().senderName,
                             chat.chatMessages.last().senderUID,
                             chat.chatMessages.last().timestamp,
+                            chat.interestedSkill,
                             chat.advertiserNotifications
                         )
                         if(!messageWithCounterMap.containsKey(chat.advertisementID)){

@@ -16,13 +16,15 @@ class ChatVM : ViewModel() {
     private val _chat = MutableLiveData<List<ChatMessage>>(listOf())
     val chat : LiveData<List<ChatMessage>> = _chat
 
+    private val _adBooked = MutableLiveData<Boolean>()
+    val adBooked : LiveData<Boolean> = _adBooked
 
     val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     val storageRef = Firebase.storage("gs://mad2022-g14.appspot.com").reference
 
     lateinit var chatMessagesListener : ListenerRegistration
 
-    fun getChatMessages(chatID: String, client_uid: String, advertiser_uid: String, advertisementID: String){
+    fun getChatMessages(chatID: String, client_uid: String, advertiser_uid: String, advertisementID: String, interestedSkill: String){
         val uid = Firebase.auth.currentUser!!.uid
         chatMessagesListener = db.collection("chats").document(chatID)
             .addSnapshotListener{ result, exception ->
@@ -47,6 +49,7 @@ class ChatVM : ViewModel() {
                             this.advertiserUID = advertiser_uid
                             this.advertiserName = advertiserProfile!!.fullname
                             this.advertiserNotifications = 0
+                            this.interestedSkill = interestedSkill
                             this.chatMessages = listOf()
                         }
                         val chatRef = db.collection("chats").document(chatID)
@@ -134,7 +137,43 @@ class ChatVM : ViewModel() {
         }
     }
 
+    fun updateAdvertisementBooked(advertisement: Advertisement, advertisementSkill: String){
+        db.runTransaction { transaction ->
+            val clientRef = db.collection("users").document(Firebase.auth.currentUser!!.uid)
+            val client = transaction.get(clientRef).toObject(User::class.java)
 
+            client?.let {
+                val advertisementRef = db.collection("advertisements").document(advertisement.id)
+                val adSkills = advertisement.skills
+
+                val ad = transaction.get(advertisementRef).toObject(Advertisement::class.java)
+                if(ad!!.status!="free"){
+                    return@runTransaction
+                }
+
+                advertisement.apply {
+                    this.bookedSkill = advertisementSkill
+                    this.bookedByUID = Firebase.auth.currentUser!!.uid
+                    this.bookedByName = client.fullname
+                    this.bookedTimestamp = System.currentTimeMillis()
+                    this.status = "booked"
+                }
+
+                transaction.set(advertisementRef,advertisement)
+
+                adSkills.forEach { adSkill ->
+                    val skillRef = db.collection("skillAdvertisements").document(adSkill)
+                    transaction.update(skillRef,"numAdvertisements",FieldValue.increment(-1))
+                }
+
+                _adBooked.postValue(true)
+            }
+        }
+    }
+
+    fun resetAdBooked(){
+        _adBooked.value = false
+    }
 
     override fun onCleared() {
         chatMessagesListener.remove()

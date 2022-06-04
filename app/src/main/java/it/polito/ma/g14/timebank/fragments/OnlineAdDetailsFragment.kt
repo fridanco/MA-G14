@@ -299,9 +299,8 @@ class OnlineAdDetailsFragment : Fragment() {
 
     private fun startChat() {
         val bundle = bundleOf(
-            "advertisementID" to shownAdvertisement.id,
-            "advertiserUID" to shownAdvertisement.uid,
-            "advertiserName" to shownAdvertisement.user.fullname
+            "advertisement" to shownAdvertisement,
+            "advertisementSkill" to shownAdvertisementSkill
         )
         view?.findNavController()?.navigate(R.id.action_onlineAdDetailsFragment_to_chatFragment, bundle)
     }

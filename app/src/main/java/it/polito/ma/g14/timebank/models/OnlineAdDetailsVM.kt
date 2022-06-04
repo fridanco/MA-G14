@@ -58,6 +58,11 @@ class OnlineAdDetailsVM(application:Application) : AndroidViewModel(application)
                 val advertisementRef = db.collection("advertisements").document(advertisement.id)
                 val adSkills = advertisement.skills
 
+                val ad = transaction.get(advertisementRef).toObject(Advertisement::class.java)
+                if(ad!!.status!="free"){
+                    return@runTransaction
+                }
+
                 advertisement.apply {
                     this.bookedSkill = advertisementSkill
                     this.bookedByUID = Firebase.auth.currentUser!!.uid

@@ -8,5 +8,6 @@ class Chat{
     var advertiserUID= ""
     var advertiserName= ""
     var advertiserNotifications = 0
+    var interestedSkill= ""
     var chatMessages = listOf<ChatMessage>()
 }

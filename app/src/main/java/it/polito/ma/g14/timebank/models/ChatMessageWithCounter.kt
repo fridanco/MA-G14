@@ -7,5 +7,6 @@ data class ChatMessageWithCounter(
     val lastMessageSenderName: String,
     val lastMessageSenderUID: String,
     val timestamp: Long,
+    val interestedSkill: String,
     val messageCounter: Int
 )

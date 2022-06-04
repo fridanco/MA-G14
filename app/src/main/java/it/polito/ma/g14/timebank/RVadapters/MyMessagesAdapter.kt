@@ -130,17 +130,16 @@ class MyMessagesAdapter(val view: View, val vm: FirebaseVM, val context: Context
                     val bundle = if(type=="received_msg") {
                         //Client is the recipient (i am the advertiser)
                         bundleOf(
-                            "advertisementID" to advertisementWithChat.advertisement.id,
-                            "clientUID" to it.recipientUID,
-                            "advertiserName" to advertisementWithChat.advertisement.user.fullname
+                            "advertisement" to advertisementWithChat.advertisement,
+                            "advertisementSkill" to it.interestedSkill,
+                            "clientUID" to it.recipientUID
                         )
                     }
                     else {
                         //Get advertiser from advertisement object (i am sending messages = i am the client)
                         bundleOf(
-                            "advertisementID" to advertisementWithChat.advertisement.id,
-                            "advertiserUID" to advertisementWithChat.advertisement.uid,
-                            "advertiserName" to advertisementWithChat.advertisement.user.fullname
+                            "advertisement" to advertisementWithChat.advertisement,
+                            "advertisementSkill" to it.interestedSkill
                         )
                     }
                     view.findNavController().navigate(R.id.action_myMessages_to_chatFragment, bundle)
