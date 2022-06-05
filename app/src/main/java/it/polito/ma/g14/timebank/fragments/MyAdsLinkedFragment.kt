@@ -65,7 +65,7 @@ class MyAdsLinkedFragment : Fragment() {
 //            }
 //
 //        })
-        val tabText = listOf("Advertiser","Client")
+        val tabText = listOf("Client","Advertiser")
         TabLayoutMediator(tabLayoutAds,viewPager){tab,position->
             tab.text = tabText[position]
         }.attach()
