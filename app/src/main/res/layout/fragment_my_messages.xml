@@ -16,13 +16,13 @@
             android:id="@+id/tabReceivedMsg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Received" />
+            android:text="My ads" />
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/tabSentMsg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Sent" />
+            android:text="My bookings" />
 
     </com.google.android.material.tabs.TabLayout>
 

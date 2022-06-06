@@ -5,10 +5,6 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_linkedAds"
-            android:icon="@drawable/ic_baseline_description_24"
-            android:title="Linked Ads" />
-        <item
             android:id="@+id/onlineAdvertisementSkills"
             android:icon="@drawable/ic_baseline_ads_click_24"
             android:title="@string/menu_online_advertisements" />
@@ -16,6 +12,10 @@
             android:id="@+id/myAdvertisements"
             android:icon="@drawable/ic_baseline_list_alt_24"
             android:title="@string/menu_home" />
+        <item
+            android:id="@+id/nav_linkedAds"
+            android:icon="@drawable/ic_baseline_description_24"
+            android:title="Linked Ads" />
         <item
             android:id="@+id/myMessages"
             android:icon="@drawable/ic_baseline_message_24"

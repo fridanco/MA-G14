@@ -48,7 +48,8 @@
                 android:layout_weight="1"
                 android:ems="10"
                 android:hint="Type your message here"
-                android:inputType="textPersonName" />
+                android:inputType="textPersonName"
+                android:textColor="@color/black"/>
 
             <Button
                 android:id="@+id/button5"

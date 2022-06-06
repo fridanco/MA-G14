@@ -66,6 +66,7 @@ class OnlineAdvertisementsAdapter(val view: View, val vm: FirebaseVM, val contex
             status.text = advertisement.status
 
             colorHash[advertisement.status]?.let { status.setTextColor(it) }
+
             advertisementContainer.findViewById<TextView>(R.id.textView4).text = advertisement.title
             advertisementContainer.findViewById<TextView>(R.id.textView5).text = advertisement.description
             advertisementContainer.findViewById<TextView>(R.id.textView6).text = advertisement.date

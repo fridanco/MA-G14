@@ -53,7 +53,7 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
             .addOnSuccessListener { querySnapshot ->
                 _editProfile.value = querySnapshot.toObject(User::class.java)
             }
-
+        //As advertiser
         followedAdvertisementsListener = db.collection("advertisements")
             .whereEqualTo("bookedByUID",uid).addSnapshotListener { result, exception ->
                 if(exception!=null){
@@ -70,6 +70,7 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
 
 
             }
+        //As client
         completedAdvertisementsListener = db.collection("advertisements")
             .whereEqualTo("uid",uid)
             .whereEqualTo("status","completed")
