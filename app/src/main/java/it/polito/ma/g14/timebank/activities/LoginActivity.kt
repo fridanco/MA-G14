@@ -104,12 +104,13 @@ class LoginActivity : AppCompatActivity() {
                                     .document(user.uid)
                                     .set(
                                         User().apply {
-                                            fullname = user.displayName ?: "Sample fullname"
-                                            nickname = user.displayName ?: "Sample nickname"
-                                            email = user.email ?: "example@gmail.com"
-                                            location = "Sample location"
-                                            description = ""
-                                            skills = emptyList()
+                                            this.fullname = user.displayName ?: "Sample fullname"
+                                            this.nickname = user.displayName ?: "Sample nickname"
+                                            this.email = user.email ?: "example@gmail.com"
+                                            this.location = "Sample location"
+                                            this.description = ""
+                                            this.skills = emptyList()
+                                            this.credits = 10
                                         }
                                     )
                                     .addOnSuccessListener {

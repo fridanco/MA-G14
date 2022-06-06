@@ -80,6 +80,9 @@ class OnlineAdDetailsVM(application:Application) : AndroidViewModel(application)
                     return@runTransaction
                 }
 
+                val advertiserRef = db.collection("users").document(advertisement.uid)
+                val advertiser = transaction.get(advertiserRef).toObject(User::class.java)!!
+
                 advertisement.apply {
                     this.bookedSkill = advertisementSkill
                     this.bookedByUID = Firebase.auth.currentUser!!.uid
@@ -93,9 +96,6 @@ class OnlineAdDetailsVM(application:Application) : AndroidViewModel(application)
                 client.credits--
                 transaction.set(clientRef, client)
 
-                val advertiserRef = db.collection("users").document(advertisement.uid)
-                val advertiser = transaction.get(advertiserRef).toObject(User::class.java)!!
-
                 advertiser.credits++
                 transaction.set(advertiserRef, advertiser)
 
@@ -105,6 +105,9 @@ class OnlineAdDetailsVM(application:Application) : AndroidViewModel(application)
                 }
             }
         }
+            .addOnFailureListener{
+                println(it.message)
+            }
     }
 
 }
