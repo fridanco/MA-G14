@@ -1,5 +1,6 @@
 package it.polito.ma.g14.timebank.activities
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.Gravity
@@ -35,6 +36,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -53,6 +55,8 @@ class MainActivity : AppCompatActivity() {
             navView.getHeaderView(0).findViewById<TextView>(R.id.nav_drawer_email)
         val navViewHeaderNumSkills =
             navView.getHeaderView(0).findViewById<TextView>(R.id.nav_drawer_numskills)
+        val navViewHeaderCredits =
+            navView.getHeaderView(0).findViewById<TextView>(R.id.nav_drawer_credits)
 
         val id = resources.getIdentifier("$packageName:drawable/user", null, null)
         navViewHeaderImage.setImageResource(id)
@@ -70,6 +74,7 @@ class MainActivity : AppCompatActivity() {
             else{
                 navViewHeaderNumSkills.text = "${it.skills.size} skills"
             }
+            navViewHeaderCredits.text = "${it.credits} credits"
             Glide.with(this)
                 .load(vm.storageRef.child(Firebase.auth.currentUser!!.uid))
                 .apply(options)
