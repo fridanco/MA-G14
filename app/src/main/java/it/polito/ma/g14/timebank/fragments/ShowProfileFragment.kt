@@ -25,6 +25,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.models.FirebaseVM
+import it.polito.ma.g14.timebank.models.ShowProfileVM
 import it.polito.ma.g14.timebank.models.User
 import it.polito.ma.g14.timebank.utils.Utils
 import kotlinx.coroutines.Dispatchers
@@ -34,6 +35,7 @@ import java.io.ByteArrayOutputStream
 class ShowProfileFragment() : Fragment() {
 
     val vm by viewModels<FirebaseVM>()
+    val showProfileVM by viewModels<ShowProfileVM>()
 
     var fullName :  String = "Peter Parker"
     var email : String = "peter.parker@stark.us"
@@ -72,6 +74,8 @@ class ShowProfileFragment() : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+        showProfileVM.getNumBookedAds(Firebase.auth.currentUser!!.uid)
+        showProfileVM.getNumPostedAds(Firebase.auth.currentUser!!.uid)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -184,8 +188,18 @@ class ShowProfileFragment() : Fragment() {
                 ratingProfile /= it.ratingsAsAdvertiser.size
             }
 
+            view.findViewById<TextView>(R.id.numRatings3).text = it.credits.toString()
+
             populateProfileText(it)
             populateProfileSkills(it.skills)
+        }
+
+        showProfileVM.numBookedAds.observe(viewLifecycleOwner){
+            view.findViewById<TextView>(R.id.numRatings4).text = it.toString()
+        }
+
+        showProfileVM.numPostedAds.observe(viewLifecycleOwner){
+            view.findViewById<TextView>(R.id.numRatings2).text = it.toString()
         }
 
     }

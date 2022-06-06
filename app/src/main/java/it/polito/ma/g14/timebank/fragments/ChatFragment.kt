@@ -21,6 +21,7 @@ import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.RVadapters.ChatAdapter
 import it.polito.ma.g14.timebank.models.Advertisement
 import it.polito.ma.g14.timebank.models.ChatVM
+import it.polito.ma.g14.timebank.models.User
 import it.polito.ma.g14.timebank.utils.Utils
 
 class ChatFragment : Fragment() {
@@ -79,10 +80,10 @@ class ChatFragment : Fragment() {
         adapter = ChatAdapter(view, chatsVM, requireContext(), advertisement, advertisementSkill)
         rv.adapter = adapter
 
-        chatsVM.chat.observe(viewLifecycleOwner) { chatList ->
-            if(chatList.isEmpty()){
+        chatsVM.chatWithClient.observe(viewLifecycleOwner) { chatList ->
+            if(chatList.first.isEmpty()){
                 emptyRv.isVisible = true
-                adapter.updateChat(listOf())
+                adapter.updateChat(Pair(listOf(), User()))
             }
             else {
                 emptyRv.isGone = true

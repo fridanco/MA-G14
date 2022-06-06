@@ -66,7 +66,7 @@ class OnlineAdDetailsFragment : Fragment() {
         val advertisement = requireArguments().getSerializable("advertisement") as Advertisement
         shownAdvertisementSkill = requireArguments().getString("advertisementSkill").toString()
 
-        onlineAdDetailsVM.getAdvertisement(advertisement.id)
+        onlineAdDetailsVM.getAdvertisement(advertisement.id, Firebase.auth.currentUser!!.uid)
 
         return view
     }
@@ -92,11 +92,11 @@ class OnlineAdDetailsFragment : Fragment() {
         btn_submitRate = view.findViewById<Button>(R.id.button9)
         user = view.findViewById(R.id.user_link)
 
-        onlineAdDetailsVM.advertisement.observe(viewLifecycleOwner) { advertisement ->
+        onlineAdDetailsVM.advertisement.observe(viewLifecycleOwner) { adUserPair ->
 
-            shownAdvertisement = advertisement
+            shownAdvertisement = adUserPair.first
             
-            val profileImageRef = vm.storageRef.child(advertisement.uid)
+            val profileImageRef = vm.storageRef.child(adUserPair.first.uid)
 
             val options: RequestOptions = RequestOptions()
                 .placeholder(R.drawable.user)
@@ -108,24 +108,24 @@ class OnlineAdDetailsFragment : Fragment() {
                 .into(iv_profileImage)
 
 
-            tv_title.text = advertisement.title
-            tv_description.text = advertisement.description
-            tv_date.text = advertisement.date
-            tv_from.text = advertisement.from
-            tv_to.text = advertisement.to
-            tv_location.text = advertisement.location
-            tv_fullname.text = "By ${advertisement.user.fullname}"
-            if (advertisement.user.description.isNotEmpty()) {
-                tv_user_description.text = advertisement.user.description
+            tv_title.text = adUserPair.first.title
+            tv_description.text = adUserPair.first.description
+            tv_date.text = adUserPair.first.date
+            tv_from.text = adUserPair.first.from
+            tv_to.text = adUserPair.first.to
+            tv_location.text = adUserPair.first.location
+            tv_fullname.text = "By ${adUserPair.first.user.fullname}"
+            if (adUserPair.first.user.description.isNotEmpty()) {
+                tv_user_description.text = adUserPair.first.user.description
             }
             else {
                 tv_user_description.text = "No description provided"
             }
 
-            if(advertisement.bookedSkill.isNotBlank()){
+            if(adUserPair.first.bookedSkill.isNotBlank()){
                 tv_skill_label.isVisible = true
                 tv_skill.isVisible = true
-                tv_skill.text = advertisement.bookedSkill
+                tv_skill.text = adUserPair.first.bookedSkill
             }
             else{
                 tv_skill_label.isGone = true
@@ -133,7 +133,7 @@ class OnlineAdDetailsFragment : Fragment() {
             }
 
             user.setOnClickListener {
-                redirectToAdvertiserProfile(advertisement.uid)
+                redirectToAdvertiserProfile(adUserPair.first.uid)
             }
 
             val advertisementStatus = view.findViewById<TextView>(R.id.textView95)
@@ -142,25 +142,25 @@ class OnlineAdDetailsFragment : Fragment() {
             val completedPanel = view.findViewById<LinearLayout>(R.id.completedSlotLayout)
             val ratingDonePanel = view.findViewById<LinearLayout>(R.id.ratingDoneContainer)
 
-            val iAmAdvertiser = Firebase.auth.currentUser!!.uid == advertisement.uid
+            val iAmAdvertiser = Firebase.auth.currentUser!!.uid == adUserPair.first.uid
             val iAmClient = !iAmAdvertiser
 
-            if((iAmAdvertiser && advertisement.advertiserRating==null) ||
-                    iAmClient && advertisement.clientRating==null) {
+            if((iAmAdvertiser && adUserPair.first.advertiserRating==null) ||
+                    iAmClient && adUserPair.first.clientRating==null) {
 
                 ratingDonePanel.isGone = true
 
-                when (advertisement.status) {
+                when (adUserPair.first.status) {
                     //If the adv is free -> it shows the ui for booking
                     "booked" -> {
 
                         //I booked the advertisement
-                        if(advertisement.bookedByUID==Firebase.auth.currentUser!!.uid){
+                        if(adUserPair.first.bookedByUID==Firebase.auth.currentUser!!.uid){
                             advertisementStatus.text = "Booked by you"
                         }
                         //A client booked the advertisement
                         else{
-                            advertisementStatus.text = "Booked by ${advertisement.bookedByName}"
+                            advertisementStatus.text = "Booked by ${adUserPair.first.bookedByName}"
                         }
 
                         bookingPanel.isGone = true
@@ -169,7 +169,7 @@ class OnlineAdDetailsFragment : Fragment() {
                         val bookedAdTextView = view.findViewById<TextView>(R.id.textView88)
 
                         //If i am the one who booked the advertisement
-                        if (advertisement.bookedByUID == Firebase.auth.currentUser!!.uid) {
+                        if (adUserPair.first.bookedByUID == Firebase.auth.currentUser!!.uid) {
                             completedPanel.isVisible = true
 
                             bookedAdTextView.text = "You successfully booked this advertisement"
@@ -193,10 +193,10 @@ class OnlineAdDetailsFragment : Fragment() {
 
                         val userId: String = Firebase.auth.currentUser!!.uid
 
-                        if (advertisement.bookedByUID == userId || advertisement.uid == userId) {
+                        if (adUserPair.first.bookedByUID == userId || adUserPair.first.uid == userId) {
                             ratingPanel.isVisible = true
 
-                            if (advertisement.uid == Firebase.auth.currentUser!!.uid) {
+                            if (adUserPair.first.uid == Firebase.auth.currentUser!!.uid) {
                                 ratingPanel.findViewById<TextView>(R.id.textView90).text="Rate the client"
                             } else {
                                 ratingPanel.findViewById<TextView>(R.id.textView90).text="Rate the advertiser"
@@ -211,37 +211,27 @@ class OnlineAdDetailsFragment : Fragment() {
                                     ).show()
                                     return@setOnClickListener
                                 }
-                                if (view.findViewById<TextView>(R.id.RateTextId).text.toString()
-                                        .isBlank()
-                                ) {
-                                    Toast.makeText(
-                                        requireContext(),
-                                        "Please provide a review",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                    return@setOnClickListener
-                                }
 
                                 val rating = Rating().apply {
                                     this.rating =
                                         view.findViewById<RatingBar>(R.id.ratingBar2).rating
-                                    this.advertisement = advertisement
+                                    this.advertisement = adUserPair.first
                                     this.textRating =
                                         view.findViewById<TextView>(R.id.RateTextId).text.toString()
                                     this.raterUid = Firebase.auth.currentUser!!.uid
                                     this.timestamp = System.currentTimeMillis()
 
                                     //if i am the advertiser
-                                    if (advertisement.uid == Firebase.auth.currentUser!!.uid) {
-                                        this.raterName = advertisement.user.fullname
+                                    if (adUserPair.first.uid == Firebase.auth.currentUser!!.uid) {
+                                        this.raterName = adUserPair.first.user.fullname
                                     }
                                     //if i am the client
                                     else {
-                                        this.raterName = advertisement.bookedByName
+                                        this.raterName = adUserPair.first.bookedByName
                                     }
                                 }
 
-                                if (advertisement.uid == Firebase.auth.currentUser!!.uid) {
+                                if (adUserPair.first.uid == Firebase.auth.currentUser!!.uid) {
                                     submitRating(rating, "asAdvertiser")
                                 } else {
                                     submitRating(rating, "asClient")
@@ -257,14 +247,24 @@ class OnlineAdDetailsFragment : Fragment() {
                         completedPanel.isGone = true
 
                         //If i am the client show the booking panel
-                        if (advertisement.uid != Firebase.auth.currentUser!!.uid) {
+                        if (adUserPair.first.uid != Firebase.auth.currentUser!!.uid) {
                             bookingPanel.isVisible = true
 
-                            btn_book.setOnClickListener {
-                                bookSlot()
+                            //If enough credits
+                            if(adUserPair.second.credits>0) {
+                                btn_book.isVisible = true
+                                view.findViewById<TextView>(R.id.textView101).isGone = true
+
+                                btn_book.setOnClickListener {
+                                    bookSlot()
+                                }
+                                btn_chat.setOnClickListener {
+                                    startChat()
+                                }
                             }
-                            btn_chat.setOnClickListener {
-                                startChat()
+                            else{
+                                btn_book.isGone = true
+                                view.findViewById<TextView>(R.id.textView101).isVisible = true
                             }
                         }
                         //if i am the advertiser do not show booking panel
@@ -279,13 +279,13 @@ class OnlineAdDetailsFragment : Fragment() {
                 ratingPanel.isGone = true
                 completedPanel.isGone = true
 
-                if(advertisement.advertiserRating==null && advertisement.clientRating==null){
+                if(adUserPair.first.advertiserRating==null && adUserPair.first.clientRating==null){
                     advertisementStatus.text = "Awaiting client & advertiser ratings"
                 }
-                else if(advertisement.advertiserRating==null){
+                else if(adUserPair.first.advertiserRating==null){
                     advertisementStatus.text = "Awaiting advertiser rating"
                 }
-                else if(advertisement.clientRating==null){
+                else if(adUserPair.first.clientRating==null){
                     advertisementStatus.text = "Awaiting client rating"
                 }
                 else{
@@ -320,7 +320,7 @@ class OnlineAdDetailsFragment : Fragment() {
     }
 
     private fun bookSlot() {
-        onlineAdDetailsVM.updateAdvertisementBooked(shownAdvertisement, shownAdvertisementSkill, Firebase.auth.currentUser!!.uid)
+        onlineAdDetailsVM.updateAdvertisementBooked(shownAdvertisement, shownAdvertisementSkill, context)
         Toast.makeText(requireContext(),"Advertisement booked",Toast.LENGTH_SHORT).show()
     }
 

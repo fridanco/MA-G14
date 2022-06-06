@@ -305,6 +305,16 @@
                 android:layout_height="wrap_content"
                 android:text="Book slot now" />
 
+            <TextView
+                android:id="@+id/textView101"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="You don't have enough credits to book this advertisement"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textSize="22sp" />
+
             <LinearLayout
                 android:id="@+id/chatPanel"
                 android:layout_width="match_parent"

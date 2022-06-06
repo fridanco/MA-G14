@@ -23,6 +23,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.models.FirebaseVM
+import it.polito.ma.g14.timebank.models.ShowProfileVM
 import it.polito.ma.g14.timebank.models.User
 import it.polito.ma.g14.timebank.utils.Utils
 import kotlinx.coroutines.Dispatchers
@@ -32,6 +33,7 @@ import java.io.ByteArrayOutputStream
 class ShowProfileAdFragment : Fragment() {
 
     val vm by viewModels<FirebaseVM>()
+    val showProfileVM by viewModels<ShowProfileVM>()
 
     var fullName :  String = "Peter Parker"
     var email : String = "peter.parker@stark.us"
@@ -74,6 +76,12 @@ class ShowProfileAdFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_show_profile_ad, container, false)
 
         otherUid = requireArguments().getString("uid")
+
+
+        otherUid?.let {
+            showProfileVM.getNumBookedAds(it)
+            showProfileVM.getNumPostedAds(it)
+        }
 
         requireActivity().invalidateOptionsMenu()
 
@@ -120,6 +128,14 @@ class ShowProfileAdFragment : Fragment() {
         val options: RequestOptions = RequestOptions()
             .placeholder(circularProgressDrawable)
             .error(R.drawable.user)
+
+        showProfileVM.numBookedAds.observe(viewLifecycleOwner){
+            view.findViewById<TextView>(R.id.numRatings4).text = it.toString()
+        }
+
+        showProfileVM.numPostedAds.observe(viewLifecycleOwner){
+            view.findViewById<TextView>(R.id.numRatings2).text = it.toString()
+        }
 
         vm.db.collection("users")
             .document(otherUid.toString())
@@ -174,6 +190,8 @@ class ShowProfileAdFragment : Fragment() {
                 .apply(options)
                 .into(it2)
         }
+
+
     }
 
     private inner class ScreenSlidePagerAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa) {

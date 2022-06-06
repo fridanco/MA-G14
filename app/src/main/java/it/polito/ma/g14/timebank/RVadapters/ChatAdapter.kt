@@ -22,11 +22,13 @@ import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.models.Advertisement
 import it.polito.ma.g14.timebank.models.ChatMessage
 import it.polito.ma.g14.timebank.models.ChatVM
+import it.polito.ma.g14.timebank.models.User
 import java.text.SimpleDateFormat
 import java.util.*
 
 class ChatAdapter(val view: View, val vm: ChatVM, val context: Context, var advertisement: Advertisement, val advertisementSkill: String): RecyclerView.Adapter<ChatAdapter.ItemViewHolder>() {
     var data = listOf<ChatMessage>()
+    var client = User()
     var displayData = data.toMutableList()
     var lastAdvertiserMsgIndex = -1
     
@@ -36,6 +38,7 @@ class ChatAdapter(val view: View, val vm: ChatVM, val context: Context, var adve
 
         fun bind(
             chatMessage: ChatMessage,
+            client: User,
             context: Context,
             vm: ChatVM,
             data: List<ChatMessage>,
@@ -71,8 +74,16 @@ class ChatAdapter(val view: View, val vm: ChatVM, val context: Context, var adve
             //If I am the Client & the message is from the advertiser
             if(advertisement.status=="free" && advertiserUID!=myUID && chatMessage.senderUID==advertiserUID && data.indexOf(chatMessage)==lastAdvertiserMsgIndex){
                 chatMessageContainer.findViewById<LinearLayout>(R.id.book_panel).isVisible = true
-                chatMessageContainer.findViewById<Button>(R.id.button6).setOnClickListener {
-                    vm.updateAdvertisementBooked(advertisement, advertisementSkill)
+                if(client.credits>0) {
+                    chatMessageContainer.findViewById<LinearLayout>(R.id.bookPanelContainer).isVisible = true
+                    chatMessageContainer.findViewById<TextView>(R.id.textView103).isGone = true
+                    chatMessageContainer.findViewById<Button>(R.id.button6).setOnClickListener {
+                        vm.updateAdvertisementBooked(advertisement, advertisementSkill, context)
+                    }
+                }
+                else{
+                    chatMessageContainer.findViewById<LinearLayout>(R.id.bookPanelContainer).isGone = true
+                    chatMessageContainer.findViewById<TextView>(R.id.textView103).isVisible = true
                 }
             }
             else{
@@ -131,15 +142,16 @@ class ChatAdapter(val view: View, val vm: ChatVM, val context: Context, var adve
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val chatMessage = displayData[position]
 
-        holder.bind(chatMessage, context, vm, data, advertisement, advertisementSkill, lastAdvertiserMsgIndex)
+        holder.bind(chatMessage, client, context, vm, data, advertisement, advertisementSkill, lastAdvertiserMsgIndex)
     }
 
     override fun getItemCount(): Int = displayData.size
 
-    fun updateChat(chatMessages: List<ChatMessage>): Int {
-        data = chatMessages.toList()
+    fun updateChat(chatMessages: Pair<List<ChatMessage>, User>): Int {
+        data = chatMessages.first.toList()
+        client = chatMessages.second
         val previousLastAdvertiserMsgIndex = lastAdvertiserMsgIndex
-        lastAdvertiserMsgIndex = chatMessages.indexOfLast { it.senderUID==advertisement.uid }
+        lastAdvertiserMsgIndex = chatMessages.first.indexOfLast { it.senderUID==advertisement.uid }
         val diffs = DiffUtil.calculateDiff(MyDiffCallbackChat(displayData,data))
         displayData = data.toMutableList()
         diffs.dispatchUpdatesTo(this)
