@@ -51,7 +51,7 @@ class MyMessagesFragment : Fragment() {
         pagerAdapter = ScreenSlidePagerAdapter(requireActivity())
         viewPager.adapter = pagerAdapter
 
-        val tabText = listOf("Received", "Sent")
+        val tabText = listOf("My ads", "My bookings")
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             tab.text = tabText[position]
         }.attach()
