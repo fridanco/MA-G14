@@ -80,8 +80,7 @@ class MyAdvertisementsAdapter(
             view.findNavController().navigate(R.id.action_timeSlotListFragment_to_timeSlotDetailsFragment, bundle)
         }
         fun action2(view: View) {
-            vm.deleteAdvertisement(advertisement.id)
-            Toast.makeText(context, "Advertisement deleted", Toast.LENGTH_SHORT).show()
+            vm.deleteAdvertisement(advertisement.id, context)
         }
 
         fun action3(view: View) {

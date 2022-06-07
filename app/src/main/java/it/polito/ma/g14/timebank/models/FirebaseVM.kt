@@ -1,7 +1,9 @@
 package it.polito.ma.g14.timebank.models
 
 import android.app.Application
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -152,7 +154,7 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
             profileImageRef.putBytes(profileImage)
                 .addOnFailureListener {
                     Log.w("Timebank FBSTORAGE", "Profile image could not be uploaded")
-                }.addOnSuccessListener { taskSnapshot ->
+                }.addOnSuccessListener { _ ->
                     db.collection("users").document(Firebase.auth.currentUser!!.uid)
                         .set(user)
                     db.collection("users").document(Firebase.auth.currentUser!!.uid)
@@ -232,7 +234,7 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
 
 
 
-    fun updateAdvertisement(advertisement: Advertisement){
+    fun updateAdvertisement(advertisement: Advertisement, context: Context?){
         advertisement.apply{
             this.uid = Firebase.auth.currentUser!!.uid
             this.user.fullname = _profile.value!!.fullname
@@ -246,44 +248,67 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
             val advertisementRef = db.collection("advertisements").document(advertisement.id)
             val oldAdvertisement = transaction.get(advertisementRef).toObject(Advertisement::class.java)
 
+            if(oldAdvertisement==null){
+                Toast.makeText(context, "Ad could not be updated", Toast.LENGTH_SHORT).show()
+                return@runTransaction
+            }
+
+            if(oldAdvertisement.status!="free"){
+                Toast.makeText(context, "Ad could not be updated as it was booked in the meantime", Toast.LENGTH_SHORT).show()
+                return@runTransaction
+            }
+
             transaction.set(advertisementRef, advertisement)
 
             //Remove skills that were removed from the advertisement
-            var diff = oldAdvertisement?.skills?.filterNot { advertisement.skills.contains(it) }
-            diff?.forEach {
+            var diff = oldAdvertisement.skills.filterNot { advertisement.skills.contains(it) }
+            diff.forEach {
                 val skillRef = db.collection("skillAdvertisements").document(it)
                 transaction.update(skillRef, "numAdvertisements", FieldValue.increment(-1))
             }
 
             //Add skills that were added to the advertisement
-            oldAdvertisement?.skills?.let {
+            oldAdvertisement.skills.let {
                 diff = advertisement.skills.filterNot { oldAdvertisement.skills.contains(it) }
-                diff?.forEach {
+                diff.forEach {
                     val skillRef = db.collection("skillAdvertisements").document(it)
                     transaction.update(skillRef, "numAdvertisements", FieldValue.increment(1))
                 }
             }
         }
         .addOnSuccessListener {
+            Toast.makeText(context, "Advertisement correctly edited", Toast.LENGTH_SHORT).show()
             updateAdvertisementSkillsList()
             updateAdvertisementList()
         }
     }
 
-    fun deleteAdvertisement(advertisementID: String){
+    fun deleteAdvertisement(advertisementID: String, context: Context?){
         db.runTransaction { transaction ->
             val advertisementRef = db.collection("advertisements").document(advertisementID)
             val advertisement = transaction.get(advertisementRef).toObject(Advertisement::class.java)
+
+            if(advertisement==null){
+                Toast.makeText(context, "Ad could not be deleted", Toast.LENGTH_SHORT).show()
+                return@runTransaction
+            }
+
+            if(advertisement.status!="free"){
+                Toast.makeText(context, "Ad could not be deleted as it was booked in the meantime", Toast.LENGTH_SHORT).show()
+                return@runTransaction
+            }
+
             transaction.delete(advertisementRef)
-            advertisement?.skills?.let {
+            advertisement.skills.let {
                 for(skill in it){
                     val skillRef = db.collection("skillAdvertisements").document(skill)
                     transaction.update(skillRef, "numAdvertisements", FieldValue.increment(-1))
                 }
             }
-            null
+
         }
         .addOnSuccessListener {
+            Toast.makeText(context, "Advertisement successfully deleted", Toast.LENGTH_SHORT).show()
             Log.d("Timebank FIREBASE", "Advertisement with ID: $advertisementID deleted & numAdvertisements decremented")
             updateAdvertisementSkillsList()
             updateAdvertisementList()

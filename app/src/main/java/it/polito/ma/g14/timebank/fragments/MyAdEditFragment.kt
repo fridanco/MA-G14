@@ -1,5 +1,6 @@
 package it.polito.ma.g14.timebank.fragments
 
+import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.os.Bundle
@@ -81,6 +82,7 @@ class MyAdEditFragment : Fragment() {
         return view
     }
 
+    @SuppressLint("InflateParams")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -387,6 +389,7 @@ class MyAdEditFragment : Fragment() {
         Utils.manageActionBarItemsVisibility(requireActivity(), menu)
     }
 
+    @SuppressLint("SimpleDateFormat")
     fun isFormValid() : Boolean {
         if(title.trim().isEmpty()){
             et_title?.error = "Title cannot be empty"
@@ -410,9 +413,9 @@ class MyAdEditFragment : Fragment() {
         }
         if(from.trim().isNotEmpty() && to.trim().isNotEmpty()){
             val calFrom = Calendar.getInstance()
-            calFrom.time = SimpleDateFormat("HH:mm").parse(from)
+            calFrom.time = SimpleDateFormat("HH:mm").parse(from)!!
             val calTo = Calendar.getInstance()
-            calTo.time = SimpleDateFormat("HH:mm").parse(to)
+            calTo.time = SimpleDateFormat("HH:mm").parse(to)!!
             if(calFrom >= calTo){
                 et_to?.error = "End time must be later than start time"
                 h_et_to?.error = "End time must be later than start time"
@@ -433,8 +436,9 @@ class MyAdEditFragment : Fragment() {
         return true
     }
 
+    @SuppressLint("SimpleDateFormat")
     val dateSetListener =
-        DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+        DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
             val cal = Calendar.getInstance()
 
             cal.set(Calendar.YEAR, year)
@@ -449,8 +453,9 @@ class MyAdEditFragment : Fragment() {
             h_et_date?.error = null
         }
 
+    @SuppressLint("SimpleDateFormat")
     val fromTimeSetListener =
-        TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
+        TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
             val calFrom = Calendar.getInstance()
 
             calFrom.set(Calendar.HOUR_OF_DAY, hourOfDay)
@@ -465,8 +470,8 @@ class MyAdEditFragment : Fragment() {
 
             if(to.isNotEmpty()) {
                 val calTo = Calendar.getInstance()
-                calTo.time = SimpleDateFormat("HH:mm").parse(to)
-                calFrom.time = SimpleDateFormat("HH:mm").parse(from)
+                calTo.time = SimpleDateFormat("HH:mm").parse(to)!!
+                calFrom.time = SimpleDateFormat("HH:mm").parse(from)!!
                 //if FROM later than TO
                 if(calFrom >= calTo){
                     to = formattedTime
@@ -478,7 +483,8 @@ class MyAdEditFragment : Fragment() {
             }
         }
 
-    val toTimeSetListener = TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
+    @SuppressLint("SimpleDateFormat")
+    val toTimeSetListener = TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
         val calTo = Calendar.getInstance()
 
         calTo.set(Calendar.HOUR_OF_DAY, hourOfDay)
@@ -493,8 +499,8 @@ class MyAdEditFragment : Fragment() {
 
         if(from.isNotEmpty()) {
             val calFrom = Calendar.getInstance()
-            calTo.time = SimpleDateFormat("HH:mm").parse(to)
-            calFrom.time = SimpleDateFormat("HH:mm").parse(from)
+            calTo.time = SimpleDateFormat("HH:mm").parse(to)!!
+            calFrom.time = SimpleDateFormat("HH:mm").parse(from)!!
             //if TO earlier than FROM
             if(calFrom >= calTo){
                 from = formattedDate
@@ -519,8 +525,7 @@ class MyAdEditFragment : Fragment() {
             }
             if(operationType=="edit_time_slot"){
                 advertisement.id = advertisementID
-                vm.updateAdvertisement(advertisement)
-                Toast.makeText(requireContext(), "Advertisement correctly edited", Toast.LENGTH_SHORT).show()
+                vm.updateAdvertisement(advertisement, context)
             }
             else if(operationType=="add_time_slot"){
                 vm.addAdvertisement(advertisement)

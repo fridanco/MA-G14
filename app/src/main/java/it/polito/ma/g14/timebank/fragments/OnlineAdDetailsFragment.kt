@@ -141,6 +141,11 @@ class OnlineAdDetailsFragment : Fragment() {
             val ratingPanel = view.findViewById<LinearLayout>(R.id.ratingSlotLayout)
             val completedPanel = view.findViewById<LinearLayout>(R.id.completedSlotLayout)
             val ratingDonePanel = view.findViewById<LinearLayout>(R.id.ratingDoneContainer)
+            val chatButton = view.findViewById<Button>(R.id.button11)
+
+            chatButton.setOnClickListener {
+                startChat()
+            }
 
             val iAmAdvertiser = Firebase.auth.currentUser!!.uid == adUserPair.first.uid
             val iAmClient = !iAmAdvertiser
@@ -153,6 +158,8 @@ class OnlineAdDetailsFragment : Fragment() {
                 when (adUserPair.first.status) {
                     //If the adv is free -> it shows the ui for booking
                     "booked" -> {
+
+                        chatButton.isVisible = true
 
                         //I booked the advertisement
                         if(adUserPair.first.bookedByUID==Firebase.auth.currentUser!!.uid){
@@ -185,6 +192,8 @@ class OnlineAdDetailsFragment : Fragment() {
 
                     }
                     "complete" -> {
+
+                        chatButton.isVisible = true
 
                         advertisementStatus.text = "Job completed"
 
@@ -241,6 +250,8 @@ class OnlineAdDetailsFragment : Fragment() {
                     }
                     //FREE
                     else -> {
+                        chatButton.isGone = true
+
                         advertisementStatus.text = "Available for booking"
 
                         ratingPanel.isGone = true
@@ -276,6 +287,8 @@ class OnlineAdDetailsFragment : Fragment() {
                 }
             }
             else{
+                chatButton.isVisible = true
+
                 bookingPanel.isGone = true
                 ratingPanel.isGone = true
                 completedPanel.isGone = true

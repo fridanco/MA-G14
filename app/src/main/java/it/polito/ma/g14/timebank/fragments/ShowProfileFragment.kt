@@ -1,5 +1,6 @@
 package it.polito.ma.g14.timebank.fragments
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.os.Bundle
@@ -103,6 +104,7 @@ class ShowProfileFragment() : Fragment() {
         return view
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -188,18 +190,18 @@ class ShowProfileFragment() : Fragment() {
                 ratingProfile /= it.ratingsAsAdvertiser.size
             }
 
-            view.findViewById<TextView>(R.id.numRatings3).text = it.credits.toString()
+            view.findViewById<TextView>(R.id.numRatings3).text = "${it.credits} credits"
 
             populateProfileText(it)
             populateProfileSkills(it.skills)
         }
 
         showProfileVM.numBookedAds.observe(viewLifecycleOwner){
-            view.findViewById<TextView>(R.id.numRatings4).text = it.toString()
+            view.findViewById<TextView>(R.id.numRatings4).text = "$it ads"
         }
 
         showProfileVM.numPostedAds.observe(viewLifecycleOwner){
-            view.findViewById<TextView>(R.id.numRatings2).text = it.toString()
+            view.findViewById<TextView>(R.id.numRatings2).text = "$it ads"
         }
 
     }

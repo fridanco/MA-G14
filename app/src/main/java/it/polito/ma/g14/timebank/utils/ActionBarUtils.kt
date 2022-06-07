@@ -89,14 +89,16 @@ class Utils {
                     menu.findItem(R.id.app_bar_add).isVisible = true
                     menu.findItem(R.id.app_bar_sort).isVisible = false
                     menu.findItem(R.id.app_bar_refresh).isVisible = false
-//                    val navHostFragment = (activity as FragmentActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
-//                    val fragment = navHostFragment!!.childFragmentManager.fragments[0] as TimeSlotEditFragment
-//                    menu.findItem(R.id.app_bar_add).isVisible = fragment.operationType=="add_time_slot"
                 }
                 R.id.myAdvertisementDetails -> {
+                    val navHostFragment = (activity as FragmentActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?
+                    val fragment = navHostFragment!!.childFragmentManager.fragments[0] as MyAdDetailsFragment
+
                     menu.findItem(R.id.app_bar_search).isVisible = false
-                    menu.findItem(R.id.app_bar_pencil).isVisible = true
-                    menu.findItem(R.id.app_bar_delete).isVisible = true
+                    fragment.shownAdvertisement?.let {
+                        menu.findItem(R.id.app_bar_pencil).isVisible = it.status=="free"
+                        menu.findItem(R.id.app_bar_delete).isVisible = it.status=="free"
+                    }
                     menu.findItem(R.id.app_bar_cancel).isVisible = false
                     menu.findItem(R.id.app_bar_add).isVisible = false
                     menu.findItem(R.id.app_bar_sort).isVisible = false

@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragments.MyAdDetailsFragment">
     <LinearLayout
         android:layout_width="match_parent"
@@ -119,13 +120,28 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textColor="#000000" />
 
-    <TextView
+        <TextView
+            android:id="@+id/textView107"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Advertisement status" />
+
+        <TextView
+            android:id="@+id/textView95"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="12dp"
+            android:text="Booked by Someone"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="?android:textColorPrimary" />
+
+        <TextView
         android:id="@+id/textView76"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Advertised skills" />
 
-    <com.google.android.material.chip.ChipGroup
+        <com.google.android.material.chip.ChipGroup
         android:id="@+id/chipGroupMyAd"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -133,5 +149,84 @@
 
     </com.google.android.material.chip.ChipGroup>
 
-</LinearLayout>
+        <LinearLayout
+            android:id="@+id/ratingSlotLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp">
+
+            <TextView
+                android:id="@+id/textView90"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Rate your client" />
+
+            <RatingBar
+                android:id="@+id/ratingBar2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|center_vertical"
+                android:foregroundGravity="center_vertical|center"
+                android:max="5"
+                tools:ignore="SpeakableTextPresentCheck,SpeakableTextPresentCheck" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusBottomEnd="5dp"
+                app:boxCornerRadiusBottomStart="5dp"
+                app:boxCornerRadiusTopEnd="5dp"
+                app:boxCornerRadiusTopStart="5dp"
+                app:helperTextEnabled="false"
+                app:hintEnabled="true"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="Review">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/RateTextId"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textLongMessage"
+                    android:minHeight="140dp"
+                    android:singleLine="false" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Button
+                android:id="@+id/button9"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Submit" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ratingDoneContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+            <ImageView
+                android:id="@+id/imageView7"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:src="@drawable/fui_ic_check_circle_black_128dp" />
+
+            <TextView
+                android:id="@+id/textView93"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="Congratulations! You have already rated &amp; reviewed the client."
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textSize="22sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
 </ScrollView>

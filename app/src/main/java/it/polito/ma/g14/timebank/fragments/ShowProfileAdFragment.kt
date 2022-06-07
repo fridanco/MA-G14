@@ -130,11 +130,11 @@ class ShowProfileAdFragment : Fragment() {
             .error(R.drawable.user)
 
         showProfileVM.numBookedAds.observe(viewLifecycleOwner){
-            view.findViewById<TextView>(R.id.numRatings4).text = it.toString()
+            view.findViewById<TextView>(R.id.numRatings4).text = "$it ads"
         }
 
         showProfileVM.numPostedAds.observe(viewLifecycleOwner){
-            view.findViewById<TextView>(R.id.numRatings2).text = it.toString()
+            view.findViewById<TextView>(R.id.numRatings2).text = "$it ads"
         }
 
         vm.db.collection("users")
