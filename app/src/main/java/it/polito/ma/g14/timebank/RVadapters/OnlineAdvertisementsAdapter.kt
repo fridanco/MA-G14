@@ -103,7 +103,7 @@ class OnlineAdvertisementsAdapter(val view: View, val vm: FirebaseVM, val contex
                     yourRating.isVisible = true
                     //I am the advertiser
                     if(uid==advertisement.uid){
-                        yourRating.text = "• ${timestampToString(advertisement.advertiserRating!!.timestamp)}: Your rated ${advertisement.bookedByName} with ${advertisement.advertiserRating!!.rating.toInt()} stars"
+                        yourRating.text = "• ${timestampToString(advertisement.advertiserRating!!.timestamp)}: You rated ${advertisement.bookedByName} with ${advertisement.advertiserRating!!.rating.toInt()} stars"
                     }
                     //I am the client
                     else{
