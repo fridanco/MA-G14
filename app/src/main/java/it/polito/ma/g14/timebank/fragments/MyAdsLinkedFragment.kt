@@ -65,7 +65,7 @@ class MyAdsLinkedFragment : Fragment() {
 //            }
 //
 //        })
-        val tabText = listOf("Client","Advertiser")
+        val tabText = listOf("My ads", "My bookings")
         TabLayoutMediator(tabLayoutAds,viewPager){tab,position->
             tab.text = tabText[position]
         }.attach()
@@ -79,8 +79,8 @@ class MyAdsLinkedFragment : Fragment() {
 
         override fun createFragment(position: Int): Fragment {
             return when(position){
-                0 -> FollowedAdsFragment()
-                else -> MyCompletedAdsFragment()
+                0 -> MyCompletedAdsFragment()
+                else -> FollowedAdsFragment()
             }
         }
     }

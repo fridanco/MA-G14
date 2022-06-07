@@ -84,7 +84,7 @@ class ProfileRatingAdapter(val view: View, val context: Context, val uid: String
                 ratingContainer.findViewById<TextView>(R.id.raterReview).text = rating.textRating
             }
             else{
-                ratingContainer.findViewById<TextView>(R.id.raterReview).text = "No review provided"
+                ratingContainer.findViewById<TextView>(R.id.raterReview).text = "     "
             }
             ratingContainer.findViewById<LinearLayout>(R.id.raterProfileContainer).setOnClickListener(action1)
         }

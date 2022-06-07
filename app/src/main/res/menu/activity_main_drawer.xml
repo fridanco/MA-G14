@@ -16,7 +16,7 @@
         <item
             android:id="@+id/nav_linkedAds"
             android:icon="@drawable/ic_baseline_description_24"
-            android:title="Linked Ads" />
+            android:title="Active advertisements" />
         <item
             android:id="@+id/myMessages"
             android:icon="@drawable/ic_baseline_message_24"

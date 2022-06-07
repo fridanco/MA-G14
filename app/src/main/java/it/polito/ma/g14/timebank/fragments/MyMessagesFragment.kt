@@ -65,11 +65,19 @@ class MyMessagesFragment : Fragment() {
 
             val receivedMessagesFragment = requireActivity().supportFragmentManager.findFragmentByTag("f0")
             receivedMessagesFragment?.let {
-                (it as MyReceivedMessagesFragment).receivedMessagesVM.setSortBy(sortBy)
+                try {
+                    (it as MyReceivedMessagesFragment).receivedMessagesVM.setSortBy(sortBy)
+                } catch (e: java.lang.Exception){
+
+                }
             }
             val sentMessagesFragment = requireActivity().supportFragmentManager.findFragmentByTag("f1")
             sentMessagesFragment?.let {
-                (it as MySentMessagesFragment).sentMessagesVM.setSortBy(sortBy)
+                try {
+                    (it as MySentMessagesFragment).sentMessagesVM.setSortBy(sortBy)
+                }catch (e: java.lang.Exception){
+
+                }
             }
         }
 
@@ -80,11 +88,20 @@ class MyMessagesFragment : Fragment() {
             }
             val receivedMessagesFragment = requireActivity().supportFragmentManager.findFragmentByTag("f0")
             receivedMessagesFragment?.let {
-                (it as MyReceivedMessagesFragment).receivedMessagesVM.setFilterBy(filterBy)
+                try {
+                    (it as MyReceivedMessagesFragment).receivedMessagesVM.setFilterBy(filterBy)
+                }catch (e: Exception){
+
+                }
             }
             val sentMessagesFragment = requireActivity().supportFragmentManager.findFragmentByTag("f1")
             sentMessagesFragment?.let {
-                (it as MySentMessagesFragment).sentMessagesVM.setFilterBy(filterBy)
+                try {
+                    (it as MySentMessagesFragment).sentMessagesVM.setFilterBy(filterBy)
+                } catch (e: Exception){
+
+                }
+
             }
         }
     }
