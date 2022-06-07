@@ -146,6 +146,9 @@
         <action
             android:id="@+id/action_nav_linkedAds_to_onlineAdDetailsFragment"
             app:destination="@id/onlineAdDetailsFragment" />
+        <action
+            android:id="@+id/action_nav_linkedAds_to_myAdvertisementDetails"
+            app:destination="@id/myAdvertisementDetails" />
     </fragment>
     <fragment
         android:id="@+id/showProfileAdFragment"

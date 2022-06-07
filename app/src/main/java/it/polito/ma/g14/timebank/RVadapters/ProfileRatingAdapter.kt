@@ -23,7 +23,7 @@ import it.polito.ma.g14.timebank.models.Rating
 import java.text.SimpleDateFormat
 import java.util.*
 
-class ProfileRatingAdapter(val view: View, val context: Context, val uid: String): RecyclerView.Adapter<ProfileRatingAdapter.ItemViewHolder>() {
+class ProfileRatingAdapter(val view: View, val context: Context, val uid: String, val originFragment: String): RecyclerView.Adapter<ProfileRatingAdapter.ItemViewHolder>() {
     var data = listOf<Rating>()
     var displayData = data.toMutableList()
 
@@ -102,13 +102,19 @@ class ProfileRatingAdapter(val view: View, val context: Context, val uid: String
 
         holder.bind(rating, context) {
             val bundle = bundleOf("uid" to rating.raterUid)
-            if(rating.raterUid==Firebase.auth.currentUser!!.uid) {
+            if(originFragment=="myProfile"){
                 view.findNavController()
-                    .navigate(R.id.action_showProfileAdFragment_to_myProfile, bundle)
+                    .navigate(R.id.action_myProfile_to_showProfileAdFragment, bundle)
             }
-            else{
-                view.findNavController()
-                    .navigate(R.id.action_showProfileAdFragment_self, bundle)
+            else {
+                if (rating.raterUid == Firebase.auth.currentUser!!.uid) {
+                    view.findNavController()
+                        .navigate(R.id.action_showProfileAdFragment_to_myProfile, bundle)
+                }
+                else {
+                    view.findNavController()
+                        .navigate(R.id.action_showProfileAdFragment_self, bundle)
+                }
             }
         }
     }

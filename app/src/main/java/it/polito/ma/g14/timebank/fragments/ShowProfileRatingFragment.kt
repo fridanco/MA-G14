@@ -19,7 +19,7 @@ import it.polito.ma.g14.timebank.R
 import it.polito.ma.g14.timebank.RVadapters.ProfileRatingAdapter
 import it.polito.ma.g14.timebank.models.ShowProfileRatingVM
 
-class ShowProfileRatingFragment(val uid: String, val type: String) : Fragment() {
+class ShowProfileRatingFragment(val uid: String, val type: String, val originFragment: String) : Fragment() {
 
     private val showProfileRatingVM by viewModels<ShowProfileRatingVM>()
 
@@ -31,13 +31,13 @@ class ShowProfileRatingFragment(val uid: String, val type: String) : Fragment() 
     ): View? {
         val view = inflater.inflate(R.layout.fragment_show_profile_rating, container, false)
 
-        showProfileRatingVM.getProfileReviews(uid)
-
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        showProfileRatingVM.getProfileReviews(uid)
 
         val rv = view.findViewById<RecyclerView>(R.id.ratingRV)
         val emptyRv = view.findViewById<TextView>(R.id.emptyRatingRV)
@@ -46,7 +46,7 @@ class ShowProfileRatingFragment(val uid: String, val type: String) : Fragment() 
         val numRatingsContainer = view.findViewById<LinearLayout>(R.id.numRatingsContainer)
 
         rv.layoutManager = LinearLayoutManager(requireContext())
-        adapter = ProfileRatingAdapter(view, requireContext(), uid)
+        adapter = ProfileRatingAdapter(view, requireContext(), uid, originFragment)
         rv.adapter = adapter
 
         showProfileRatingVM.profile.observe(viewLifecycleOwner){

@@ -53,9 +53,9 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
     val storageRef = Firebase.storage("gs://mad2022-g14.appspot.com").reference
 
     init {
-        val uid = Firebase.auth.uid
+        val uid = Firebase.auth.currentUser!!.uid
 
-        db.collection("users").document(uid!!)
+        db.collection("users").document(uid)
             .get()
             .addOnSuccessListener { querySnapshot ->
                 _editProfile.value = querySnapshot.toObject(User::class.java)
@@ -80,7 +80,7 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
         //As client
         completedAdvertisementsListener = db.collection("advertisements")
             .whereEqualTo("uid",uid)
-            .whereEqualTo("status","completed")
+            .whereNotEqualTo("status","free")
             .addSnapshotListener { result,exception ->
                 if(exception!=null){
                     _completedAdvertisements.value = emptyList()
@@ -157,14 +157,228 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
                 }.addOnSuccessListener { _ ->
                     db.collection("users").document(Firebase.auth.currentUser!!.uid)
                         .set(user)
+                        .addOnSuccessListener {
+                            //Update advertiser profile
+                            db.collection("advertisements").whereEqualTo("uid",Firebase.auth.currentUser!!.uid)
+                                .get()
+                                .addOnSuccessListener { result ->
+                                    val advertisements = result.mapNotNull { it.toObject(Advertisement::class.java) }
+                                    advertisements.forEach { advertisement ->
+                                        db.runTransaction { transaction ->
+                                            val advertisementRef = db.collection("advertisements").document(advertisement.id)
+                                            advertisement.user = AdvertisementUser().apply {
+                                                this.fullname = user.fullname
+                                                this.nickname = user.nickname
+                                                this.email = user.email
+                                                this.location = user.location
+                                                this.description = user.description
+                                            }
+                                            if(advertisement.advertiserRating!=null){
+                                                advertisement.advertiserRating!!.raterName = user.fullname
+                                            }
+                                            transaction.set(advertisementRef, advertisement)
+                                        }
+
+                                    }
+                                }
+
+                            //Update advertisement client
+                            db.collection("advertisements").whereEqualTo("bookedByUID",Firebase.auth.currentUser!!.uid)
+                                .get()
+                                .addOnSuccessListener { result ->
+                                    val advertisements = result.mapNotNull { it.toObject(Advertisement::class.java) }
+                                    advertisements.forEach { advertisement ->
+                                        db.runTransaction { transaction ->
+                                            val advertisementRef = db.collection("advertisements").document(advertisement.id)
+                                            advertisement.bookedByName = user.fullname
+                                            if(advertisement.clientRating!=null){
+                                                advertisement.clientRating!!.raterName = user.fullname
+                                            }
+                                            transaction.set(advertisementRef, advertisement)
+                                        }
+                                    }
+                                }
+
+                            //Update chat details
+                            db.collection("chats").whereEqualTo("advertiserUID",Firebase.auth.currentUser!!.uid)
+                                .get()
+                                .addOnSuccessListener { result ->
+                                    val chats = result.mapNotNull { it.toObject(Chat::class.java) }
+                                    chats.forEach { chat ->
+                                        db.runTransaction { transaction ->
+                                            val chatRef = db.collection("chats").document("${chat.clientUID}_${chat.advertisementID}")
+                                            chat.advertiserName = user.fullname
+                                            chat.chatMessages.forEach {
+                                                if(it.senderUID==Firebase.auth.currentUser!!.uid){
+                                                    it.senderName = user.fullname
+                                                }
+                                            }
+                                            transaction.set(chatRef, chat)
+                                        }
+                                    }
+                                }
+
+                            //Update chat details
+                            db.collection("chats").whereEqualTo("clientUID",Firebase.auth.currentUser!!.uid)
+                                .get()
+                                .addOnSuccessListener { result ->
+                                    val chats = result.mapNotNull { it.toObject(Chat::class.java) }
+                                    chats.forEach { chat ->
+                                        db.runTransaction { transaction ->
+                                            val chatRef = db.collection("chats").document("${chat.clientUID}_${chat.advertisementID}")
+                                            chat.advertiserName = user.fullname
+                                            chat.chatMessages.forEach {
+                                                if(it.senderUID==Firebase.auth.currentUser!!.uid){
+                                                    it.senderName = user.fullname
+                                                }
+                                            }
+                                            transaction.set(chatRef, chat)
+                                        }
+                                    }
+                                }
+
+                            //Update reviews
+                            db.collection("users").get()
+                                .addOnSuccessListener { result ->
+                                    val users = result.mapNotNull { it.toObject(User::class.java) }
+                                    users.forEach { _user ->
+                                        _user.ratingsAsAdvertiser.forEach {
+                                            if(it.raterUid==Firebase.auth.currentUser!!.uid ){
+                                                it.raterName = user.fullname
+                                            }
+                                        }
+                                        _user.ratingsAsClient.forEach {
+                                            if(it.raterUid==Firebase.auth.currentUser!!.uid ){
+                                                it.raterName = user.fullname
+                                            }
+                                        }
+                                        db.collection("users").document(_user.id).set(_user)
+                                    }
+                                }
+                        }
                     db.collection("users").document(Firebase.auth.currentUser!!.uid)
-                        .update("timestamp",Date().toString())
+                        .update("timestamp", Date().toString())
                     Log.d("Timebank FBSTORAGE", "Profile image successfully uploaded")
                 }
         }
         else{
             db.collection("users").document(Firebase.auth.currentUser!!.uid)
                 .set(user)
+                .addOnSuccessListener { _ ->
+                    db.collection("users").document(Firebase.auth.currentUser!!.uid)
+                        .set(user)
+                        .addOnSuccessListener {
+                            //Update advertiser profile
+                            db.collection("advertisements")
+                                .whereEqualTo("uid", Firebase.auth.currentUser!!.uid)
+                                .get()
+                                .addOnSuccessListener { result ->
+                                    val advertisements =
+                                        result.mapNotNull { it.toObject(Advertisement::class.java) }
+                                    advertisements.forEach { advertisement ->
+                                        db.runTransaction { transaction ->
+                                            val advertisementRef = db.collection("advertisements")
+                                                .document(advertisement.id)
+                                            advertisement.user = AdvertisementUser().apply {
+                                                this.fullname = user.fullname
+                                                this.nickname = user.nickname
+                                                this.email = user.email
+                                                this.location = user.location
+                                                this.description = user.description
+                                            }
+                                            if (advertisement.advertiserRating != null) {
+                                                advertisement.advertiserRating!!.raterName =
+                                                    user.fullname
+                                            }
+                                            transaction.set(advertisementRef, advertisement)
+                                        }
+
+                                    }
+                                }
+
+                            //Update advertisement client
+                            db.collection("advertisements")
+                                .whereEqualTo("bookedByUID", Firebase.auth.currentUser!!.uid)
+                                .get()
+                                .addOnSuccessListener { result ->
+                                    val advertisements =
+                                        result.mapNotNull { it.toObject(Advertisement::class.java) }
+                                    advertisements.forEach { advertisement ->
+                                        db.runTransaction { transaction ->
+                                            val advertisementRef = db.collection("advertisements")
+                                                .document(advertisement.id)
+                                            advertisement.bookedByName = user.fullname
+                                            if (advertisement.clientRating != null) {
+                                                advertisement.clientRating!!.raterName =
+                                                    user.fullname
+                                            }
+                                            transaction.set(advertisementRef, advertisement)
+                                        }
+                                    }
+                                }
+
+                            //Update chat details
+                            db.collection("chats")
+                                .whereEqualTo("advertiserUID", Firebase.auth.currentUser!!.uid)
+                                .get()
+                                .addOnSuccessListener { result ->
+                                    val chats = result.mapNotNull { it.toObject(Chat::class.java) }
+                                    chats.forEach { chat ->
+                                        db.runTransaction { transaction ->
+                                            val chatRef = db.collection("chats")
+                                                .document("${chat.clientUID}_${chat.advertisementID}")
+                                            chat.advertiserName = user.fullname
+                                            chat.chatMessages.forEach {
+                                                if (it.senderUID == Firebase.auth.currentUser!!.uid) {
+                                                    it.senderName = user.fullname
+                                                }
+                                            }
+                                            transaction.set(chatRef, chat)
+                                        }
+                                    }
+                                }
+
+                            //Update chat details
+                            db.collection("chats")
+                                .whereEqualTo("clientUID", Firebase.auth.currentUser!!.uid)
+                                .get()
+                                .addOnSuccessListener { result ->
+                                    val chats = result.mapNotNull { it.toObject(Chat::class.java) }
+                                    chats.forEach { chat ->
+                                        db.runTransaction { transaction ->
+                                            val chatRef = db.collection("chats")
+                                                .document("${chat.clientUID}_${chat.advertisementID}")
+                                            chat.advertiserName = user.fullname
+                                            chat.chatMessages.forEach {
+                                                if (it.senderUID == Firebase.auth.currentUser!!.uid) {
+                                                    it.senderName = user.fullname
+                                                }
+                                            }
+                                            transaction.set(chatRef, chat)
+                                        }
+                                    }
+                                }
+
+                            //Update reviews
+                            db.collection("users").get()
+                                .addOnSuccessListener { result ->
+                                    val users = result.mapNotNull { it.toObject(User::class.java) }
+                                    users.forEach { _user ->
+                                        _user.ratingsAsAdvertiser.forEach {
+                                            if (it.raterUid == Firebase.auth.currentUser!!.uid) {
+                                                it.raterName = user.fullname
+                                            }
+                                        }
+                                        _user.ratingsAsClient.forEach {
+                                            if (it.raterUid == Firebase.auth.currentUser!!.uid) {
+                                                it.raterName = user.fullname
+                                            }
+                                        }
+                                        db.collection("users").document(_user.id).set(_user)
+                                    }
+                                }
+                        }
+                }
         }
     }
 

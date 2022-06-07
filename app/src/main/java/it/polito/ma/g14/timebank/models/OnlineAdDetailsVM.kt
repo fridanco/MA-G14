@@ -53,7 +53,7 @@ class OnlineAdDetailsVM(application:Application) : AndroidViewModel(application)
 
     fun rateClient(rating: Rating){
         db.collection("advertisements").document(rating.advertisement.id).update("advertiserRating",rating)
-        db.collection ("users").document(rating.advertisement.uid).update("ratingsAsClient",
+        db.collection ("users").document(rating.advertisement.bookedByUID).update("ratingsAsClient",
             FieldValue.arrayUnion(rating))
     }
 

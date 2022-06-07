@@ -189,12 +189,23 @@ class OnlineAdvertisementsAdapter(val view: View, val vm: FirebaseVM, val contex
                 advertisement.bookedSkill
             }
 
-            val bundle = bundleOf("advertisement" to advertisement, "advertisementSkill" to advertisementSkill)
+
             if(sourceUser == "online") {
+                val bundle = bundleOf("advertisement" to advertisement, "advertisementSkill" to advertisementSkill)
                 view.findNavController().navigate(R.id.action_onlineAdsListFragment_to_onlineAdDetailsFragment, bundle)
             }
             else {
-                view.findNavController().navigate(R.id.action_nav_linkedAds_to_onlineAdDetailsFragment, bundle)
+                //if i am the advertiser
+                if(advertisement.uid == Firebase.auth.currentUser!!.uid){
+                    val bundle = bundleOf("advertisementID" to advertisement.id)
+                    view.findNavController().navigate(R.id.action_nav_linkedAds_to_myAdvertisementDetails, bundle)
+                }
+                else{
+                    val bundle = bundleOf("advertisement" to advertisement, "advertisementSkill" to advertisementSkill)
+                    view.findNavController().navigate(R.id.action_nav_linkedAds_to_onlineAdDetailsFragment, bundle)
+                }
+
+
             }
 
         }

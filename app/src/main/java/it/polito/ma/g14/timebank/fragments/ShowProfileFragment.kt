@@ -210,8 +210,8 @@ class ShowProfileFragment() : Fragment() {
 
         val uid = Firebase.auth.currentUser!!.uid
         val fragmentList = listOf<Fragment>(
-            ShowProfileRatingFragment(uid, "asAdvertiser"),
-            ShowProfileRatingFragment(uid, "asClient")
+            ShowProfileRatingFragment(uid, "asAdvertiser", "myProfile"),
+            ShowProfileRatingFragment(uid, "asClient", "myProfile")
         )
 
         override fun getItemCount(): Int = fragmentList.size

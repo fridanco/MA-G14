@@ -1,5 +1,6 @@
 package it.polito.ma.g14.timebank.RVadapters
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
@@ -12,6 +13,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.core.os.bundleOf
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -37,6 +40,7 @@ class MyAdvertisementsAdapter(
     class ItemViewHolder(v: View): RecyclerView.ViewHolder(v) {
         private val advertisementContainer = v.findViewById<LinearLayout>(R.id.my_ad_card)
 
+        @SuppressLint("CutPasteId", "InflateParams", "SetTextI18n")
         fun bind(advertisement: Advertisement, inflater: LayoutInflater, color: String, action1: (v: View) -> Unit, action2: (v: View)->Unit, action3: (v: View)->Unit) {
             advertisementContainer.findViewById<TextView>(R.id.textView4).text = advertisement.title
             advertisementContainer.findViewById<TextView>(R.id.textView5).text = advertisement.description
@@ -60,8 +64,17 @@ class MyAdvertisementsAdapter(
             }
 
             advertisementContainer.findViewById<CardView>(R.id.cardView).setOnClickListener(action1)
-            advertisementContainer.findViewById<ImageButton>(R.id.imageButton3).setOnClickListener(action2)
-            advertisementContainer.findViewById<ImageButton>(R.id.imageButton4).setOnClickListener(action3)
+            if(advertisement.status!="free"){
+                advertisementContainer.findViewById<ImageButton>(R.id.imageButton3).isGone = true
+                advertisementContainer.findViewById<ImageButton>(R.id.imageButton4).isGone = true
+            }
+            else{
+                advertisementContainer.findViewById<ImageButton>(R.id.imageButton3).isVisible = true
+                advertisementContainer.findViewById<ImageButton>(R.id.imageButton4).isVisible = true
+                advertisementContainer.findViewById<ImageButton>(R.id.imageButton3).setOnClickListener(action2)
+                advertisementContainer.findViewById<ImageButton>(R.id.imageButton4).setOnClickListener(action3)
+            }
+
         }
     }
 
@@ -145,6 +158,7 @@ class MyAdvertisementsAdapter(
         diffs.dispatchUpdatesTo(this)
     }
 
+    @SuppressLint("SimpleDateFormat")
     fun performSort(sortBy: String, showToast: Boolean = true) : List<Advertisement>{
         var newData = data as MutableList<Advertisement>
         when(sortBy){

@@ -170,7 +170,6 @@ class MyAdDetailsFragment : Fragment() {
                 else{
                     chatButton.isVisible = true
                     ratingPanel.isGone = true
-                    chatButton.isGone = true
 
                     shownAdvertisementSkill = it.bookedSkill
 
