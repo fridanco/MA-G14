@@ -258,13 +258,14 @@ class OnlineAdDetailsFragment : Fragment() {
                                 btn_book.setOnClickListener {
                                     bookSlot()
                                 }
-                                btn_chat.setOnClickListener {
-                                    startChat()
-                                }
                             }
                             else{
                                 btn_book.isGone = true
                                 view.findViewById<TextView>(R.id.textView101).isVisible = true
+                            }
+
+                            btn_chat.setOnClickListener {
+                                startChat()
                             }
                         }
                         //if i am the advertiser do not show booking panel

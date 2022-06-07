@@ -30,7 +30,7 @@ class ProfileRatingAdapter(val view: View, val context: Context, val uid: String
     class ItemViewHolder(v: View): RecyclerView.ViewHolder(v) {
         private val ratingContainer = v.findViewById<LinearLayout>(R.id.ratingContainer)
 
-        @SuppressLint("SimpleDateFormat")
+        @SuppressLint("SimpleDateFormat", "SetTextI18n")
         fun bind(rating: Rating, context: Context, action1: (v: View) -> Unit) {
 
             val raterIcon = ratingContainer.findViewById<ImageView>(R.id.raterImg)
@@ -80,7 +80,12 @@ class ProfileRatingAdapter(val view: View, val context: Context, val uid: String
             ratingContainer.findViewById<TextView>(R.id.ratingDate).text = timeString
 
             ratingContainer.findViewById<RatingBar>(R.id.raterRating).rating = rating.rating
-            ratingContainer.findViewById<TextView>(R.id.raterReview).text = rating.textRating
+            if(rating.textRating.isNotBlank()) {
+                ratingContainer.findViewById<TextView>(R.id.raterReview).text = rating.textRating
+            }
+            else{
+                ratingContainer.findViewById<TextView>(R.id.raterReview).text = "No review provided"
+            }
             ratingContainer.findViewById<LinearLayout>(R.id.raterProfileContainer).setOnClickListener(action1)
         }
     }

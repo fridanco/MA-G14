@@ -36,6 +36,9 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
     private val _completedAdvertisements = MutableLiveData<List<Advertisement>>()
     val completedAdvertisements: LiveData<List<Advertisement>> = _completedAdvertisements
 
+    private val _numMessageNotifications = MutableLiveData<Int>()
+    val numMessageNotifications: LiveData<Int> = _numMessageNotifications
+
     private var profileListener : ListenerRegistration? = null
     private var myAdvertisementsListener: ListenerRegistration? = null
 
@@ -286,6 +289,28 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
         .addOnFailureListener { e ->
             Log.w("Timebank FIREBASE", "Error deleting advertisement", e)
         }
+    }
+
+    fun getMessageNotifications(){
+        val uid = Firebase.auth.currentUser!!.uid
+        db.collection("chats").whereEqualTo("advertiserUID",uid).get()
+            .addOnSuccessListener { result1 ->
+                var numNotifications = 0
+                val chats1 = result1.mapNotNull { it.toObject(Chat::class.java) }
+                chats1.forEach {
+                    numNotifications += it.advertiserNotifications
+                }
+
+                db.collection("chats").whereEqualTo("clientUID",uid).get()
+                    .addOnSuccessListener { result2 ->
+                        val chats2 = result2.mapNotNull { it.toObject(Chat::class.java) }
+                        chats2.forEach {
+                            numNotifications += it.clientNotifications
+                        }
+
+                        _numMessageNotifications.postValue(numNotifications)
+                    }
+            }
 
     }
 

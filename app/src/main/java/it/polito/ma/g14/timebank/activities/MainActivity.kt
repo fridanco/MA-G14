@@ -11,6 +11,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
@@ -39,6 +41,8 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        vm.getMessageNotifications()
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -96,6 +100,17 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+        vm.numMessageNotifications.observe(this){
+            if(it>0){
+                navView.menu.findItem(R.id.myMessages).actionView?.isVisible = true
+                navView.menu.findItem(R.id.myMessages).actionView?.findViewById<TextView>(R.id.counter)?.text = it.toString()
+            }
+            else{
+                navView.menu.findItem(R.id.myMessages).actionView?.isGone = true
+                navView.menu.findItem(R.id.myMessages).actionView?.findViewById<TextView>(R.id.counter)?.text = "0"
+            }
+        }
 
         navView.menu.findItem(R.id.nav_logout).setOnMenuItemClickListener {
             AuthUI.getInstance()
