@@ -45,6 +45,8 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
     private var followedAdvertisementsListener: ListenerRegistration? = null
     private var completedAdvertisementsListener: ListenerRegistration? = null
 
+    private var numAdNotificationsListener: ListenerRegistration? = null
+
     val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     val storageRef = Firebase.storage("gs://mad2022-g14.appspot.com").reference
 
@@ -293,24 +295,20 @@ class FirebaseVM(application:Application) : AndroidViewModel(application) {
 
     fun getMessageNotifications(){
         val uid = Firebase.auth.currentUser!!.uid
-        db.collection("chats").whereEqualTo("advertiserUID",uid).get()
-            .addOnSuccessListener { result1 ->
-                var numNotifications = 0
-                val chats1 = result1.mapNotNull { it.toObject(Chat::class.java) }
-                chats1.forEach {
-                    numNotifications += it.advertiserNotifications
-                }
-
-                db.collection("chats").whereEqualTo("clientUID",uid).get()
-                    .addOnSuccessListener { result2 ->
-                        val chats2 = result2.mapNotNull { it.toObject(Chat::class.java) }
-                        chats2.forEach {
-                            numNotifications += it.clientNotifications
-                        }
-
-                        _numMessageNotifications.postValue(numNotifications)
-                    }
+        db.collection("chats").addSnapshotListener { value, error ->
+            if (error != null) {
+                println(error.message)
             }
+            var numNotifications = 0
+            value?.let {
+
+                val chats1 = value.mapNotNull { it.toObject(Chat::class.java) }
+                numNotifications += chats1.filter { it.advertiserUID==uid }.sumOf { it.advertiserNotifications }
+                numNotifications += chats1.filter { it.clientUID==uid }.sumOf { it.clientNotifications }
+
+                _numMessageNotifications.postValue(numNotifications)
+            }
+        }
 
     }
 
