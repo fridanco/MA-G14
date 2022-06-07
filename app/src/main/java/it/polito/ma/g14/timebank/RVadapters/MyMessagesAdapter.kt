@@ -53,8 +53,15 @@ class MyMessagesAdapter(val view: View, val vm: FirebaseVM, val context: Context
             messageContainer.removeAllViews()
 
             this.messageCard.findViewById<CardView>(R.id.cardView).setOnClickListener{
-                val bundle = bundleOf("advertisement" to advertisementWithChat.advertisement)
-                view.findNavController().navigate(R.id.action_myMessages_to_onlineAdDetailsFragment, bundle)
+
+                if(advertisementWithChat.advertisement.uid==uid){
+                    val bundle = bundleOf("advertisementID" to advertisementWithChat.advertisement.id)
+                    view.findNavController().navigate(R.id.action_myMessages_to_myAdvertisementDetails, bundle)
+                }
+                else{
+                    val bundle = bundleOf("advertisement" to advertisementWithChat.advertisement)
+                    view.findNavController().navigate(R.id.action_myMessages_to_onlineAdDetailsFragment, bundle)
+                }
             }
             advertisementWithChat.messageList.forEach {
                 val msgLayout = LayoutInflater.from(context).inflate(R.layout.my_message_entry,messageContainer)

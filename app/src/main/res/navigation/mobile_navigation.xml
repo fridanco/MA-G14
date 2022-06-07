@@ -171,6 +171,9 @@
         <action
             android:id="@+id/action_myMessages_to_onlineAdDetailsFragment"
             app:destination="@id/onlineAdDetailsFragment" />
+        <action
+            android:id="@+id/action_myMessages_to_myAdvertisementDetails"
+            app:destination="@id/myAdvertisementDetails" />
     </fragment>
 
 

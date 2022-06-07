@@ -205,9 +205,10 @@ class MyAdDetailsFragment : Fragment() {
     private fun startChat() {
         val bundle = bundleOf(
             "advertisement" to shownAdvertisement,
-            "advertisementSkill" to shownAdvertisementSkill
+            "advertisementSkill" to shownAdvertisementSkill,
+            "clientUID" to shownAdvertisement!!.bookedByUID
         )
-        view?.findNavController()?.navigate(R.id.action_onlineAdDetailsFragment_to_chatFragment, bundle)
+        view?.findNavController()?.navigate(R.id.action_myAdvertisementDetails_to_chatFragment, bundle)
     }
 
     private fun submitRating(rating: Rating) {

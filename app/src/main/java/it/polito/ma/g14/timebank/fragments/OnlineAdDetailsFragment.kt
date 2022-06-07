@@ -185,8 +185,10 @@ class OnlineAdDetailsFragment : Fragment() {
                                 markAsComplete()
                             }
                         } else {
-                            bookedAdTextView.text =
-                                "Sorry! This advertisement has been already booked."
+                            if(adUserPair.first.uid != Firebase.auth.currentUser!!.uid) {
+                                bookedAdTextView.text =
+                                    "Sorry! This advertisement has been already booked."
+                            }
                             completedPanel.findViewById<Button>(R.id.button10).isGone = true
                         }
 
